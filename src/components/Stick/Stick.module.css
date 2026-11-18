@@ -1,0 +1,77 @@
+.stick {
+  position: relative;
+  display: block;
+  width: var(--stick-w, 12px);
+  height: var(--stick-h, 132px);
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    var(--c-wood-deep) 0%,
+    var(--c-wood) 28%,
+    #f8dfae 50%,
+    var(--c-wood) 72%,
+    var(--c-wood-deep) 100%
+  );
+  box-shadow: 0 8px 8px -6px rgb(10 6 40 / 0.55);
+  rotate: var(--tilt);
+  transform-origin: 50% 100%;
+  transition:
+    transform 0.28s var(--ease-spring),
+    filter 0.2s ease;
+  animation: drop 0.6s var(--ease-spring) backwards;
+  animation-delay: calc(var(--i) * 28ms);
+}
+
+/* Tête de l'allumette */
+.stick::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -7px;
+  width: 175%;
+  height: calc(var(--stick-w, 12px) * 2);
+  translate: -50% 0;
+  border-radius: 50% 50% 46% 46% / 62% 62% 38% 38%;
+  background: radial-gradient(circle at 36% 30%, #ff9aa5 0 14%, var(--c-head) 42%, var(--c-head-deep) 100%);
+}
+
+.preview {
+  transform: translateY(-14px);
+  filter: drop-shadow(0 0 10px var(--c-glow));
+}
+
+.grabbed {
+  transform: translateY(-30px) rotate(calc(var(--dir) * -9deg));
+  filter: drop-shadow(0 0 12px var(--c-glow));
+  animation: wiggle 0.18s ease-in-out infinite alternate;
+}
+
+.flying {
+  animation: fly 0.62s var(--ease-in) forwards;
+}
+
+@keyframes drop {
+  from {
+    transform: translateY(-70px);
+    opacity: 0;
+  }
+}
+
+@keyframes wiggle {
+  from {
+    translate: -1px 0;
+  }
+  to {
+    translate: 1px -3px;
+  }
+}
+
+@keyframes fly {
+  0% {
+    transform: translateY(-30px) rotate(calc(var(--dir) * -9deg));
+  }
+  100% {
+    transform: translate(calc(var(--dir) * 42vw), -60px) rotate(calc(var(--dir) * 100deg)) scale(0.45);
+    opacity: 0;
+  }
+}

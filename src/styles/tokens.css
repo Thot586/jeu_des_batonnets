@@ -1,0 +1,40 @@
+:root {
+  /* Couleurs */
+  --c-sky: #b9b4ff;
+  --c-sky-light: #dedbff;
+  --c-ink: #231c55;
+  --c-ink-soft: #544c91;
+  --c-paper: #fbfaff;
+  --c-line: #d6d2f4;
+  --c-table: #3b2f8f;
+  --c-table-light: #4c3fae;
+  --c-table-deep: #221a63;
+  --c-wood: #f1cf8e;
+  --c-wood-deep: #cf9c4f;
+  --c-head: #f2475a;
+  --c-head-deep: #b3233a;
+  --c-glow: #ffe3a1;
+  --c-error: #b3233a;
+
+  /* Typographie (échelle 1,2) */
+  --font: 'Bricolage Grotesque', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fs-xs: 0.8125rem;
+  --fs-sm: 0.9375rem;
+  --fs-md: 1.0625rem;
+  --fs-lg: 1.3125rem;
+  --fs-xl: 1.75rem;
+  --fs-display: clamp(2.75rem, 8vw, 6rem);
+
+  /* Formes : plus l'objet est grand, plus il est rond */
+  --r-table: 44px;
+  --r-card: 30px;
+  --r-control: 16px;
+  --r-pill: 999px;
+
+  --shadow-soft: 0 26px 50px -30px rgb(35 28 85 / 0.6);
+  --lip: 0 5px 0 0;
+
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.55, 0, 0.75, 0.2);
+}

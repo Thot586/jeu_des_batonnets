@@ -1,0 +1,30 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  row-gap: 26px;
+  padding-top: 34px;
+}
+
+.normal {
+  --stick-w: clamp(8px, 1.2vw, 13px);
+  --stick-h: clamp(84px, 13vw, 138px);
+}
+
+.compact {
+  --stick-w: 9px;
+  --stick-h: 74px;
+  row-gap: 18px;
+  padding-top: 14px;
+}
+
+/* La zone de survol déborde du bâtonnet, sinon il serait trop fin à viser. */
+.slot {
+  display: block;
+  padding: 0 clamp(3px, 0.6vw, 7px);
+}
+
+.pickable {
+  cursor: pointer;
+}

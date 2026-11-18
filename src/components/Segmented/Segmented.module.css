@@ -1,0 +1,61 @@
+.fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: 8px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.track {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--r-pill);
+}
+
+.card .track {
+  background: rgb(35 28 85 / 0.07);
+}
+
+.light .track {
+  background: rgb(255 255 255 / 0.45);
+}
+
+.option {
+  position: relative;
+}
+
+.pill {
+  display: block;
+  padding: 0.5em 1em;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    transform 0.2s var(--ease-spring);
+}
+
+.option:hover .pill {
+  background: rgb(35 28 85 / 0.08);
+}
+
+input:checked + .pill {
+  background: var(--c-ink);
+  color: #fff;
+}
+
+input:focus-visible + .pill {
+  outline: 3px solid var(--c-ink);
+  outline-offset: 2px;
+}

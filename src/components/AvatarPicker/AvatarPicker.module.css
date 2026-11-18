@@ -1,0 +1,82 @@
+.fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: 8px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.face {
+  display: grid;
+  place-items: end center;
+  width: 100%;
+  max-width: 64px;
+  aspect-ratio: 1;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition:
+    transform 0.25s var(--ease-spring),
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+/* On ne montre que le haut du personnage : il « sort » de sa vignette. */
+.mini {
+  width: 92%;
+  translate: 0 22%;
+}
+
+.name {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-ink-soft);
+}
+
+.tile:hover .face {
+  transform: translateY(-3px);
+}
+
+input:checked + .face {
+  border-color: var(--c-ink);
+  box-shadow: 0 4px 0 0 var(--c-ink);
+  transform: translateY(-3px);
+}
+
+input:checked ~ .name {
+  color: var(--c-ink);
+}
+
+input:focus-visible + .face {
+  outline: 3px solid var(--c-ink);
+  outline-offset: 3px;
+}
+
+.taken {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.taken:hover .face {
+  transform: none;
+}

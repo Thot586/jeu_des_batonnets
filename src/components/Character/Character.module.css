@@ -1,0 +1,305 @@
+.wrap {
+  position: relative;
+  width: 100%;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  transition: filter 0.4s ease;
+}
+
+.flip {
+  transform: scaleX(-1);
+}
+
+/* Parties du corps */
+
+.shadow {
+  fill: rgb(35 28 85 / 0.22);
+}
+
+.figure {
+  transform-box: view-box;
+  transform-origin: 80px 188px;
+  animation: bob 2.8s ease-in-out infinite;
+  transition: transform 0.38s var(--ease-spring);
+}
+
+.torso {
+  fill: var(--body);
+}
+
+.belly {
+  fill: var(--belly);
+}
+
+.foot {
+  fill: var(--c-ink);
+}
+
+.limb {
+  fill: none;
+  stroke: var(--shade);
+  stroke-width: 14;
+  stroke-linecap: round;
+}
+
+.hand {
+  fill: var(--body);
+  stroke: var(--shade);
+  stroke-width: 3;
+}
+
+.arm {
+  transform-box: view-box;
+  transform-origin: 124px 116px;
+  transition: transform 0.34s var(--ease-spring);
+}
+
+.eyes {
+  transform-box: view-box;
+  transform-origin: 80px 92px;
+  animation: blink 4.6s infinite;
+}
+
+.eyeWhite {
+  fill: #fff;
+}
+
+.pupils {
+  fill: var(--c-ink);
+  transition: transform 0.3s var(--ease-out);
+}
+
+.glint {
+  fill: #fff;
+}
+
+.cheek {
+  fill: #ff5c7a;
+  opacity: 0.3;
+}
+
+.mouth {
+  fill: none;
+  stroke: var(--c-ink);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.mouthFill {
+  fill: var(--c-ink);
+}
+
+.teeth {
+  stroke: #fff;
+  stroke-width: 3;
+}
+
+.tongue {
+  fill: #ff6b81;
+}
+
+/* Accessoires */
+
+.hat {
+  fill: var(--c-table);
+}
+
+.hatBand {
+  fill: var(--c-head);
+}
+
+.antenna {
+  transform-box: view-box;
+  transform-origin: 80px 42px;
+  animation: wobble 2.2s ease-in-out infinite;
+}
+
+.antennaStem {
+  fill: none;
+  stroke: var(--shade);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.antennaBall {
+  fill: #ffc93c;
+}
+
+.hair {
+  fill: var(--shade);
+}
+
+.curl {
+  fill: none;
+  stroke: var(--shade);
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.glasses {
+  fill: none;
+  stroke: var(--c-ink);
+  stroke-width: 4;
+}
+
+.bow {
+  fill: var(--c-table);
+}
+
+.bowKnot {
+  fill: var(--c-head);
+}
+
+.heldWood {
+  fill: var(--c-wood);
+  stroke: var(--c-wood-deep);
+  stroke-width: 1;
+}
+
+.heldHead {
+  fill: var(--c-head);
+}
+
+/* Humeurs */
+
+.thinking .pupils {
+  transform: translate(-3px, -5px);
+}
+
+.reaching .figure {
+  animation: none;
+  transform: rotate(6deg) translateX(6px);
+}
+
+.reaching .arm {
+  transform: rotate(-72deg);
+}
+
+.reaching .pupils {
+  transform: translate(3px, 3px);
+}
+
+.pulling .figure {
+  animation: none;
+  transform: rotate(-9deg) translateX(-8px);
+}
+
+.pulling .arm {
+  transform: rotate(-26deg);
+}
+
+.happy .figure {
+  animation: jump 0.75s var(--ease-out) infinite;
+}
+
+.happy .arm {
+  animation: wave 0.45s ease-in-out infinite alternate;
+}
+
+.sad .figure {
+  animation: none;
+  transform: translateY(6px) scale(1.03, 0.94);
+}
+
+.sad .pupils {
+  transform: translateY(4px);
+}
+
+.sad .svg {
+  filter: saturate(0.5);
+}
+
+/* Bulle de réflexion */
+
+.bubble {
+  position: absolute;
+  top: -6%;
+  left: 50%;
+  display: flex;
+  gap: 5px;
+  padding: 9px 13px;
+  background: var(--c-paper);
+  border-radius: var(--r-pill);
+  box-shadow: 0 10px 22px -12px rgb(35 28 85 / 0.7);
+  animation: pop 0.3s var(--ease-spring);
+}
+
+.bubble i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-ink);
+  animation: dot 0.9s ease-in-out infinite;
+}
+
+.bubble i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.bubble i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes bob {
+  50% {
+    transform: translateY(-3px) scaleY(1.015);
+  }
+}
+
+@keyframes blink {
+  0%,
+  93%,
+  100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes wobble {
+  50% {
+    transform: rotate(9deg);
+  }
+}
+
+@keyframes jump {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  35% {
+    transform: translateY(-18px) scaleY(1.04);
+  }
+  60% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes wave {
+  from {
+    transform: rotate(-170deg);
+  }
+  to {
+    transform: rotate(-135deg);
+  }
+}
+
+@keyframes dot {
+  50% {
+    transform: translateY(-4px);
+    opacity: 0.5;
+  }
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+}

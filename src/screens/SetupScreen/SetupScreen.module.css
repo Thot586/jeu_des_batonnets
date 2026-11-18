@@ -1,0 +1,155 @@
+.screen {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: clamp(28px, 6vw, 72px) clamp(16px, 4vw, 40px) 72px;
+}
+
+.hero {
+  display: grid;
+  gap: 14px;
+  margin-bottom: clamp(28px, 5vw, 48px);
+}
+
+.title {
+  font-size: var(--fs-display);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.lead {
+  max-width: 34em;
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  color: var(--c-ink-soft);
+}
+
+/* La rangée d'aperçu suit le réglage du nombre de bâtonnets. */
+.hero > :last-child {
+  justify-content: flex-start;
+}
+
+.form {
+  display: grid;
+  gap: clamp(24px, 4vw, 40px);
+}
+
+.players {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  align-items: start;
+  gap: 54px 20px;
+}
+
+.card {
+  display: grid;
+  align-content: start;
+  gap: 20px;
+  padding: 22px clamp(18px, 3vw, 28px) 26px;
+  border-radius: var(--r-card);
+  background: var(--c-paper);
+  box-shadow: var(--shadow-soft);
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+}
+
+.portrait {
+  width: 84px;
+  flex: none;
+  margin-top: -54px;
+}
+
+.portraitFigure {
+  animation: arrive 0.45s var(--ease-spring);
+}
+
+.cardTitle {
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  padding-bottom: 8px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.label {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.label output {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--c-ink);
+  border-radius: var(--r-control);
+  background: #fff;
+  font-size: var(--fs-lg);
+  font-weight: 600;
+}
+
+.input:focus-visible {
+  outline: 3px solid var(--c-head);
+  outline-offset: 2px;
+}
+
+.invalid {
+  border-color: var(--c-error);
+  background: #fff4f5;
+}
+
+.error {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--c-error);
+}
+
+.rules {
+  display: grid;
+  gap: 18px;
+  padding-top: 24px;
+  border-top: 2px solid rgb(35 28 85 / 0.14);
+}
+
+.rulesTitle {
+  font-size: var(--fs-lg);
+  font-weight: 800;
+}
+
+.rulesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: 22px 28px;
+  align-items: start;
+}
+
+.range {
+  width: 100%;
+  height: 28px;
+  accent-color: var(--c-head);
+  cursor: pointer;
+}
+
+.submit {
+  display: flex;
+  justify-content: flex-start;
+}
+
+@keyframes arrive {
+  from {
+    transform: translateY(16px) scale(0.85);
+    opacity: 0;
+  }
+}

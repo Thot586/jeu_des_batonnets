@@ -1,0 +1,71 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  border: 2px solid var(--c-ink);
+  border-radius: var(--r-pill);
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: var(--lip) var(--c-ink);
+  transition:
+    transform 0.15s var(--ease-out),
+    box-shadow 0.15s var(--ease-out),
+    background-color 0.2s;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 0 var(--c-ink);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 0 var(--c-ink);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.md {
+  padding: 0.75em 1.3em;
+  font-size: var(--fs-md);
+}
+
+.lg {
+  padding: 0.85em 1.8em;
+  font-size: var(--fs-lg);
+}
+
+.primary {
+  background: var(--c-head);
+  color: #fff;
+}
+
+.primary:hover:not(:disabled) {
+  background: #ff5468;
+}
+
+.secondary {
+  background: var(--c-paper);
+  color: var(--c-ink);
+}
+
+.quiet {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  color: var(--c-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+
+.quiet:hover:not(:disabled),
+.quiet:active:not(:disabled) {
+  box-shadow: none;
+  transform: none;
+  text-decoration-thickness: 3px;
+}

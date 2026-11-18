@@ -1,0 +1,29 @@
+.confetti {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.piece {
+  position: absolute;
+  top: -40px;
+  left: var(--x);
+  width: 6px;
+  height: 26px;
+  border-radius: 3px;
+  background: linear-gradient(to bottom, var(--hue) 0 7px, var(--c-wood) 7px);
+  animation: fall var(--duration) var(--ease-in) var(--delay) forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translate(var(--drift), 110vh) rotate(var(--spin));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confetti {
+    display: none;
+  }
+}
