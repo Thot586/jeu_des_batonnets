@@ -11,6 +11,7 @@ chacun son tour, on tire de 1 à 3 bâtonnets, et celui qui prend le dernier a p
 - Personnages animés en SVG : ils tendent le bras, tirent les bâtonnets vers eux, réfléchissent, sautent de joie ou boudent.
 - Score cumulé sur plusieurs manches, avec alternance du joueur qui commence.
 - Jouable à la souris (survol puis clic sur les derniers bâtonnets ou sur « Prendre 1, 2, 3 »), au clavier (touches 1 à 4) et au doigt.
+- Responsive mobile first : pensé d'abord pour le téléphone (portrait et paysage), puis la tablette et l'ordinateur, et il s'agrandit en proportion sur les écrans géants (2K, 4K).
 - Accessible : vrais boutons et boutons radio, annonces de tour pour les lecteurs d'écran, focus visible, animations réduites si le système le demande.
 
 ## Démarrer
@@ -66,6 +67,12 @@ src/
 
 Chaque composant a son propre fichier de styles (CSS Modules). La logique du jeu (`src/game`) ne dépend pas de React : on peut la tester ou la réutiliser telle quelle.
 
+## Responsive
+
+Les styles de base visent le téléphone ; chaque palier (`min-width`) élargit ensuite la mise en page : 30em, 40em, 48em (tablette), 64em (bureau, personnages de part et d'autre de la table) et 100em (écrans géants). Un palier dédié traite le téléphone tenu à l'horizontale.
+
+Toutes les mesures sont en `rem`, et la taille de base grandit avec l'écran au-delà de 1700 px environ (18 px en Full HD, 24 px en 2560 x 1440, 36 px en 4K, voir `src/styles/global.css`). Un écran 4K affiche ainsi la même composition qu'un écran Full HD, en plus grand.
+
 ## Choix techniques
 
 - **Personnages en SVG** : formes complexes dont chaque partie (bras, yeux, bouche, accessoire) s'anime séparément avec des transformations CSS.
@@ -78,5 +85,9 @@ Chaque composant a son propre fichier de styles (CSS Modules). La logique du jeu
 Quand on peut prendre de 1 à k bâtonnets et que le dernier fait perdre, les positions perdantes pour celui qui doit jouer sont celles où il reste 1, k + 2, 2k + 3... bâtonnets. Le bon coup consiste à y laisser l'adversaire. Avec 20 bâtonnets et une prise de 1 à 3, le premier joueur gagne à coup sûr en prenant 3, puis en complétant toujours à 4 le coup de l'adversaire.
 
 Le niveau Expert joue toujours ce coup quand il existe, Malin le joue 7 fois sur 10, Tranquille 1 fois sur 4.
+
+## Auteur
+
+Développé par Dr FENOHASINA T.J. Félicien, psychiatre, développeur d'applications web.
 
 Le jeu utilise la police Bricolage Grotesque (Google Fonts) ; sans connexion, il bascule sur la police système.

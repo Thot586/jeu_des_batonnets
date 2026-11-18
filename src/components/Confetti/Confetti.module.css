@@ -7,12 +7,12 @@
 
 .piece {
   position: absolute;
-  top: -40px;
+  top: -2.5rem;
   left: var(--x);
-  width: 6px;
-  height: 26px;
-  border-radius: 3px;
-  background: linear-gradient(to bottom, var(--hue) 0 7px, var(--c-wood) 7px);
+  width: 0.375rem;
+  height: 1.625rem;
+  border-radius: 0.1875rem;
+  background: linear-gradient(to bottom, var(--hue) 0 0.4375rem, var(--c-wood) 0.4375rem);
   animation: fall var(--duration) var(--ease-in) var(--delay) forwards;
 }
 

@@ -6,8 +6,17 @@
   box-sizing: border-box;
 }
 
+/*
+ * Taille de base fluide : 16 px sur téléphone, tablette et portable, puis elle grandit
+ * en proportion de l'écran (environ 18 px en 1920 x 1080, 24 px en 2560 x 1440, 36 px en 4K) :
+ * un écran 4K affiche la même composition qu'un écran Full HD, en plus grand.
+ * Elle suit la plus petite des deux dimensions (largeur, hauteur) pour qu'un écran large
+ * mais peu haut ne fasse pas déborder la page. Toute l'interface étant en rem,
+ * elle s'agrandit d'un bloc sur les écrans géants.
+ */
 html {
   -webkit-text-size-adjust: 100%;
+  font-size: clamp(100%, min(0.95vw, 1.7vh), 240%);
 }
 
 body {
@@ -22,8 +31,7 @@ body {
   background-image:
     radial-gradient(rgb(35 28 85 / 0.08) 1.2px, transparent 1.4px),
     radial-gradient(120% 70% at 50% -10%, var(--c-sky-light) 0%, var(--c-sky) 60%);
-  background-size: 22px 22px, 100% 100%;
-  background-attachment: fixed;
+  background-size: 1.4rem 1.4rem, 100% 100%;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -42,6 +50,7 @@ input {
 
 button {
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 :focus-visible {

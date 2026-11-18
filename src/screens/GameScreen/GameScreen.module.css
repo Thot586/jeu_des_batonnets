@@ -1,11 +1,18 @@
+/*
+ * Mobile first. Sur téléphone, les deux personnages sont côte à côte au-dessus de la table.
+ * À partir de 64em (1024 px), ils encadrent la table de part et d'autre.
+ * Toutes les mesures sont en rem : l'ensemble grandit avec la taille de base fluide.
+ */
+
 .screen {
   display: flex;
   flex-direction: column;
-  gap: clamp(16px, 3vw, 32px);
-  max-width: 1280px;
-  min-height: 100dvh;
+  gap: 1rem;
+  flex: 1;
+  width: 100%;
+  max-width: var(--page-max);
   margin: 0 auto;
-  padding: clamp(16px, 3vw, 32px);
+  padding: 1rem var(--gutter) 1.5rem;
 }
 
 .topbar {
@@ -13,62 +20,63 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 8px 16px;
+  gap: 0.25rem 1rem;
 }
 
 .round {
-  font-size: var(--fs-xl);
+  font-size: var(--fs-lg);
   font-weight: 800;
   letter-spacing: -0.02em;
 }
 
+/* Sur téléphone, la règle passe sous le titre et le bouton, sur toute la largeur. */
 .rule {
-  flex: 1;
-  color: var(--c-ink-soft);
+  order: 3;
+  flex-basis: 100%;
+  font-size: var(--fs-sm);
   font-weight: 600;
+  color: var(--c-ink-soft);
 }
 
 .arena {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(130px, 210px) minmax(0, 1fr) minmax(130px, 210px);
-  grid-template-areas: 'left center right';
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas:
+    'left right'
+    'center center';
+  align-content: start;
   align-items: start;
-  align-content: center;
-  gap: clamp(8px, 2vw, 28px);
-  padding-bottom: clamp(0px, 6vh, 64px);
+  gap: 1rem 0.75rem;
 }
 
 .left {
   grid-area: left;
-  padding-top: 40px;
 }
 
 .right {
   grid-area: right;
-  padding-top: 40px;
 }
 
 .center {
   grid-area: center;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 1rem;
   min-width: 0;
 }
 
 .table {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  min-height: 280px;
-  padding: clamp(18px, 3vw, 30px) clamp(12px, 3vw, 36px) clamp(26px, 3vw, 40px);
+  gap: 0.5rem;
+  padding: 1rem 0.5rem 1.5rem;
   border-radius: var(--r-table);
   background: radial-gradient(120% 90% at 50% 0%, var(--c-table-light) 0%, var(--c-table) 55%, var(--c-table-deep) 100%);
   color: #fff;
   box-shadow:
-    inset 0 2px 0 rgb(255 255 255 / 0.14),
-    0 14px 0 -2px #18114d,
+    inset 0 0.12rem 0 rgb(255 255 255 / 0.14),
+    0 0.85rem 0 -0.12rem #18114d,
     var(--shadow-soft);
 }
 
@@ -80,8 +88,10 @@
   display: flex;
   align-items: baseline;
   gap: 0.4em;
-  color: rgb(255 255 255 / 0.72);
+  padding-inline: 0.75rem;
+  font-size: var(--fs-sm);
   font-weight: 600;
+  color: rgb(255 255 255 / 0.72);
 }
 
 .count strong {
@@ -92,9 +102,9 @@
 }
 
 .status {
-  min-height: 1.6em;
+  min-height: 3em;
   text-align: center;
-  font-size: var(--fs-lg);
+  font-size: var(--fs-md);
   font-weight: 700;
   letter-spacing: -0.01em;
   text-wrap: balance;
@@ -103,51 +113,141 @@
 .controls {
   display: grid;
   justify-items: center;
-  gap: 12px;
-  min-height: 96px;
+  gap: 0.75rem;
 }
 
+/* Les raccourcis clavier ne concernent que les écrans avec souris ou clavier. */
 .hint {
+  display: none;
   font-size: var(--fs-sm);
   color: var(--c-ink-soft);
   text-align: center;
 }
 
-@media (hover: none) {
+@media (hover: hover) and (pointer: fine) {
   .hint {
-    display: none;
+    display: block;
   }
 }
 
-@media (max-width: 760px) {
+/* Tablette */
+@media (min-width: 48em) {
+  .screen {
+    gap: 1.5rem;
+    padding-block: 1.5rem 2rem;
+  }
+
+  .round {
+    font-size: var(--fs-xl);
+  }
+
   .rule {
-    order: 3;
-    flex-basis: 100%;
-  }
-
-  .table {
-    min-height: 0;
-  }
-
-  .controls {
-    min-height: 0;
+    order: 0;
+    flex: 1;
+    flex-basis: auto;
+    font-size: var(--fs-md);
   }
 
   .arena {
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      'left right'
-      'center center';
+    gap: 1.5rem;
+  }
+
+  .table {
+    padding: 1.5rem 1.5rem 2rem;
+    min-height: 15rem;
+  }
+
+  .count {
+    font-size: var(--fs-md);
+  }
+
+  .status {
+    min-height: 1.6em;
+    font-size: var(--fs-lg);
+  }
+
+  .controls {
+    min-height: 6rem;
+  }
+}
+
+/* Bureau : les personnages encadrent la table. */
+@media (min-width: 64em) {
+  .arena {
+    grid-template-columns: minmax(8rem, 13rem) minmax(0, 1fr) minmax(8rem, 13rem);
+    grid-template-areas: 'left center right';
+    align-content: center;
+    gap: 1.75rem;
+    padding-bottom: 4vh;
   }
 
   .left,
   .right {
-    padding-top: 24px;
+    padding-top: 2.5rem;
   }
 
-  .left :global(svg),
-  .right :global(svg) {
-    max-width: 120px;
-    margin-inline: auto;
+  .table {
+    min-height: 17.5rem;
+    padding: 1.9rem 2.25rem 2.5rem;
+  }
+}
+
+/* Écrans géants : tout prend de l'ampleur. */
+@media (min-width: 100em) and (min-height: 50em) {
+  .arena {
+    grid-template-columns: minmax(12rem, 17rem) minmax(0, 1fr) minmax(12rem, 17rem);
+    gap: 2.5rem;
+  }
+
+  .left,
+  .right {
+    padding-top: 3.5rem;
+  }
+
+  .table {
+    min-height: 22rem;
+    padding: 2.25rem 3rem 3rem;
+  }
+
+  .status {
+    font-size: var(--fs-xl);
+  }
+}
+
+/* Téléphone tenu à l'horizontale : peu de hauteur, on adopte la disposition en trois colonnes. */
+@media (orientation: landscape) and (max-height: 32em) and (min-width: 36em) {
+  .screen {
+    gap: 0.5rem;
+    padding-block: 0.5rem 1rem;
+  }
+
+  .rule {
+    order: 0;
+    flex: 1;
+    flex-basis: auto;
+  }
+
+  .arena {
+    grid-template-columns: minmax(0, 8rem) minmax(0, 1fr) minmax(0, 8rem);
+    grid-template-areas: 'left center right';
+    gap: 0.75rem;
+  }
+
+  .left,
+  .right {
+    padding-top: 1rem;
+  }
+
+  .table {
+    min-height: 0;
+    padding: 0.5rem 0.75rem 1rem;
+  }
+
+  .status {
+    min-height: 1.6em;
+  }
+
+  .controls {
+    min-height: 0;
   }
 }

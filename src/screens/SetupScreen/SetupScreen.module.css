@@ -1,13 +1,19 @@
+/*
+ * Mobile first : une seule colonne. Les deux cartes joueurs passent côte à côte
+ * à partir de 48em, les réglages sur quatre colonnes à partir de 64em.
+ */
+
 .screen {
-  max-width: 1080px;
+  width: 100%;
+  max-width: var(--page-max);
   margin: 0 auto;
-  padding: clamp(28px, 6vw, 72px) clamp(16px, 4vw, 40px) 72px;
+  padding: 2rem var(--gutter) 3rem;
 }
 
 .hero {
   display: grid;
-  gap: 14px;
-  margin-bottom: clamp(28px, 5vw, 48px);
+  gap: 0.75rem;
+  margin-bottom: 3.5rem;
 }
 
 .title {
@@ -20,7 +26,7 @@
 
 .lead {
   max-width: 34em;
-  font-size: var(--fs-lg);
+  font-size: var(--fs-md);
   font-weight: 500;
   color: var(--c-ink-soft);
 }
@@ -32,21 +38,21 @@
 
 .form {
   display: grid;
-  gap: clamp(24px, 4vw, 40px);
+  gap: 2rem;
 }
 
 .players {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  gap: 54px 20px;
+  gap: 3.5rem 1.25rem;
 }
 
 .card {
   display: grid;
   align-content: start;
-  gap: 20px;
-  padding: 22px clamp(18px, 3vw, 28px) 26px;
+  gap: 1.25rem;
+  padding: 1.25rem 1.1rem 1.5rem;
   border-radius: var(--r-card);
   background: var(--c-paper);
   box-shadow: var(--shadow-soft);
@@ -55,13 +61,13 @@
 .cardHead {
   display: flex;
   align-items: flex-end;
-  gap: 14px;
+  gap: 0.85rem;
 }
 
 .portrait {
-  width: 84px;
+  width: 4.5rem;
   flex: none;
-  margin-top: -54px;
+  margin-top: -3rem;
 }
 
 .portraitFigure {
@@ -69,15 +75,15 @@
 }
 
 .cardTitle {
-  font-size: var(--fs-lg);
+  padding-bottom: 0.4rem;
+  font-size: var(--fs-md);
   font-weight: 800;
   letter-spacing: -0.01em;
-  padding-bottom: 8px;
 }
 
 .field {
   display: grid;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .label {
@@ -90,19 +96,20 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* 16 px minimum sur mobile : en dessous, iOS zoome sur le champ au toucher. */
 .input {
   width: 100%;
-  padding: 12px 16px;
-  border: 2px solid var(--c-ink);
+  padding: 0.7rem 0.9rem;
+  border: 0.125rem solid var(--c-ink);
   border-radius: var(--r-control);
   background: #fff;
-  font-size: var(--fs-lg);
+  font-size: max(1rem, var(--fs-md));
   font-weight: 600;
 }
 
 .input:focus-visible {
-  outline: 3px solid var(--c-head);
-  outline-offset: 2px;
+  outline: 0.19rem solid var(--c-head);
+  outline-offset: 0.125rem;
 }
 
 .invalid {
@@ -118,38 +125,105 @@
 
 .rules {
   display: grid;
-  gap: 18px;
-  padding-top: 24px;
-  border-top: 2px solid rgb(35 28 85 / 0.14);
+  gap: 1.1rem;
+  padding-top: 1.5rem;
+  border-top: 0.125rem solid rgb(35 28 85 / 0.14);
 }
 
 .rulesTitle {
-  font-size: var(--fs-lg);
+  font-size: var(--fs-md);
   font-weight: 800;
 }
 
 .rulesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
-  gap: 22px 28px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.4rem;
   align-items: start;
 }
 
 .range {
   width: 100%;
-  height: 28px;
+  height: 2rem;
   accent-color: var(--c-head);
   cursor: pointer;
 }
 
+/* Sur téléphone, le bouton principal occupe toute la largeur, à portée de pouce. */
 .submit {
-  display: flex;
-  justify-content: flex-start;
+  display: grid;
+}
+
+@media (min-width: 30em) {
+  .rulesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.4rem 1.75rem;
+  }
+}
+
+@media (min-width: 48em) {
+  .screen {
+    padding-block: 4rem 4.5rem;
+  }
+
+  .hero {
+    gap: 0.9rem;
+    margin-bottom: 4rem;
+  }
+
+  .lead {
+    font-size: var(--fs-lg);
+  }
+
+  .form {
+    gap: 2.5rem;
+  }
+
+  .players {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card {
+    gap: 1.25rem;
+    padding: 1.4rem 1.75rem 1.6rem;
+  }
+
+  .portrait {
+    width: 5.25rem;
+    margin-top: -3.4rem;
+  }
+
+  .cardTitle,
+  .rulesTitle {
+    font-size: var(--fs-lg);
+  }
+
+  .input {
+    padding: 0.75rem 1rem;
+    font-size: var(--fs-lg);
+  }
+
+  .submit {
+    display: flex;
+    justify-content: flex-start;
+  }
+}
+
+@media (min-width: 64em) {
+  .rulesGrid {
+    grid-template-columns: repeat(4, minmax(0, auto));
+    justify-content: start;
+    gap: 1.4rem 2.5rem;
+  }
+
+  .range {
+    width: 14rem;
+  }
 }
 
 @keyframes arrive {
   from {
-    transform: translateY(16px) scale(0.85);
+    transform: translateY(1rem) scale(0.85);
     opacity: 0;
   }
 }

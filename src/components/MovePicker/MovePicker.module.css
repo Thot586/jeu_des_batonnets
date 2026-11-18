@@ -1,38 +1,51 @@
+/*
+ * Mobile first : une grille d'autant de colonnes que de choix, boutons empilés
+ * (icônes au-dessus du texte) pour tenir sur une ligne même à 320 px.
+ * À partir de 40em, les boutons redeviennent des pastilles horizontales.
+ */
 .picker {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(var(--choices, 3), minmax(0, 1fr));
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 34rem;
 }
 
 .choice {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  min-height: 56px;
-  padding: 10px 22px 10px 16px;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 4.25rem;
+  padding: 0.6rem 0.25rem;
   border: 2px solid var(--c-ink);
-  border-radius: 20px;
+  border-radius: var(--r-control);
   background: var(--c-paper);
-  font-size: var(--fs-md);
+  font-size: var(--fs-sm);
   font-weight: 700;
   box-shadow: var(--lip) var(--c-ink);
+  touch-action: manipulation;
   transition:
     transform 0.15s var(--ease-out),
     box-shadow 0.15s var(--ease-out),
     background-color 0.2s;
 }
 
+.label {
+  white-space: nowrap;
+}
+
 .choice:hover:not(:disabled),
 .choice:focus-visible {
-  transform: translateY(-2px);
-  box-shadow: 0 7px 0 0 var(--c-ink);
+  transform: translateY(-0.12rem);
+  box-shadow: var(--lip-hover) var(--c-ink);
   background: #fff6dc;
 }
 
 .choice:active:not(:disabled) {
-  transform: translateY(4px);
-  box-shadow: 0 1px 0 0 var(--c-ink);
+  transform: translateY(0.25rem);
+  box-shadow: var(--lip-press) var(--c-ink);
 }
 
 .choice:disabled {
@@ -42,13 +55,44 @@
 
 .icons {
   display: inline-flex;
-  gap: 3px;
+  gap: 0.2rem;
   align-items: flex-end;
 }
 
 .icon {
-  width: 5px;
-  height: 26px;
-  border-radius: 3px;
-  background: linear-gradient(to bottom, var(--c-head) 0 6px, var(--c-wood-deep) 6px);
+  width: 0.32rem;
+  height: 1.6rem;
+  border-radius: 0.2rem;
+  background: linear-gradient(to bottom, var(--c-head) 0 0.38rem, var(--c-wood-deep) 0.38rem);
+}
+
+@media (min-width: 40em) {
+  .picker {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    max-width: none;
+  }
+
+  .choice {
+    flex-direction: row;
+    gap: 0.75rem;
+    min-height: 3.5rem;
+    padding: 0.6rem 1.4rem 0.6rem 1rem;
+    border-radius: 1.25rem;
+    font-size: var(--fs-md);
+  }
+}
+
+@media (min-width: 100em) and (min-height: 50em) {
+  .choice {
+    min-height: 4.25rem;
+    padding: 0.75rem 1.75rem 0.75rem 1.25rem;
+    font-size: var(--fs-lg);
+  }
+
+  .icon {
+    height: 2rem;
+  }
 }

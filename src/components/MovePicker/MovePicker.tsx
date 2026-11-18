@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import styles from './MovePicker.module.css';
 
 interface MovePickerProps {
@@ -10,7 +11,12 @@ interface MovePickerProps {
 
 /** Boutons « Prendre 1, 2, 3 » ; le survol montre sur la table les bâtonnets concernés. */
 export const MovePicker = ({ maxTake, available, onPick, onPreview }: MovePickerProps) => (
-  <div className={styles.picker} role="group" aria-label="Combien de bâtonnets prendre">
+  <div
+    className={styles.picker}
+    role="group"
+    aria-label="Combien de bâtonnets prendre"
+    style={{ '--choices': maxTake } as CSSProperties}
+  >
     {Array.from({ length: maxTake }, (_, i) => {
       const count = i + 1;
       const disabled = count > available;
@@ -32,7 +38,7 @@ export const MovePicker = ({ maxTake, available, onPick, onPreview }: MovePicker
               <span key={k} className={styles.icon} />
             ))}
           </span>
-          <span>Prendre {count}</span>
+          <span className={styles.label}>Prendre {count}</span>
         </button>
       );
     })}

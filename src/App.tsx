@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { DEFAULT_CONFIG, isMatchConfig } from './game/config';
 import type { MatchConfig, PlayerId, Scores } from './game/types';
 import { useLocalStorage } from './hooks/useLocalStorage';
+import { Footer } from './components/Footer/Footer';
 import { GameScreen } from './screens/GameScreen/GameScreen';
 import { SetupScreen } from './screens/SetupScreen/SetupScreen';
 import styles from './App.module.css';
@@ -38,21 +39,24 @@ export const App = () => {
   const starterOfRound = ((firstStarter + round) % 2) as PlayerId;
 
   return (
-    <div key={screen} className={styles.screen}>
-      {screen === 'setup' ? (
-        <SetupScreen initial={config} onStart={start} />
-      ) : (
-        <GameScreen
-          key={round}
-          config={config}
-          round={round}
-          firstPlayer={starterOfRound}
-          scores={scores}
-          onRoundEnd={handleRoundEnd}
-          onRematch={() => setRound((r) => r + 1)}
-          onOpenSettings={() => setScreen('setup')}
-        />
-      )}
+    <div className={styles.app}>
+      <div key={screen} className={styles.screen}>
+        {screen === 'setup' ? (
+          <SetupScreen initial={config} onStart={start} />
+        ) : (
+          <GameScreen
+            key={round}
+            config={config}
+            round={round}
+            firstPlayer={starterOfRound}
+            scores={scores}
+            onRoundEnd={handleRoundEnd}
+            onRematch={() => setRound((r) => r + 1)}
+            onOpenSettings={() => setScreen('setup')}
+          />
+        )}
+      </div>
+      <Footer />
     </div>
   );
 };

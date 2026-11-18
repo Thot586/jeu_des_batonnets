@@ -7,7 +7,7 @@
 
 .legend {
   padding: 0;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
   font-size: var(--fs-sm);
   font-weight: 600;
 }
@@ -15,14 +15,14 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .tile {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 0.25rem;
   cursor: pointer;
 }
 
@@ -30,11 +30,11 @@
   display: grid;
   place-items: end center;
   width: 100%;
-  max-width: 64px;
+  max-width: 4rem;
   aspect-ratio: 1;
-  border-radius: 20px;
+  border-radius: 1.25rem;
   overflow: hidden;
-  border: 2px solid transparent;
+  border: 0.125rem solid transparent;
   transition:
     transform 0.25s var(--ease-spring),
     border-color 0.2s,
@@ -54,13 +54,13 @@
 }
 
 .tile:hover .face {
-  transform: translateY(-3px);
+  transform: translateY(-0.1875rem);
 }
 
 input:checked + .face {
   border-color: var(--c-ink);
-  box-shadow: 0 4px 0 0 var(--c-ink);
-  transform: translateY(-3px);
+  box-shadow: 0 0.25rem 0 0 var(--c-ink);
+  transform: translateY(-0.1875rem);
 }
 
 input:checked ~ .name {
@@ -68,8 +68,8 @@ input:checked ~ .name {
 }
 
 input:focus-visible + .face {
-  outline: 3px solid var(--c-ink);
-  outline-offset: 3px;
+  outline: 0.1875rem solid var(--c-ink);
+  outline-offset: 0.1875rem;
 }
 
 .taken {

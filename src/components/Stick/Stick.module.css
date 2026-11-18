@@ -1,9 +1,9 @@
 .stick {
   position: relative;
   display: block;
-  width: var(--stick-w, 12px);
-  height: var(--stick-h, 132px);
-  border-radius: 6px;
+  width: var(--stick-w, 0.75rem);
+  height: var(--stick-h, 8rem);
+  border-radius: calc(var(--stick-w, 0.75rem) / 2);
   background: linear-gradient(
     90deg,
     var(--c-wood-deep) 0%,
@@ -12,7 +12,7 @@
     var(--c-wood) 72%,
     var(--c-wood-deep) 100%
   );
-  box-shadow: 0 8px 8px -6px rgb(10 6 40 / 0.55);
+  box-shadow: 0 0.5rem 0.5rem -0.4rem rgb(10 6 40 / 0.55);
   rotate: var(--tilt);
   transform-origin: 50% 100%;
   transition:
@@ -27,22 +27,22 @@
   content: '';
   position: absolute;
   left: 50%;
-  top: -7px;
+  top: calc(var(--stick-w, 0.75rem) * -0.6);
   width: 175%;
-  height: calc(var(--stick-w, 12px) * 2);
+  height: calc(var(--stick-w, 0.75rem) * 2);
   translate: -50% 0;
   border-radius: 50% 50% 46% 46% / 62% 62% 38% 38%;
   background: radial-gradient(circle at 36% 30%, #ff9aa5 0 14%, var(--c-head) 42%, var(--c-head-deep) 100%);
 }
 
 .preview {
-  transform: translateY(-14px);
-  filter: drop-shadow(0 0 10px var(--c-glow));
+  transform: translateY(-0.9rem);
+  filter: drop-shadow(0 0 0.6rem var(--c-glow));
 }
 
 .grabbed {
-  transform: translateY(-30px) rotate(calc(var(--dir) * -9deg));
-  filter: drop-shadow(0 0 12px var(--c-glow));
+  transform: translateY(-1.9rem) rotate(calc(var(--dir) * -9deg));
+  filter: drop-shadow(0 0 0.75rem var(--c-glow));
   animation: wiggle 0.18s ease-in-out infinite alternate;
 }
 
@@ -52,26 +52,26 @@
 
 @keyframes drop {
   from {
-    transform: translateY(-70px);
+    transform: translateY(-4.4rem);
     opacity: 0;
   }
 }
 
 @keyframes wiggle {
   from {
-    translate: -1px 0;
+    translate: -0.06rem 0;
   }
   to {
-    translate: 1px -3px;
+    translate: 0.06rem -0.2rem;
   }
 }
 
 @keyframes fly {
   0% {
-    transform: translateY(-30px) rotate(calc(var(--dir) * -9deg));
+    transform: translateY(-1.9rem) rotate(calc(var(--dir) * -9deg));
   }
   100% {
-    transform: translate(calc(var(--dir) * 42vw), -60px) rotate(calc(var(--dir) * 100deg)) scale(0.45);
+    transform: translate(calc(var(--dir) * 42vw), -3.75rem) rotate(calc(var(--dir) * 100deg)) scale(0.45);
     opacity: 0;
   }
 }
