@@ -1,21 +1,23 @@
 name: Déployer sur GitHub Pages
 
-# Construit le jeu à chaque push sur main et publie le dossier dist/
-# sur la branche gh-pages, que GitHub Pages sert en ligne.
+# Construit le jeu à chaque push sur main et le publie sur GitHub Pages.
+# Réglage requis : Settings > Pages > Source = GitHub Actions.
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -25,8 +27,16 @@ jobs:
       # Une fois package-lock.json commité, "npm ci" est préférable.
       - run: npm install
       - run: npm run build
-      - uses: peaceiris/actions-gh-pages@v4
+      - uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          publish_branch: gh-pages
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

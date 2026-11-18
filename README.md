@@ -35,7 +35,7 @@ Puis ouvrir l'adresse affichée (en général http://localhost:5173).
 
 Le jeu est en ligne : https://thot586.github.io/jeu_des_batonnets/
 
-Le workflow `.github/workflows/deploy.yml` construit le jeu à chaque push sur `main` et publie le dossier `dist/` sur la branche `gh-pages`. Dans **Settings**, puis **Pages**, la source doit être **Deploy from a branch**, branche `gh-pages`, dossier `/ (root)`.
+Le workflow `.github/workflows/deploy.yml` construit le jeu et le publie à chaque push sur `main`. Dans **Settings**, puis **Pages**, la source doit être **GitHub Actions**.
 
 ## Organisation du code
 
