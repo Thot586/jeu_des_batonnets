@@ -131,7 +131,7 @@ const Accessory = ({ avatar }: { avatar: AvatarId }) => {
           <circle className={styles.antennaBall} cx="84" cy="12" r="7.5" />
         </g>
       );
-    case 'zinzin':
+    case 'zeste':
       return (
         <path
           className={styles.hair}

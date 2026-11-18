@@ -10,7 +10,7 @@ export type LastStickRule = 'perd' | 'gagne';
 
 export type Starter = PlayerId | 'hasard';
 
-export type AvatarId = 'pepin' | 'mousse' | 'zinzin' | 'bleuet' | 'praline';
+export type AvatarId = 'pepin' | 'mousse' | 'zeste' | 'bleuet' | 'praline';
 
 export interface PlayerConfig {
   name: string;
