@@ -74,7 +74,8 @@ export const GameScreen = ({
     return 'idle';
   };
 
-  const current = players[game.current];
+  // Les boutons restent affichés (désactivés) pendant le tour de l'ordinateur : l'écran ne saute pas.
+  const hasHuman = players.some((player) => player.kind === 'human');
   const status = describeStatus({ pending, isAiThinking, winner, available, players, current: game.current });
 
   return (
@@ -112,6 +113,7 @@ export const GameScreen = ({
             </p>
             <StickRow
               remaining={game.remaining}
+              layoutCount={settings.totalSticks}
               pending={
                 pending
                   ? { count: pending.count, stage: pending.stage, direction: pending.player === 0 ? -1 : 1 }
@@ -129,7 +131,7 @@ export const GameScreen = ({
           </p>
 
           <div className={styles.controls}>
-            {current.kind === 'human' && winner === null ? (
+            {hasHuman && winner === null ? (
               <>
                 <MovePicker
                   maxTake={settings.maxTake}

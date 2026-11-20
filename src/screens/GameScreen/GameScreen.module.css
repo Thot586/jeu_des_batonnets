@@ -46,8 +46,8 @@
     'left right'
     'center center';
   align-content: start;
-  align-items: start;
-  gap: 1rem 0.75rem;
+  align-items: center;
+  gap: 0.75rem 0.5rem;
 }
 
 .left {
@@ -102,7 +102,7 @@
 }
 
 .status {
-  min-height: 3em;
+  min-height: 2.9em;
   text-align: center;
   font-size: var(--fs-md);
   font-weight: 700;
@@ -110,10 +110,30 @@
   text-wrap: balance;
 }
 
+/*
+ * Sur téléphone, les boutons de coup restent collés en bas de l'écran :
+ * ils sont à portée de pouce dès le début, même si la page défile.
+ */
 .controls {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
   display: grid;
   justify-items: center;
   gap: 0.75rem;
+  margin-inline: calc(var(--gutter) * -1);
+  padding: 0.75rem var(--gutter) max(0.75rem, env(safe-area-inset-bottom));
+  background: linear-gradient(to bottom, rgb(185 180 255 / 0), var(--c-sky) 35%);
+}
+
+@media (max-width: 23.99em) {
+  .rule {
+    font-size: var(--fs-xs);
+  }
+
+  .table {
+    padding-block: 0.75rem 1rem;
+  }
 }
 
 /* Les raccourcis clavier ne concernent que les écrans avec souris ou clavier. */
@@ -167,7 +187,11 @@
   }
 
   .controls {
+    position: static;
     min-height: 6rem;
+    margin-inline: 0;
+    padding: 0;
+    background: none;
   }
 }
 
@@ -248,6 +272,10 @@
   }
 
   .controls {
+    position: static;
     min-height: 0;
+    margin-inline: 0;
+    padding: 0;
+    background: none;
   }
 }

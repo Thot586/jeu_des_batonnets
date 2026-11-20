@@ -229,6 +229,12 @@
   animation: pop 0.3s var(--ease-spring);
 }
 
+/* Personnage de droite : la bulle s'ouvre vers la table, pas vers le bord de l'écran. */
+.bubbleLeft {
+  left: auto;
+  right: 50%;
+}
+
 .bubble i {
   width: 0.4375rem;
   height: 0.4375rem;

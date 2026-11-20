@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { DEFAULT_CONFIG, isMatchConfig } from './game/config';
 import type { MatchConfig, PlayerId, Scores } from './game/types';
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -34,6 +34,11 @@ export const App = () => {
   const handleRoundEnd = useCallback((winner: PlayerId) => {
     setScores(([left, right]) => (winner === 0 ? [left + 1, right] : [left, right + 1]));
   }, []);
+
+  // Chaque écran s'ouvre en haut de page, quel que soit le défilement de l'écran précédent.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [screen, round]);
 
   // Chaque nouvelle manche, on change de joueur qui commence.
   const starterOfRound = ((firstStarter + round) % 2) as PlayerId;

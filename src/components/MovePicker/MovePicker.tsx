@@ -38,7 +38,10 @@ export const MovePicker = ({ maxTake, available, onPick, onPreview }: MovePicker
               <span key={k} className={styles.icon} />
             ))}
           </span>
-          <span className={styles.label}>Prendre {count}</span>
+          <span className={styles.label}>
+            <span className={styles.verb}>Prendre </span>
+            {count}
+          </span>
         </button>
       );
     })}

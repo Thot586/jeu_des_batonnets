@@ -30,7 +30,7 @@ export const Seat = ({
   className,
 }: SeatProps) => (
   <section
-    className={cx(styles.seat, isTurn && styles.active, className)}
+    className={cx(styles.seat, styles[side], isTurn && styles.active, className)}
     aria-label={player.kind === 'ai' ? `${player.name}, l'ordinateur` : player.name}
   >
     <div className={styles.stage}>

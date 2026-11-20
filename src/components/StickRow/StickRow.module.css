@@ -7,14 +7,14 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-end;
-  row-gap: 1.25rem;
-  padding-top: 1.5rem;
+  row-gap: 1rem;
+  padding-top: 1.4rem;
 }
 
 .normal {
-  --stick-w: 0.5rem;
-  --stick-h: 5rem;
-  --slot-pad: 0.15rem;
+  --stick-w: 0.45rem;
+  --stick-h: 4.25rem;
+  --slot-pad: 0.13rem;
 }
 
 .compact {
@@ -23,6 +23,17 @@
   --slot-pad: 0.18rem;
   row-gap: 1rem;
   padding-top: 0.9rem;
+}
+
+@media (max-width: 23.99em) {
+  .row {
+    row-gap: 0.75rem;
+    padding-top: 1.2rem;
+  }
+
+  .normal {
+    --stick-h: 3.4rem;
+  }
 }
 
 /* La zone de survol et de toucher déborde du bâtonnet, sinon il serait trop fin à viser. */
@@ -36,11 +47,11 @@
   cursor: pointer;
 }
 
-@media (min-width: 30em) {
+@media (min-width: 30em) and (min-height: 44em) {
   .normal {
-    --stick-w: 0.62rem;
-    --stick-h: 6rem;
-    --slot-pad: 0.28rem;
+    --stick-w: 0.5rem;
+    --stick-h: 5rem;
+    --slot-pad: 0.16rem;
   }
 }
 

@@ -36,6 +36,22 @@
   white-space: nowrap;
 }
 
+/* Sur les plus petits écrans, seul le chiffre reste visible (le verbe reste lu par les lecteurs d'écran). */
+@media (max-width: 23.99em) {
+  .verb {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .label {
+    font-size: var(--fs-lg);
+  }
+}
+
 .choice:hover:not(:disabled),
 .choice:focus-visible {
   transform: translateY(-0.12rem);

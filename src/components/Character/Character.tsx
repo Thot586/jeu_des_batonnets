@@ -77,7 +77,7 @@ export const Character = ({
         </g>
       </svg>
       {mood === 'thinking' && (
-        <span className={styles.bubble} aria-hidden="true">
+        <span className={cx(styles.bubble, facing === 'left' && styles.bubbleLeft)} aria-hidden="true">
           <i />
           <i />
           <i />
