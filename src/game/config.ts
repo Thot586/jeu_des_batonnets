@@ -52,9 +52,9 @@ export const validateNames = (players: [PlayerConfig, PlayerConfig]): NameErrors
   const names = players.map((p) => p.name.trim());
   return names.map((name, index) => {
     if (name.length === 0) return 'Choisissez un pseudo.';
-    if (name.length > NAME_MAX_LENGTH) return `${NAME_MAX_LENGTH} caractères au maximum.`;
+    if (name.length > NAME_MAX_LENGTH) return `Raccourcissez le pseudo : ${NAME_MAX_LENGTH} caractères au maximum.`;
     if (index === 1 && name.toLocaleLowerCase('fr') === names[0].toLocaleLowerCase('fr')) {
-      return "Ce pseudo est déjà celui de l'autre joueur.";
+      return "Choisissez un autre pseudo : celui-ci est déjà pris par l'autre joueur.";
     }
     return null;
   }) as NameErrors;

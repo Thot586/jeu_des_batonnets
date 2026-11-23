@@ -144,6 +144,25 @@
   color: rgb(255 248 238 / 0.78);
 }
 
+.number {
+  display: inline-block;
+  animation: tick calc(var(--frame) * 3) var(--stop-back-3);
+}
+
+/* Fin de manche, pancarte fermée : rejouer depuis la table */
+.endBar {
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+}
+
+@keyframes tick {
+  from {
+    transform: translateY(-0.35rem) rotate(-8deg) scale(1.25);
+    opacity: 0;
+  }
+}
+
 .count strong {
   color: #fff8ee;
   font-family: var(--font-display);
@@ -176,7 +195,7 @@
   padding: 0.75rem var(--gutter) max(0.75rem, env(safe-area-inset-bottom));
   /* Même kraft que la page (même éclairage, mêmes fibres), fondu vers le haut : pas de bande visible. */
   background:
-    radial-gradient(120% 90% at 50% 30%, rgb(255 240 210 / 0.28) 0%, rgb(255 240 210 / 0) 55%, rgb(var(--c-shadow) / 0.18) 100%) fixed,
+    radial-gradient(120% 90% at 50% 30%, rgb(255 240 210 / 0.28) 0%, rgb(255 240 210 / 0) 55%, rgb(var(--c-shadow) / 0.1) 100%) fixed,
     var(--tex-fibers),
     var(--tex-grain),
     var(--c-kraft);

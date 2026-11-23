@@ -58,7 +58,21 @@ export const SetupScreen = ({ initial, onStart }: SetupScreenProps) => {
   }, []);
 
   const errors = validateNames(players);
-  const shownErrors = submitted ? errors : [null, null];
+  // Validation : un champ intact n'affiche rien ; l'erreur apparaît quand on le quitte (ou à l'envoi)
+  // et disparaît dès qu'on revient le corriger.
+  const [touched, setTouched] = useState<[boolean, boolean]>([false, false]);
+  const [editing, setEditing] = useState<number | null>(null);
+  const shownErrors = errors.map((error, id) =>
+    (submitted || touched[id]) && editing !== id ? error : null,
+  );
+  const leaveField = (id: PlayerId) => {
+    setEditing(null);
+    setTouched((current) => {
+      const next: [boolean, boolean] = [...current];
+      next[id] = true;
+      return next;
+    });
+  };
 
   const updatePlayer = (id: PlayerId, patch: Partial<PlayerConfig>) =>
     setPlayers((current) => {
@@ -84,6 +98,8 @@ export const SetupScreen = ({ initial, onStart }: SetupScreenProps) => {
     if (errors.some(Boolean)) {
       const firstInvalid = errors.findIndex(Boolean);
       document.getElementById(`pseudo-${firstInvalid}`)?.focus();
+      // Le champ reçoit le focus pour être corrigé, mais son erreur reste lisible.
+      setEditing(null);
       return;
     }
     onStart({
@@ -149,11 +165,13 @@ export const SetupScreen = ({ initial, onStart }: SetupScreenProps) => {
                     className={cx(styles.input, error && styles.invalid)}
                     value={player.name}
                     maxLength={NAME_MAX_LENGTH}
-                    autoComplete="off"
+                    autoComplete={id === 0 ? 'nickname' : 'off'}
                     spellCheck={false}
                     aria-invalid={error ? true : undefined}
                     aria-describedby={error ? `pseudo-${id}-error` : undefined}
                     onChange={(event) => updatePlayer(id, { name: event.target.value })}
+                    onFocus={() => setEditing(id)}
+                    onBlur={() => leaveField(id)}
                   />
                   {error && (
                     <p id={`pseudo-${id}-error`} className={styles.error}>

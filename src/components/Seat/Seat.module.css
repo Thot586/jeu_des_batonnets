@@ -83,12 +83,11 @@
   transition:
     background-color calc(var(--frame) * 2) steps(1, end),
     color calc(var(--frame) * 2) steps(1, end),
-    rotate calc(var(--frame) * 3) var(--stop-back-3),
-    box-shadow calc(var(--frame) * 3) steps(3, end);
+    rotate calc(var(--frame) * 3) var(--stop-back-3);
 }
 
 .active .name {
-  background-color: var(--c-tomato);
+  background-color: var(--c-tomato-ink);
   color: #fff8ee;
   rotate: -2.5deg;
   box-shadow: var(--shadow-paper);

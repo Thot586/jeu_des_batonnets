@@ -31,6 +31,11 @@ export const Stick = ({ index, state, direction }: StickProps) => {
 
   return (
     <span className={cx(styles.stick, styles[state])} style={vars}>
+      {/* L'ombre est une découpe à part : quand le bâtonnet se soulève, elle reste sur la table et s'éloigne. */}
+      <span className={styles.ghost}>
+        <span className={styles.strip} />
+        <span className={styles.head} />
+      </span>
       <span className={styles.strip} />
       <span className={styles.head} />
     </span>

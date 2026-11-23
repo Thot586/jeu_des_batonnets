@@ -10,12 +10,29 @@
   height: var(--stick-h, 8rem);
   rotate: var(--tilt);
   transform-origin: 50% 100%;
-  filter: drop-shadow(0.09rem 0.13rem 0 rgb(var(--c-shadow) / 0.45));
-  transition:
-    transform calc(var(--frame) * 3) var(--stop-out-3),
-    filter calc(var(--frame) * 3) steps(3, end);
+  transition: transform calc(var(--frame) * 3) var(--stop-out-3);
   animation: drop calc(var(--frame) * 6) var(--stop-back-6) backwards;
   animation-delay: calc(var(--drop-delay, 0ms) + var(--i) * 26ms);
+}
+
+/*
+ * L'ombre : la même découpe en sombre, posée juste derrière. Quand le bâtonnet monte,
+ * elle redescend d'autant (elle reste sur la table) et s'estompe : seuls transform et opacity bougent.
+ */
+.ghost {
+  position: absolute;
+  inset: 0;
+  opacity: 0.42;
+  transform: translate(0.09rem, 0.13rem);
+  filter: blur(0.03rem);
+  transition:
+    transform calc(var(--frame) * 3) var(--stop-out-3),
+    opacity calc(var(--frame) * 3) steps(3, end);
+}
+
+.ghost .strip,
+.ghost .head {
+  background: rgb(var(--c-shadow));
 }
 
 /* La bande : carton découpé, un peu plus clair ou plus foncé selon le bâtonnet */
@@ -49,10 +66,14 @@
 
 .preview {
   transform: translateY(-0.9rem) rotate(calc(var(--dir) * -3deg));
-  filter: drop-shadow(0.3rem 0.55rem 0.05rem rgb(var(--c-shadow) / 0.32));
 }
 
-.preview .head {
+.preview .ghost {
+  opacity: 0.3;
+  transform: translate(0.3rem, 1.25rem);
+}
+
+.preview > .head {
   background:
     radial-gradient(circle at 34% 30%, rgb(255 255 255 / 0.3) 0 18%, transparent 19%),
     var(--tex-grain),
@@ -62,8 +83,12 @@
 
 .grabbed {
   transform: translateY(-1.9rem) rotate(calc(var(--dir) * -10deg));
-  filter: drop-shadow(0.45rem 0.9rem 0.1rem rgb(var(--c-shadow) / 0.28));
   animation: tug calc(var(--frame) * 2) steps(1, end) infinite;
+}
+
+.grabbed .ghost {
+  opacity: 0.22;
+  transform: translate(0.5rem, 2.3rem);
 }
 
 .flying {

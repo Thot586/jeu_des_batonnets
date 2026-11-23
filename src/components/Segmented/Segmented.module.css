@@ -36,21 +36,25 @@
 
 .pill {
   display: block;
-  min-height: 2.4rem;
-  padding: 0.55em 0.95em;
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.5em 0.95em;
   border-radius: 0.55rem 0.7rem 0.5rem 0.65rem / 0.65rem 0.5rem 0.7rem 0.55rem;
   font-size: var(--fs-sm);
   font-weight: 600;
   line-height: 1.2;
   cursor: pointer;
   white-space: nowrap;
-  transition-property: background-color, color, box-shadow, rotate, translate, scale;
+  transition-property: background-color, color, rotate, translate, scale;
   transition-duration: var(--dur-ui);
   transition-timing-function: var(--ease-ui);
 }
 
-.option:hover .pill {
-  background-color: rgb(255 255 255 / 0.45);
+@media (hover: hover) {
+  .option:hover .pill {
+    background-color: rgb(255 255 255 / 0.45);
+  }
 }
 
 .option:active .pill {

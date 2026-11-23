@@ -38,7 +38,7 @@
   background-image: var(--tex-grain);
   background-size: 180px 180px;
   box-shadow: var(--shadow-paper-press);
-  transition-property: translate, rotate, box-shadow, scale;
+  transition-property: translate, rotate, scale;
   transition-duration: var(--dur-ui);
   transition-timing-function: var(--ease-ui);
 }
@@ -85,9 +85,10 @@
   color: var(--c-ink-soft);
 }
 
-.tile:hover .face {
-  translate: 0 -0.12rem;
-  box-shadow: var(--shadow-paper);
+@media (hover: hover) {
+  .tile:hover .face {
+    translate: 0 -0.12rem;
+  }
 }
 
 .tile:active .face {
@@ -120,7 +121,7 @@ input:focus-visible + .face {
   opacity: 0.38;
 }
 
+.taken .face,
 .taken:hover .face {
   translate: none;
-  box-shadow: var(--shadow-paper-press);
 }

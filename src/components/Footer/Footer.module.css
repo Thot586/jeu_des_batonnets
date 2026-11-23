@@ -23,7 +23,9 @@
 }
 
 .summary {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   padding: 0.35rem 0.6rem;
   border-radius: var(--r-pill);
   font-weight: 600;

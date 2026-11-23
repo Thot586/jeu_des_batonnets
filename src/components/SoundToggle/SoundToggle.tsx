@@ -3,19 +3,19 @@ import { cx } from '../../utils/cx';
 import styles from './SoundToggle.module.css';
 
 /**
- * Bouton son et vibrations. Les deux icônes restent dans le DOM et se croisent en fondu
+ * Bouton son et vibrations. Son nom (et son infobulle) dit ce que fait le clic, en commençant par le verbe.
+ * Les deux icônes restent dans le DOM et se croisent en fondu
  * (échelle 0,25 vers 1, flou 4 px vers 0) : l'état change sans saut.
  */
 export const SoundToggle = ({ className }: { className?: string }) => {
   const { enabled, toggle } = useFeedback();
+  const label = enabled ? 'Couper le son et les vibrations' : 'Activer le son et les vibrations';
 
   return (
     <button
       type="button"
       className={cx(styles.toggle, className)}
-      aria-pressed={enabled}
-      aria-label="Son et vibrations"
-      title={enabled ? 'Couper le son et les vibrations' : 'Activer le son et les vibrations'}
+      aria-label={label}
       data-on={enabled}
       onClick={toggle}
     >
@@ -28,6 +28,9 @@ export const SoundToggle = ({ className }: { className?: string }) => {
         <path d="M3.4 9.2 L7.6 9 L12.6 4.6 L13.1 19.6 L7.8 15.2 L3.2 15 Z" />
         <path className={styles.wave} d="M16.2 9.4 L21.2 14.6 M21.1 9.3 L16.3 14.7" />
       </svg>
+      <span className={styles.tooltip} aria-hidden="true">
+        {label}
+      </span>
     </button>
   );
 };

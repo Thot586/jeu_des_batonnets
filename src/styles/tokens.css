@@ -17,6 +17,9 @@
   /* Gouaches */
   --c-tomato: #e2412b;
   --c-tomato-deep: #b02f1d;
+  /* Tomate des surfaces qui portent du texte blanc (contraste 5:1) */
+  --c-tomato-ink: #c7351f;
+  --c-tomato-ink-hover: #bb3220;
   --c-saffron: #f2a71b;
   --c-seafoam: #3f9a84;
   --c-seafoam-light: #8fd0be;
@@ -28,7 +31,7 @@
 
   /* Encre */
   --c-ink: #2a1f17;
-  --c-ink-soft: #4a3826;
+  --c-ink-soft: #36271a;
   --c-shadow: 42 31 23;
 
   /* Alias historiques (utilisés par certains composants) */
@@ -81,7 +84,7 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in: cubic-bezier(0.55, 0, 0.75, 0.2);
   --ease-spring: var(--ease-out);
-  --dur-ui: 160ms;
+  --dur-ui: 150ms;
 
   /* Théâtre : une image = 1/12 s */
   --frame: 83.333ms;

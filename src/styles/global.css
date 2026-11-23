@@ -50,7 +50,7 @@ body {
   color: var(--c-ink);
   background-color: var(--c-kraft);
   background-image:
-    radial-gradient(120% 90% at 50% 30%, rgb(255 240 210 / 0.28) 0%, rgb(255 240 210 / 0) 55%, rgb(var(--c-shadow) / 0.18) 100%),
+    radial-gradient(120% 90% at 50% 30%, rgb(255 240 210 / 0.28) 0%, rgb(255 240 210 / 0) 55%, rgb(var(--c-shadow) / 0.1) 100%),
     var(--tex-fibers),
     var(--tex-grain);
   background-size: 100% 100%, 420px 420px, 180px 180px;

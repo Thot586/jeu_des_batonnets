@@ -1,11 +1,11 @@
-import { useMemo, type CSSProperties } from 'react';
+import { useMemo, useState, type CSSProperties } from 'react';
 import { blobPath, roundRectPath, stripPath } from '../../art/paper';
 import { getAvatar } from '../../game/avatars';
 import type { AvatarId } from '../../game/types';
 import { cx } from '../../utils/cx';
 import styles from './Character.module.css';
 
-export type Mood = 'idle' | 'thinking' | 'reaching' | 'pulling' | 'happy' | 'sad';
+export type Mood = 'idle' | 'aiming' | 'thinking' | 'reaching' | 'pulling' | 'happy' | 'sad';
 
 interface CharacterProps {
   avatar: AvatarId;
@@ -18,6 +18,19 @@ interface CharacterProps {
   label?: string;
   className?: string;
 }
+
+/**
+ * Rythme propre à chaque marionnette affichée : clignements, respiration et coups d'œil
+ * ne tombent jamais en même temps d'un personnage à l'autre (ni d'une vignette à l'autre).
+ */
+const drawRhythm = () => ({
+  blinkCycle: 4 + Math.random() * 1.6,
+  blinkDelay: -Math.random() * 6,
+  doubleBlink: Math.random() < 0.35,
+  breathDelay: -Math.random() * 3,
+  glanceCycle: 7 + Math.random() * 6,
+  glanceDelay: -Math.random() * 12,
+});
 
 /** Les pièces découpées d'une marionnette, calculées une fois par personnage. */
 const cutPieces = (seed: number) => ({
@@ -52,17 +65,24 @@ export const Character = ({
 }: CharacterProps) => {
   const look = getAvatar(avatar);
   const pieces = useMemo(() => cutPieces(look.seed), [look.seed]);
+  const [rhythm] = useState(drawRhythm);
   const colors = {
     '--body': look.color,
     '--shade': look.shade,
     '--belly': look.belly,
     '--accent': look.accent,
-    // Chaque marionnette respire à son propre rythme : les deux joueurs ne bougent jamais ensemble.
-    '--idle-delay': `${(-((look.seed * 0.37) % 3)).toFixed(2)}s`,
+    '--idle-delay': `${rhythm.breathDelay.toFixed(2)}s`,
+    '--blink-cycle': `${rhythm.blinkCycle.toFixed(2)}s`,
+    '--blink-delay': `${rhythm.blinkDelay.toFixed(2)}s`,
+    '--glance-cycle': `${rhythm.glanceCycle.toFixed(2)}s`,
+    '--glance-delay': `${rhythm.glanceDelay.toFixed(2)}s`,
   } as CSSProperties;
 
   return (
-    <div className={cx(styles.wrap, styles[mood], className)} style={colors}>
+    <div
+      className={cx(styles.wrap, styles[mood], rhythm.doubleBlink && styles.doubleBlink, className)}
+      style={colors}
+    >
       <svg
         viewBox="0 0 160 200"
         className={cx(styles.svg, facing === 'left' && styles.flip)}
@@ -134,6 +154,7 @@ const Mouth = ({ mood }: { mood: Mood }) => {
   switch (mood) {
     case 'thinking':
       return <ellipse className={styles.mouth} cx="86" cy="120" rx="3.6" ry="4.6" />;
+    case 'aiming':
     case 'reaching':
       return <path className={styles.mouth} d="M70.5 118.4 Q82 115 93.5 117.2 Q82 121.6 70.5 118.4 Z" />;
     case 'pulling':

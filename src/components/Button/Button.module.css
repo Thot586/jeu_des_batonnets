@@ -1,8 +1,10 @@
 /*
  * Bouton de papier. Interface (et non décor) : il répond immédiatement, sans stop motion.
- * Survol : la feuille se soulève (l'ombre s'allonge). Appui : elle s'aplatit (0,96).
+ * Survol (souris seulement) : la feuille se soulève ; l'ombre portée plus longue apparaît en fondu.
+ * Appui : elle s'aplatit (0,96). Seuls transform et opacity sont animés.
  */
 .button {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -14,20 +16,44 @@
   letter-spacing: 0.01em;
   background-size: 180px 180px, auto;
   box-shadow: var(--shadow-paper);
-  transition-property: scale, translate, box-shadow, background-color;
+  transition-property: scale, translate;
   transition-duration: var(--dur-ui);
   transition-timing-function: var(--ease-ui);
 }
 
-.button:hover:not(:disabled) {
-  translate: 0 -0.1rem;
+/* Ombre « soulevée », prête sous le bouton, révélée par son opacité */
+.button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
   box-shadow: var(--shadow-paper-lift);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-ui) var(--ease-ui);
+}
+
+@media (hover: hover) {
+  .button:hover:not(:disabled) {
+    translate: 0 -0.1rem;
+  }
+
+  .button:hover:not(:disabled)::after {
+    opacity: 1;
+  }
+
+  .primary:hover:not(:disabled) {
+    background-color: var(--c-tomato-ink-hover);
+  }
 }
 
 .button:active:not(:disabled) {
   scale: 0.96;
   translate: 0 0.05rem;
-  box-shadow: var(--shadow-paper-press);
+}
+
+.button:active:not(:disabled)::after {
+  opacity: 0;
 }
 
 .button:disabled {
@@ -49,13 +75,9 @@
 
 .primary {
   background-image: var(--tex-grain);
-  background-color: var(--c-tomato);
+  background-color: var(--c-tomato-ink);
   color: #fff8ee;
   text-shadow: 0 0.06em 0 rgb(var(--c-shadow) / 0.25);
-}
-
-.primary:hover:not(:disabled) {
-  background-color: #e94c35;
 }
 
 .secondary {
@@ -74,13 +96,13 @@
   text-underline-offset: 0.3rem;
 }
 
-.quiet:hover:not(:disabled),
-.quiet:active:not(:disabled) {
-  translate: none;
-  box-shadow: none;
-  text-decoration-thickness: 0.18rem;
+.quiet::after {
+  display: none;
 }
 
-.quiet:active:not(:disabled) {
-  scale: 0.96;
+@media (hover: hover) {
+  .quiet:hover:not(:disabled) {
+    translate: none;
+    text-decoration-thickness: 0.18rem;
+  }
 }

@@ -14,7 +14,6 @@
   width: 100%;
   height: auto;
   overflow: visible;
-  transition: filter calc(var(--frame) * 4) steps(2, end);
 }
 
 .flip {
@@ -66,7 +65,13 @@
 .eyes {
   transform-box: view-box;
   transform-origin: 80px 92px;
-  animation: blink 4.6s steps(1, end) infinite;
+  animation: blink var(--blink-cycle, 4.6s) steps(1, end) infinite;
+  animation-delay: var(--blink-delay, 0s);
+}
+
+/* Certaines marionnettes clignent parfois deux fois de suite. */
+.doubleBlink .eyes {
+  animation-name: blink-twice;
 }
 
 .eyeWhite {
@@ -153,6 +158,26 @@
 }
 
 /* Humeurs */
+
+/* Au repos, un coup d'œil de temps en temps, à un rythme propre à chaque personnage. */
+.idle .pupils {
+  animation: glance var(--glance-cycle, 9s) steps(1, end) infinite;
+  animation-delay: var(--glance-delay, 0s);
+}
+
+/* Le joueur vise : il regarde les bâtonnets survolés et prépare son bras (anticipation). */
+.aiming .figure {
+  animation: none;
+  transform: rotate(3deg) translateX(2px);
+}
+
+.aiming .pupils {
+  transform: translate(3.5px, 2.5px);
+}
+
+.aiming .arm {
+  transform: rotate(-22deg);
+}
 
 .thinking .figure {
   animation: none;
@@ -282,6 +307,39 @@
   }
   98.6% {
     transform: scaleY(1);
+  }
+}
+
+@keyframes blink-twice {
+  0% {
+    transform: scaleY(1);
+  }
+  90% {
+    transform: scaleY(0.12);
+  }
+  92.5% {
+    transform: scaleY(1);
+  }
+  95.5% {
+    transform: scaleY(0.12);
+  }
+  98% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes glance {
+  0% {
+    transform: none;
+  }
+  78% {
+    transform: translate(2.6px, 0.6px);
+  }
+  86% {
+    transform: translate(1.4px, -1.4px);
+  }
+  92% {
+    transform: none;
   }
 }
 

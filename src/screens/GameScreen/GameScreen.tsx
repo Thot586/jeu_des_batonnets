@@ -39,6 +39,8 @@ export const GameScreen = ({
   const { play: sound, buzz } = useFeedback();
   const [preview, setPreview] = useState(0);
   const [showResult, setShowResult] = useState(false);
+  const [resultClosed, setResultClosed] = useState(false);
+  const replayRef = useRef<HTMLButtonElement>(null);
   const reportedRef = useRef(false);
   // Première manche : on arrive par le rideau, les bâtonnets attendent qu'il soit ouvert pour tomber.
   const [intro, setIntro] = useState(round === 0);
@@ -116,9 +118,17 @@ export const GameScreen = ({
   const moodFor = (id: PlayerId): Mood => {
     if (winner !== null) return id === winner ? 'happy' : 'sad';
     if (pending?.player === id) return pending.stage === 'reach' ? 'reaching' : 'pulling';
+    if (canHumanPlay && game.current === id && preview > 0) return 'aiming';
     if (isAiThinking && game.current === id) return 'thinking';
     return 'idle';
   };
+
+  // Pancarte fermée (Échap) : on regarde la table finale, et « Rejouer » reçoit le focus.
+  useEffect(() => {
+    if (resultClosed) replayRef.current?.focus();
+  }, [resultClosed]);
+
+  const dialogOpen = showResult && winner !== null && !resultClosed;
 
   // Les boutons restent affichés (désactivés) pendant le tour de l'ordinateur : l'écran ne saute pas.
   const hasHuman = players.some((player) => player.kind === 'human');
@@ -134,7 +144,7 @@ export const GameScreen = ({
         <div className={styles.actions}>
           <SoundToggle />
           <Button variant="secondary" onClick={onOpenSettings}>
-            Réglages
+            Modifier<span className="visually-hidden"> les joueurs et les règles</span>
           </Button>
         </div>
       </header>
@@ -158,7 +168,9 @@ export const GameScreen = ({
           <div className={cx(styles.table, intro && styles.intro)}>
             <span className={styles.festoon} aria-hidden="true" />
             <p className={styles.count}>
-              <strong>{game.remaining}</strong>
+              <strong key={game.remaining} className={styles.number}>
+                {game.remaining}
+              </strong>
               {game.remaining > 1 ? 'bâtonnets restants' : 'bâtonnet restant'}
             </p>
             <StickRow
@@ -194,12 +206,24 @@ export const GameScreen = ({
                 </p>
               </>
             ) : null}
+            {winner !== null && resultClosed && (
+              <div className={styles.endBar}>
+                <Button ref={replayRef} size="lg" onClick={onRematch}>
+                  Rejouer
+                </Button>
+                <Button variant="quiet" onClick={onOpenSettings}>
+                  Modifier les joueurs et les règles
+                </Button>
+              </div>
+            )}
           </div>
         </section>
       </div>
 
-      {showResult && winner !== null && (
+      {dialogOpen && (
         <ResultDialog
+          onClose={() => setResultClosed(true)}
+          onLeave={() => setResultClosed(true)}
           players={players}
           winner={winner}
           lastStick={settings.lastStick}

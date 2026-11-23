@@ -28,8 +28,9 @@
   font-size: var(--fs-sm);
   font-weight: 600;
   box-shadow: var(--shadow-paper);
+  position: relative;
   touch-action: manipulation;
-  transition-property: translate, scale, box-shadow, background-color, opacity;
+  transition-property: translate, scale, opacity;
   transition-duration: var(--dur-ui);
   transition-timing-function: var(--ease-ui);
 }
@@ -61,17 +62,44 @@
   }
 }
 
-.choice:hover:not(:disabled),
+/* Ombre « soulevée », révélée par son opacité au survol (souris) ou au focus clavier */
+.choice::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--shadow-paper-lift);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-ui) var(--ease-ui);
+}
+
 .choice:focus-visible {
   translate: 0 -0.12rem;
-  box-shadow: var(--shadow-paper-lift);
-  background-color: #fff8e6;
+}
+
+.choice:focus-visible::after {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .choice:hover:not(:disabled) {
+    translate: 0 -0.12rem;
+    background-color: #fff8e6;
+  }
+
+  .choice:hover:not(:disabled)::after {
+    opacity: 1;
+  }
 }
 
 .choice:active:not(:disabled) {
   scale: 0.96;
   translate: 0 0.06rem;
-  box-shadow: var(--shadow-paper-press);
+}
+
+.choice:active:not(:disabled)::after {
+  opacity: 0;
 }
 
 .choice:disabled {
