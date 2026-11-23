@@ -22,25 +22,33 @@
   width: 4.25rem;
 }
 
+/* Le joueur dont c'est le tour se tient sur un rond de papier safran, posé en 3 images. */
 .spot {
   position: absolute;
   left: 50%;
-  bottom: -6%;
-  width: 120%;
-  aspect-ratio: 3 / 1;
+  bottom: -4%;
+  width: 112%;
+  aspect-ratio: 3.2 / 1;
   translate: -50% 0;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(255 255 255 / 0.9), rgb(255 255 255 / 0));
+  border-radius: 52% 48% 50% 50% / 56% 50% 50% 44%;
+  background: var(--tex-grain), var(--c-saffron);
+  background-size: 180px 180px, auto;
+  box-shadow: var(--shadow-paper-press);
   opacity: 0;
-  scale: 0.6;
+  scale: 0.5;
   transition:
-    opacity 0.35s ease,
-    scale 0.45s var(--ease-spring);
+    opacity calc(var(--frame) * 3) steps(3, end),
+    scale calc(var(--frame) * 3) var(--stop-back-3);
 }
 
 .active .spot {
   opacity: 1;
   scale: 1;
+}
+
+/* À son tour, le personnage fait un petit bond (4 images). */
+.active .stage {
+  animation: your-turn calc(var(--frame) * 4) steps(1, end);
 }
 
 .plate {
@@ -56,39 +64,47 @@
   text-align: right;
 }
 
+/* Étiquette de papier ; elle passe en tomate, de travers, quand c'est le tour du joueur. */
 .name {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   max-width: 100%;
-  padding: 0.2rem 0.6rem;
-  border-radius: var(--r-pill);
-  background: rgb(255 255 255 / 0.55);
+  padding: 0.25rem 0.65rem;
+  border-radius: 0.45rem 0.6rem 0.4rem 0.55rem / 0.55rem 0.4rem 0.6rem 0.45rem;
+  background-color: var(--c-paper);
+  background-image: var(--tex-grain);
+  background-size: 180px 180px;
+  box-shadow: var(--shadow-paper-press);
   font-size: var(--fs-sm);
-  font-weight: 800;
-  letter-spacing: -0.01em;
+  font-weight: 600;
   overflow-wrap: break-word;
   min-width: 0;
   transition:
-    background-color 0.3s,
-    color 0.3s;
+    background-color calc(var(--frame) * 2) steps(1, end),
+    color calc(var(--frame) * 2) steps(1, end),
+    rotate calc(var(--frame) * 3) var(--stop-back-3),
+    box-shadow calc(var(--frame) * 3) steps(3, end);
 }
 
 .active .name {
-  background: var(--c-ink);
-  color: #fff;
+  background-color: var(--c-tomato);
+  color: #fff8ee;
+  rotate: -2.5deg;
+  box-shadow: var(--shadow-paper);
+}
+
+.right.active .name {
+  rotate: 2.5deg;
 }
 
 .tag {
-  padding: 0.1rem 0.5rem;
-  border-radius: var(--r-pill);
-  background: rgb(35 28 85 / 0.12);
+  padding: 0.05rem 0.45rem;
+  border: 0.09rem solid currentColor;
+  border-radius: 0.4rem 0.5rem 0.35rem 0.45rem;
   font-size: var(--fs-xs);
   font-weight: 600;
-}
-
-.active .tag {
-  background: rgb(255 255 255 / 0.2);
+  opacity: 0.8;
 }
 
 .pile {
@@ -108,9 +124,11 @@
 .mini {
   width: 0.25rem;
   height: 0.95rem;
-  border-radius: 0.2rem;
-  background: linear-gradient(to bottom, var(--c-head) 0 0.3rem, var(--c-wood) 0.3rem);
-  animation: land 0.4s var(--ease-spring) backwards;
+  border-radius: 0.2rem 0.2rem 0.08rem 0.08rem;
+  background: linear-gradient(to bottom, var(--c-tomato) 0 0.3rem, var(--c-card) 0.3rem);
+  box-shadow: 0.05rem 0.07rem 0 rgb(var(--c-shadow) / 0.35);
+  rotate: calc((var(--n, 0) - 1) * 3deg);
+  animation: land calc(var(--frame) * 4) var(--stop-back-4) backwards;
 }
 
 .more,
@@ -131,6 +149,21 @@
   from {
     transform: translateY(-0.9rem) rotate(25deg);
     opacity: 0;
+  }
+}
+
+@keyframes your-turn {
+  0% {
+    transform: translateY(-0.35rem) rotate(-2deg);
+  }
+  25% {
+    transform: translateY(-0.6rem) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-0.25rem);
+  }
+  75% {
+    transform: translateY(0) scale(1.03, 0.97);
   }
 }
 

@@ -1,0 +1,78 @@
+.toggle {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: 48% 52% 46% 54% / 54% 46% 52% 48%;
+  background: var(--tex-grain), var(--c-paper);
+  background-size: 180px 180px, auto;
+  color: var(--c-ink);
+  box-shadow: var(--shadow-paper);
+  transition-property: scale, box-shadow, translate;
+  transition-duration: var(--dur-ui);
+  transition-timing-function: var(--ease-ui);
+}
+
+.toggle:hover {
+  translate: 0 -0.08rem;
+  box-shadow: var(--shadow-paper-lift);
+}
+
+.toggle:active {
+  scale: 0.96;
+  translate: 0 0.04rem;
+  box-shadow: var(--shadow-paper-press);
+}
+
+.icon {
+  grid-area: 1 / 1;
+  width: 1.45rem;
+  height: 1.45rem;
+  fill: currentColor;
+  transition-property: opacity, transform, filter;
+  transition-duration: 300ms;
+  transition-timing-function: var(--ease-ui);
+}
+
+.wave {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+/* Son actif : haut-parleur visible, haut-parleur barré caché */
+.on {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+
+.off {
+  opacity: 0;
+  transform: scale(0.25);
+  filter: blur(4px);
+}
+
+.toggle[data-on='false'] .on {
+  opacity: 0;
+  transform: scale(0.25);
+  filter: blur(4px);
+}
+
+.toggle[data-on='false'] .off {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+
+@media (min-width: 48em) {
+  .toggle {
+    width: 3.2rem;
+    height: 3.2rem;
+  }
+}

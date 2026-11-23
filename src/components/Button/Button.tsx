@@ -1,4 +1,5 @@
-import type { ComponentPropsWithRef } from 'react';
+import type { ComponentPropsWithRef, MouseEvent } from 'react';
+import { useFeedback } from '../../feedback/FeedbackContext';
 import { cx } from '../../utils/cx';
 import styles from './Button.module.css';
 
@@ -8,16 +9,29 @@ interface ButtonProps extends ComponentPropsWithRef<'button'> {
   size?: 'md' | 'lg';
 }
 
+/** Bouton de papier : il se soulève au survol, s'aplatit sous le doigt, et tapote comme du carton. */
 export const Button = ({
   variant = 'primary',
   size = 'md',
   className,
   type = 'button',
+  onClick,
   ...rest
-}: ButtonProps) => (
-  <button
-    type={type}
-    className={cx(styles.button, styles[variant], styles[size], className)}
-    {...rest}
-  />
-);
+}: ButtonProps) => {
+  const { play, buzz } = useFeedback();
+
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    play('tap');
+    buzz('tap');
+    onClick?.(event);
+  };
+
+  return (
+    <button
+      type={type}
+      className={cx(styles.button, styles[variant], styles[size], className)}
+      onClick={handleClick}
+      {...rest}
+    />
+  );
+};

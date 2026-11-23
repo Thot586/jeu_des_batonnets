@@ -8,7 +8,9 @@ chacun son tour, on tire de 1 à 3 bâtonnets, et celui qui prend le dernier a p
 - Deux joueurs sur le même écran, ou une partie contre l'ordinateur (trois niveaux : Tranquille, Malin, Expert).
 - Choix du pseudo et du personnage pour chaque joueur, mémorisés dans le navigateur.
 - Règles réglables : nombre de bâtonnets (7 à 31), prise maximale (2, 3 ou 4), dernier bâtonnet perdant ou gagnant, joueur qui commence.
-- Personnages animés en SVG : ils tendent le bras, tirent les bâtonnets vers eux, réfléchissent, sautent de joie ou boudent.
+- Direction artistique « papier découpé » : un petit théâtre de papier sur du kraft, animé en stop motion (voir plus bas).
+- Marionnettes de papier articulées : elles tendent le bras, tirent les bâtonnets vers elles, réfléchissent, sautent de joie ou boudent.
+- Son et vibrations : bruitages de papier synthétisés en direct, vibrations sur Android, un bouton pour tout couper.
 - Score cumulé sur plusieurs manches, avec alternance du joueur qui commence.
 - Jouable à la souris (survol puis clic sur les derniers bâtonnets ou sur « Prendre 1, 2, 3 »), au clavier (touches 1 à 4) et au doigt.
 - Responsive mobile first : pensé d'abord pour le téléphone (portrait et paysage), puis la tablette et l'ordinateur, et il s'agrandit en proportion sur les écrans géants (2K, 4K).
@@ -55,12 +57,18 @@ src/
     GameScreen/            la table de jeu
       useRound.ts          déroulé d'une manche : animation des coups, tour de l'ordinateur
   components/
-    Character/             personnage SVG et ses humeurs
+    Character/             marionnette de papier (SVG) et ses humeurs
+    Curtain/               rideau de théâtre entre les écrans
+    CutoutTitle/           titre en lettres découpées
+    SoundToggle/           bouton son et vibrations
     Stick/, StickRow/      bâtonnets et rangée interactive
     Seat/                  place d'un joueur : personnage, pseudo, pile, victoires
     MovePicker/            boutons « Prendre 1, 2, 3 »
     ResultDialog/          fin de manche
     AvatarPicker/, Segmented/, Button/, Confetti/
+  art/                     formes découpées à la main (générées), définitions SVG partagées
+  feedback/                son (Web Audio) et vibrations
+  assets/fonts/            polices hébergées avec le jeu (licence SIL OFL)
   hooks/                   localStorage, préférence de mouvement réduit
   styles/                  jetons de design (couleurs, typographie, formes) et styles globaux
 ```
@@ -73,12 +81,28 @@ Les styles de base visent le téléphone ; chaque palier (`min-width`) élargit 
 
 Toutes les mesures sont en `rem`, et la taille de base grandit avec l'écran au-delà de 1700 px environ (18 px en Full HD, 24 px en 2560 x 1440, 36 px en 4K, voir `src/styles/global.css`). Un écran 4K affiche ainsi la même composition qu'un écran Full HD, en plus grand.
 
+## Direction artistique
+
+**Papier découpé.** Un petit théâtre de papier posé sur du kraft : aplats de gouache (tomate, safran, vert d'eau, outremer, rose), bords coupés à la main, ombres de papier superposé, grain de la fibre. Les titres et les chiffres sont en pochoir (Saira Stencil One), le texte dans une linéale ronde (Fredoka).
+
+**Deux vitesses.**
+- Le décor vit en **stop motion, à 12 images par seconde** : marionnettes, bâtonnets, rideau, pancarte de fin, confettis. Chaque mouvement suit une courbe d'accélération échantillonnée image par image, chaque image étant tenue, comme une marionnette déplacée à la main entre deux prises. Ces courbes sont des jetons CSS (`--stop-out-4`, `--stop-back-6`...) écrits avec la fonction `linear()`, dans `src/styles/tokens.css`.
+- L'interface (boutons, onglets, champs) répond **immédiatement**, en douceur et sans rebond : elle se soulève au survol et s'aplatit sous le doigt.
+
+**Moments-clés.** Le rideau se lève à l'arrivée et se ferme puis se rouvre entre deux écrans ; les lettres du titre sont posées une à une ; chaque coup se joue en trois temps (tendre le bras, tirer, ramasser) ; la fin de manche descend au bout de deux ficelles et se balance.
+
+**Formes générées.** Chaque contour (corps, yeux, bâtonnets, étiquettes) est calculé à partir d'une graine (`src/art/paper.ts`) : légèrement irrégulier, mais identique à chaque affichage.
+
+**Son.** Tout vient du papier : tapotement de carton, glissement de bandes, froissement du rideau, et un petit air de kalimba en fin de manche. Les sons sont synthétisés avec Web Audio (aucun fichier audio) et ne démarrent qu'après un premier geste, comme l'exigent les navigateurs.
+
+**Mouvement réduit.** Si le système le demande, aucune animation de décor : tout s'affiche directement dans son état final.
+
 ## Choix techniques
 
-- **Personnages en SVG** : formes complexes dont chaque partie (bras, yeux, bouche, accessoire) s'anime séparément avec des transformations CSS.
-- **Bâtonnets en CSS** : un élément avec un dégradé et une tête en pseudo-élément. C'est plus léger qu'un SVG par bâtonnet quand il y en a une trentaine, et toutes les animations passent par `transform` et `opacity`, que le navigateur accélère.
-- **Aucune bibliothèque d'animation** : les seules dépendances sont React et ReactDOM.
-- **Un coup se joue en trois temps** : le personnage tend le bras (les bâtonnets se soulèvent), puis tire (ils s'envolent vers lui et apparaissent dans sa main), puis le coup est appliqué à l'état du jeu.
+- **Marionnettes en SVG** : chaque pièce est une découpe séparée ; les bras pivotent sur une attache parisienne et s'animent en CSS.
+- **Bâtonnets en HTML** : une bande découpée par `clip-path` et une tête de papier ; plus léger qu'un SVG par bâtonnet quand il y en a une trentaine. Seuls `transform` et `opacity` sont animés.
+- **Aucune bibliothèque d'animation ni de son** : les seules dépendances sont React et ReactDOM.
+- **Polices hébergées avec le jeu** : aucun appel à un service tiers (pas de Google Fonts), le jeu s'affiche correctement hors ligne.
 
 ## La stratégie de l'ordinateur
 
@@ -90,4 +114,4 @@ Le niveau Expert joue toujours ce coup quand il existe, Malin le joue 7 fois sur
 
 Développé par Dr FENOHASINA T.J. Félicien, psychiatre, développeur d'applications web.
 
-Le jeu utilise la police Bricolage Grotesque (Google Fonts) ; sans connexion, il bascule sur la police système.
+Polices : Saira Stencil One et Fredoka, sous licence SIL Open Font License (textes de licence dans `src/assets/fonts`).

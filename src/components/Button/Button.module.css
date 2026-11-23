@@ -1,71 +1,86 @@
+/*
+ * Bouton de papier. Interface (et non décor) : il répond immédiatement, sans stop motion.
+ * Survol : la feuille se soulève (l'ombre s'allonge). Appui : elle s'aplatit (0,96).
+ */
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5em;
-  border: 0.125rem solid var(--c-ink);
-  border-radius: var(--r-pill);
-  font-weight: 700;
-  line-height: 1;
-  box-shadow: var(--lip) var(--c-ink);
-  transition:
-    transform 0.15s var(--ease-out),
-    box-shadow 0.15s var(--ease-out),
-    background-color 0.2s;
+  border: 0;
+  border-radius: var(--r-control);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  background-size: 180px 180px, auto;
+  box-shadow: var(--shadow-paper);
+  transition-property: scale, translate, box-shadow, background-color;
+  transition-duration: var(--dur-ui);
+  transition-timing-function: var(--ease-ui);
 }
 
 .button:hover:not(:disabled) {
-  transform: translateY(-0.125rem);
-  box-shadow: var(--lip-hover) var(--c-ink);
+  translate: 0 -0.1rem;
+  box-shadow: var(--shadow-paper-lift);
 }
 
 .button:active:not(:disabled) {
-  transform: translateY(0.25rem);
-  box-shadow: var(--lip-press) var(--c-ink);
+  scale: 0.96;
+  translate: 0 0.05rem;
+  box-shadow: var(--shadow-paper-press);
 }
 
 .button:disabled {
   cursor: not-allowed;
-  opacity: 0.45;
+  opacity: 0.5;
 }
 
 .md {
-  padding: 0.75em 1.3em;
+  min-height: 2.9rem;
+  padding: 0.7em 1.25em;
   font-size: var(--fs-md);
 }
 
 .lg {
-  padding: 0.85em 1.8em;
+  min-height: 3.5rem;
+  padding: 0.8em 1.7em;
   font-size: var(--fs-lg);
 }
 
 .primary {
-  background: var(--c-head);
-  color: #fff;
+  background-image: var(--tex-grain);
+  background-color: var(--c-tomato);
+  color: #fff8ee;
+  text-shadow: 0 0.06em 0 rgb(var(--c-shadow) / 0.25);
 }
 
 .primary:hover:not(:disabled) {
-  background: #ff5468;
+  background-color: #e94c35;
 }
 
 .secondary {
-  background: var(--c-paper);
+  background-image: var(--tex-grain);
+  background-color: var(--c-paper);
   color: var(--c-ink);
 }
 
 .quiet {
+  min-height: 2.75rem;
   background: transparent;
-  border-color: transparent;
   box-shadow: none;
   color: var(--c-ink);
   text-decoration: underline;
-  text-underline-offset: 0.25rem;
-  text-decoration-thickness: 0.125rem;
+  text-decoration-thickness: 0.12rem;
+  text-underline-offset: 0.3rem;
 }
 
 .quiet:hover:not(:disabled),
 .quiet:active:not(:disabled) {
+  translate: none;
   box-shadow: none;
-  transform: none;
-  text-decoration-thickness: 0.1875rem;
+  text-decoration-thickness: 0.18rem;
+}
+
+.quiet:active:not(:disabled) {
+  scale: 0.96;
 }

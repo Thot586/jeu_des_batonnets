@@ -46,6 +46,7 @@ export const ResultDialog = ({
         aria-labelledby="result-title"
         aria-describedby="result-reason"
       >
+        <span className={styles.strings} aria-hidden="true" />
         <div className={styles.podium} aria-hidden="true">
           <Character avatar={champion.avatar} mood="happy" className={styles.champion} />
           <Character avatar={other.avatar} mood="sad" facing="left" className={styles.runnerUp} />

@@ -6,7 +6,7 @@
   max-width: var(--page-max);
   margin: 0 auto;
   padding: 1.25rem var(--gutter) 1.5rem;
-  border-top: 0.125rem solid rgb(35 28 85 / 0.12);
+  border-top: 0.125rem dashed rgb(var(--c-shadow) / 0.3);
   font-size: var(--fs-sm);
   color: var(--c-ink-soft);
   text-align: center;
@@ -14,7 +14,7 @@
 
 .credit strong {
   color: var(--c-ink);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .origin {
@@ -26,7 +26,7 @@
   display: inline-block;
   padding: 0.35rem 0.6rem;
   border-radius: var(--r-pill);
-  font-weight: 700;
+  font-weight: 600;
   color: var(--c-ink);
   text-decoration: underline;
   text-decoration-thickness: 0.12rem;
@@ -61,11 +61,15 @@
   margin-top: 0.5rem;
   padding: 1rem 1.1rem;
   border-radius: var(--r-control);
-  background: rgb(255 255 255 / 0.5);
+  background-color: var(--c-paper);
+  background-image: var(--tex-grain);
+  background-size: 180px 180px;
+  box-shadow: var(--shadow-paper);
+  rotate: -0.4deg;
   text-align: left;
   line-height: 1.55;
   color: var(--c-ink);
-  animation: open 0.3s var(--ease-out);
+  animation: open calc(var(--frame) * 3) var(--stop-out-3);
 }
 
 .body cite {

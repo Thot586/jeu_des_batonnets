@@ -40,7 +40,7 @@ export const MovePicker = ({ maxTake, available, onPick, onPreview }: MovePicker
           </span>
           <span className={styles.label}>
             <span className={styles.verb}>Prendre </span>
-            {count}
+            <span className={styles.count}>{count}</span>
           </span>
         </button>
       );

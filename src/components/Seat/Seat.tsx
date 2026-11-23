@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import type { PlayerConfig } from '../../game/types';
 import { plural } from '../../game/rules';
 import { Character, type Mood } from '../Character/Character';
@@ -50,7 +51,7 @@ export const Seat = ({
       </p>
       <p className={styles.pile} aria-label={`${plural(collected, 'bâtonnet')} ramassé${collected > 1 ? 's' : ''}`}>
         {Array.from({ length: Math.min(collected, PILE_LIMIT) }, (_, i) => (
-          <span key={i} className={styles.mini} />
+          <span key={i} className={styles.mini} style={{ '--n': i % 3 } as CSSProperties} />
         ))}
         {collected > PILE_LIMIT && <span className={styles.more}>+{collected - PILE_LIMIT}</span>}
         {collected === 0 && <span className={styles.empty}>aucun bâtonnet</span>}

@@ -16,24 +16,23 @@
   margin-bottom: 3.5rem;
 }
 
-.title {
-  font-size: var(--fs-display);
-  font-weight: 800;
-  line-height: 0.92;
-  letter-spacing: -0.045em;
-  text-wrap: balance;
-}
-
 .lead {
   max-width: 34em;
   font-size: var(--fs-md);
   font-weight: 500;
   color: var(--c-ink-soft);
+  animation: settle calc(var(--frame) * 4) var(--stop-out-4) both;
+  animation-delay: calc(750ms + var(--frame) * 20);
 }
 
 /* La rangée d'aperçu suit le réglage du nombre de bâtonnets. */
 .hero > :last-child {
   justify-content: flex-start;
+}
+
+/* À l'ouverture, les bâtonnets tombent après le titre ; ensuite, ils réagissent tout de suite au réglage. */
+.intro {
+  --drop-delay: calc(750ms + var(--frame) * 22);
 }
 
 .form {
@@ -48,14 +47,53 @@
   gap: 3.5rem 1.25rem;
 }
 
+/* Carte de papier blanc, tenue sur le kraft par deux morceaux de ruban adhésif. */
 .card {
+  position: relative;
   display: grid;
   align-content: start;
   gap: 1.25rem;
   padding: 1.25rem 1.1rem 1.5rem;
   border-radius: var(--r-card);
-  background: var(--c-paper);
-  box-shadow: var(--shadow-soft);
+  background-color: var(--c-paper);
+  background-image: var(--tex-grain);
+  background-size: 180px 180px;
+  box-shadow: var(--shadow-paper);
+}
+
+.card:nth-child(1) {
+  rotate: -0.6deg;
+}
+
+.card:nth-child(2) {
+  rotate: 0.5deg;
+}
+
+.card::before,
+.card::after {
+  content: '';
+  position: absolute;
+  top: -0.6rem;
+  width: 4.2rem;
+  height: 1.35rem;
+  background: rgb(242 167 27 / 0.55);
+  clip-path: polygon(3% 8%, 97% 0, 100% 92%, 0 100%);
+  box-shadow: inset 0 0 0 999px rgb(255 255 255 / 0.12);
+  pointer-events: none;
+}
+
+.card::before {
+  right: 1.2rem;
+  rotate: 6deg;
+}
+
+.card::after {
+  right: auto;
+  left: 42%;
+  top: auto;
+  bottom: -0.55rem;
+  rotate: -4deg;
+  background: rgb(63 154 132 / 0.5);
 }
 
 .cardHead {
@@ -71,14 +109,15 @@
 }
 
 .portraitFigure {
-  animation: arrive 0.45s var(--ease-spring);
+  animation: arrive calc(var(--frame) * 4) var(--stop-back-4);
 }
 
 .cardTitle {
   padding-bottom: 0.4rem;
-  font-size: var(--fs-md);
-  font-weight: 800;
-  letter-spacing: -0.01em;
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 400;
+  line-height: 1.1;
 }
 
 .field {
@@ -92,29 +131,43 @@
 }
 
 .label output {
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: 1.2em;
+  font-weight: 400;
   font-variant-numeric: tabular-nums;
 }
 
 /* 16 px minimum sur mobile : en dessous, iOS zoome sur le champ au toucher. */
+/* Champ : une bande de papier un peu creusée ; le trait d'encre s'épaissit au focus. */
 .input {
   width: 100%;
   padding: 0.7rem 0.9rem;
-  border: 0.125rem solid var(--c-ink);
+  border: 0;
   border-radius: var(--r-control);
-  background: #fff;
+  background: var(--c-paper-shade);
+  box-shadow:
+    inset 0.06rem 0.1rem 0.2rem rgb(var(--c-shadow) / 0.2),
+    inset 0 -0.14rem 0 rgb(var(--c-shadow) / 0.55);
   font-size: max(1rem, var(--fs-md));
   font-weight: 600;
+  transition-property: box-shadow, background-color;
+  transition-duration: var(--dur-ui);
+  transition-timing-function: var(--ease-ui);
 }
 
 .input:focus-visible {
-  outline: 0.19rem solid var(--c-head);
-  outline-offset: 0.125rem;
+  outline: none;
+  background: #fffaf0;
+  box-shadow:
+    inset 0.06rem 0.1rem 0.2rem rgb(var(--c-shadow) / 0.15),
+    inset 0 -0.22rem 0 var(--c-ultramarine);
 }
 
 .invalid {
-  border-color: var(--c-error);
-  background: #fff4f5;
+  background: #fbe3dc;
+  box-shadow:
+    inset 0.06rem 0.1rem 0.2rem rgb(var(--c-shadow) / 0.15),
+    inset 0 -0.22rem 0 var(--c-error);
 }
 
 .error {
@@ -127,12 +180,13 @@
   display: grid;
   gap: 1.1rem;
   padding-top: 1.5rem;
-  border-top: 0.125rem solid rgb(35 28 85 / 0.14);
+  border-top: 0.125rem dashed rgb(var(--c-shadow) / 0.35);
 }
 
 .rulesTitle {
-  font-size: var(--fs-md);
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 400;
 }
 
 .rulesGrid {
@@ -142,11 +196,77 @@
   align-items: start;
 }
 
+/* Curseur : une rainure de kraft et un rond de papier tomate qu'on fait glisser. */
 .range {
   width: 100%;
-  height: 2rem;
-  accent-color: var(--c-head);
+  height: 2.2rem;
+  margin: 0;
+  background: transparent;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 0.55rem;
+  border-radius: 0.3rem 0.4rem 0.3rem 0.35rem;
+  background: rgb(var(--c-shadow) / 0.18);
+  box-shadow: inset 0.05rem 0.08rem 0.15rem rgb(var(--c-shadow) / 0.3);
+}
+
+.range::-moz-range-track {
+  height: 0.55rem;
+  border-radius: 0.3rem 0.4rem 0.3rem 0.35rem;
+  background: rgb(var(--c-shadow) / 0.18);
+  box-shadow: inset 0.05rem 0.08rem 0.15rem rgb(var(--c-shadow) / 0.3);
+}
+
+.range::-webkit-slider-thumb {
+  width: 1.6rem;
+  height: 1.6rem;
+  margin-top: -0.53rem;
+  border: 0;
+  border-radius: 48% 52% 46% 54% / 54% 46% 52% 48%;
+  background: var(--tex-grain), var(--c-tomato);
+  background-size: 120px 120px, auto;
+  box-shadow: var(--shadow-paper);
+  appearance: none;
+  -webkit-appearance: none;
+  transition-property: scale, box-shadow;
+  transition-duration: var(--dur-ui);
+  transition-timing-function: var(--ease-ui);
+}
+
+.range::-moz-range-thumb {
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 0;
+  border-radius: 48% 52% 46% 54% / 54% 46% 52% 48%;
+  background: var(--tex-grain), var(--c-tomato);
+  background-size: 120px 120px, auto;
+  box-shadow: var(--shadow-paper);
+}
+
+.range:hover::-webkit-slider-thumb {
+  box-shadow: var(--shadow-paper-lift);
+}
+
+.range:active::-webkit-slider-thumb {
+  scale: 0.96;
+}
+
+.range:focus-visible {
+  outline: none;
+}
+
+.range:focus-visible::-webkit-slider-thumb {
+  outline: 0.19rem solid var(--c-ultramarine);
+  outline-offset: 0.15rem;
+}
+
+.range:focus-visible::-moz-range-thumb {
+  outline: 0.19rem solid var(--c-ultramarine);
+  outline-offset: 0.15rem;
 }
 
 /* Sur téléphone, le bouton principal occupe toute la largeur, à portée de pouce. */
@@ -195,7 +315,7 @@
 
   .cardTitle,
   .rulesTitle {
-    font-size: var(--fs-lg);
+    font-size: var(--fs-xl);
   }
 
   .input {
@@ -223,7 +343,14 @@
 
 @keyframes arrive {
   from {
-    transform: translateY(1rem) scale(0.85);
+    transform: translateY(1rem) rotate(-8deg) scale(0.85);
     opacity: 0;
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(0.4rem);
   }
 }

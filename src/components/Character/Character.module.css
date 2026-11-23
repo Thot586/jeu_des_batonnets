@@ -1,3 +1,9 @@
+/*
+ * Marionnette en stop motion.
+ * Toutes les animations avancent par images tenues (1 image = var(--frame), 1/12 s) :
+ * la marionnette semble repositionnée à la main entre deux prises.
+ */
+
 .wrap {
   position: relative;
   width: 100%;
@@ -8,28 +14,35 @@
   width: 100%;
   height: auto;
   overflow: visible;
-  transition: filter 0.4s ease;
+  transition: filter calc(var(--frame) * 4) steps(2, end);
 }
 
 .flip {
   transform: scaleX(-1);
 }
 
-/* Parties du corps */
+/* Pièces de papier */
 
-.shadow {
-  fill: rgb(35 28 85 / 0.22);
+.ground {
+  fill: rgb(var(--c-shadow) / 0.26);
 }
 
 .figure {
   transform-box: view-box;
-  transform-origin: 80px 188px;
-  animation: bob 2.8s ease-in-out infinite;
-  transition: transform 0.38s var(--ease-spring);
+  transform-origin: 80px 190px;
+  animation: hand-held calc(var(--frame) * 8) steps(1, end) infinite;
+  transition: transform calc(var(--frame) * 4) var(--stop-out-4);
 }
 
 .torso {
   fill: var(--body);
+}
+
+.grain {
+  fill: url(#paper-grain);
+  mix-blend-mode: multiply;
+  opacity: 0.75;
+  pointer-events: none;
 }
 
 .belly {
@@ -41,37 +54,26 @@
 }
 
 .limb {
-  fill: none;
-  stroke: var(--shade);
-  stroke-width: 14;
-  stroke-linecap: round;
+  fill: var(--shade);
 }
 
 .hand {
   fill: var(--body);
-  stroke: var(--shade);
-  stroke-width: 3;
-}
-
-.arm {
-  transform-box: view-box;
-  transform-origin: 124px 116px;
-  transition: transform 0.34s var(--ease-spring);
 }
 
 .eyes {
   transform-box: view-box;
   transform-origin: 80px 92px;
-  animation: blink 4.6s infinite;
+  animation: blink 4.6s steps(1, end) infinite;
 }
 
 .eyeWhite {
-  fill: #fff;
+  fill: #fbf7ec;
 }
 
 .pupils {
   fill: var(--c-ink);
-  transition: transform 0.3s var(--ease-out);
+  transition: transform calc(var(--frame) * 3) var(--stop-out-3);
 }
 
 .glint {
@@ -79,93 +81,80 @@
 }
 
 .cheek {
-  fill: #ff5c7a;
-  opacity: 0.3;
+  fill: #f6806f;
+  opacity: 0.5;
 }
 
 .mouth {
-  fill: none;
-  stroke: var(--c-ink);
-  stroke-width: 4;
-  stroke-linecap: round;
-}
-
-.mouthFill {
   fill: var(--c-ink);
 }
 
 .teeth {
-  stroke: #fff;
-  stroke-width: 3;
+  fill: #fbf7ec;
 }
 
 .tongue {
-  fill: #ff6b81;
+  fill: #f07c86;
 }
 
-/* Accessoires */
-
-.hat {
-  fill: var(--c-table);
+.accent {
+  fill: var(--accent);
 }
 
-.hatBand {
-  fill: var(--c-head);
+.accentBand {
+  fill: var(--c-saffron);
 }
 
-.antenna {
-  transform-box: view-box;
-  transform-origin: 80px 42px;
-  animation: wobble 2.2s ease-in-out infinite;
-}
-
-.antennaStem {
-  fill: none;
-  stroke: var(--shade);
-  stroke-width: 4;
-  stroke-linecap: round;
-}
-
-.antennaBall {
-  fill: #ffc93c;
-}
-
+.stem,
 .hair {
   fill: var(--shade);
 }
 
-.curl {
-  fill: none;
-  stroke: var(--shade);
-  stroke-width: 7;
-  stroke-linecap: round;
-}
-
 .glasses {
-  fill: none;
-  stroke: var(--c-ink);
-  stroke-width: 4;
+  fill: var(--c-ink);
 }
 
-.bow {
-  fill: var(--c-table);
+.antenna {
+  transform-box: view-box;
+  transform-origin: 80px 44px;
+  animation: antenna calc(var(--frame) * 12) steps(1, end) infinite;
 }
 
-.bowKnot {
-  fill: var(--c-head);
+.fastener {
+  fill: var(--c-brass);
+}
+
+.fastenerShine {
+  fill: #f4df98;
 }
 
 .heldWood {
-  fill: var(--c-wood);
-  stroke: var(--c-wood-deep);
-  stroke-width: 1;
+  fill: var(--c-card);
 }
 
 .heldHead {
-  fill: var(--c-head);
+  fill: var(--c-tomato);
+}
+
+/* Bras : pivote sur son attache, image par image */
+.arm {
+  transform-box: view-box;
+  transform-origin: 122px 116px;
+  transition: transform calc(var(--frame) * 4) var(--stop-back-4);
+}
+
+.backArm {
+  transform-box: view-box;
+  transform-origin: 38px 116px;
+  transition: transform calc(var(--frame) * 4) var(--stop-out-4);
 }
 
 /* Humeurs */
+
+.thinking .figure {
+  animation: none;
+  transform: rotate(-3deg);
+}
 
 .thinking .pupils {
   transform: translate(-3px, -5px);
@@ -177,7 +166,7 @@
 }
 
 .reaching .arm {
-  transform: rotate(-72deg);
+  transform: rotate(-68deg);
 }
 
 .reaching .pupils {
@@ -190,122 +179,165 @@
 }
 
 .pulling .arm {
-  transform: rotate(-26deg);
+  transform: rotate(-18deg);
+}
+
+.pulling .backArm {
+  transform: rotate(14deg);
 }
 
 .happy .figure {
-  animation: jump 0.75s var(--ease-out) infinite;
+  animation: hop calc(var(--frame) * 8) steps(1, end) infinite;
 }
 
 .happy .arm {
-  animation: wave 0.45s ease-in-out infinite alternate;
+  animation: wave calc(var(--frame) * 4) steps(1, end) infinite;
+}
+
+.happy .backArm {
+  transform: rotate(40deg);
 }
 
 .sad .figure {
   animation: none;
-  transform: translateY(6px) scale(1.03, 0.94);
+  transform: translateY(6px) rotate(-3deg) scale(1.02, 0.95);
 }
 
 .sad .pupils {
-  transform: translateY(4px);
+  transform: translateY(3.5px);
 }
 
 .sad .svg {
-  filter: saturate(0.5);
+  filter: saturate(0.55) brightness(0.96);
 }
 
-/* Bulle de réflexion */
-
+/* Bulle de réflexion : un petit papier découpé, les points s'allument tour à tour */
 .bubble {
   position: absolute;
-  top: -6%;
-  left: 50%;
+  top: -8%;
+  left: 52%;
   display: flex;
-  gap: 0.3125rem;
-  padding: 0.5625rem 0.8125rem;
-  background: var(--c-paper);
-  border-radius: var(--r-pill);
-  box-shadow: 0 0.625rem 1.375rem -0.75rem rgb(35 28 85 / 0.7);
-  animation: pop 0.3s var(--ease-spring);
+  gap: 0.3rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.9rem 1.1rem 0.8rem 1rem / 1rem 0.8rem 1.1rem 0.9rem;
+  background: var(--tex-grain), var(--c-paper);
+  background-size: 180px 180px, auto;
+  box-shadow: var(--shadow-paper);
+  rotate: -4deg;
+  animation: pop calc(var(--frame) * 4) var(--stop-back-4) both;
 }
 
-/* Personnage de droite : la bulle s'ouvre vers la table, pas vers le bord de l'écran. */
 .bubbleLeft {
   left: auto;
-  right: 50%;
+  right: 52%;
+  rotate: 4deg;
 }
 
 .bubble i {
-  width: 0.4375rem;
-  height: 0.4375rem;
-  border-radius: 50%;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 46% 54% 50% 50%;
   background: var(--c-ink);
-  animation: dot 0.9s ease-in-out infinite;
+  opacity: 0.25;
+  animation: dot calc(var(--frame) * 9) steps(1, end) infinite;
 }
 
 .bubble i:nth-child(2) {
-  animation-delay: 0.15s;
+  animation-delay: calc(var(--frame) * 3);
 }
 
 .bubble i:nth-child(3) {
-  animation-delay: 0.3s;
+  animation-delay: calc(var(--frame) * 6);
 }
 
-@keyframes bob {
+/* Les poses sont tenues : steps(1, end) garde chaque image jusqu'à la suivante. */
+@keyframes hand-held {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(0.4px, -0.7px) rotate(0.5deg);
+  }
   50% {
-    transform: translateY(-3px) scaleY(1.015);
+    transform: translate(-0.3px, 0.2px) rotate(-0.4deg);
+  }
+  75% {
+    transform: translate(0.2px, -0.4px) rotate(0.25deg);
   }
 }
 
 @keyframes blink {
-  0%,
-  93%,
-  100% {
+  0% {
     transform: scaleY(1);
   }
-  96% {
-    transform: scaleY(0.1);
+  95% {
+    transform: scaleY(0.12);
+  }
+  98.6% {
+    transform: scaleY(1);
   }
 }
 
-@keyframes wobble {
+@keyframes antenna {
+  0% {
+    transform: rotate(0deg);
+  }
+  33% {
+    transform: rotate(6deg);
+  }
+  66% {
+    transform: rotate(-3deg);
+  }
+}
+
+@keyframes hop {
+  0% {
+    transform: translateY(0) scale(1.03, 0.96);
+  }
+  12.5% {
+    transform: translateY(-9px) scale(0.98, 1.03);
+  }
+  25% {
+    transform: translateY(-17px) rotate(-2deg);
+  }
+  37.5% {
+    transform: translateY(-20px) rotate(-3deg);
+  }
   50% {
-    transform: rotate(9deg);
+    transform: translateY(-17px) rotate(-1deg);
   }
-}
-
-@keyframes jump {
-  0%,
-  100% {
-    transform: translateY(0);
+  62.5% {
+    transform: translateY(-8px) rotate(1deg);
   }
-  35% {
-    transform: translateY(-18px) scaleY(1.04);
+  75% {
+    transform: translateY(0) scale(1.04, 0.95);
   }
-  60% {
-    transform: translateY(-14px);
+  87.5% {
+    transform: translateY(0) scale(1, 1);
   }
 }
 
 @keyframes wave {
-  from {
-    transform: rotate(-170deg);
+  0% {
+    transform: rotate(-158deg);
   }
-  to {
-    transform: rotate(-135deg);
+  50% {
+    transform: rotate(-128deg);
   }
 }
 
 @keyframes dot {
-  50% {
-    transform: translateY(-4px);
-    opacity: 0.5;
+  0% {
+    opacity: 1;
+  }
+  33% {
+    opacity: 0.25;
   }
 }
 
 @keyframes pop {
   from {
-    transform: scale(0.4);
     opacity: 0;
+    transform: translateY(0.4rem) scale(0.4);
   }
 }

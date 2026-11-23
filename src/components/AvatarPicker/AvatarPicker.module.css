@@ -15,36 +15,68 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.5rem;
+  gap: 0.55rem;
 }
 
 .tile {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.3rem;
   cursor: pointer;
 }
 
+/* Vignette de papier coloré ; le personnage en sort par le bas. */
 .face {
+  position: relative;
   display: grid;
   place-items: end center;
   width: 100%;
-  max-width: 4rem;
+  max-width: 4.1rem;
   aspect-ratio: 1;
-  border-radius: 1.25rem;
-  overflow: hidden;
-  border: 0.125rem solid transparent;
-  transition:
-    transform 0.25s var(--ease-spring),
-    border-color 0.2s,
-    box-shadow 0.2s;
+  border-radius: 0.85rem 1.05rem 0.8rem 1rem / 1rem 0.8rem 1.05rem 0.85rem;
+  background-image: var(--tex-grain);
+  background-size: 180px 180px;
+  box-shadow: var(--shadow-paper-press);
+  transition-property: translate, rotate, box-shadow, scale;
+  transition-duration: var(--dur-ui);
+  transition-timing-function: var(--ease-ui);
 }
 
-/* On ne montre que le haut du personnage : il « sort » de sa vignette. */
 .mini {
   width: 92%;
-  translate: 0 22%;
+  translate: 0 20%;
+  clip-path: inset(-30% -10% 20% -10%);
+}
+
+/* Pastille de choix : un rond safran avec une coche à l'encre */
+.badge {
+  position: absolute;
+  top: -0.35rem;
+  right: -0.35rem;
+  display: grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 46% 54% 50% 50% / 52% 48% 52% 48%;
+  background: var(--c-saffron);
+  box-shadow: var(--shadow-paper-press);
+  opacity: 0;
+  transform: scale(0.25);
+  filter: blur(4px);
+  transition-property: opacity, transform, filter;
+  transition-duration: 300ms;
+  transition-timing-function: var(--ease-ui);
+}
+
+.badge svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: none;
+  stroke: var(--c-ink);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .name {
@@ -54,13 +86,24 @@
 }
 
 .tile:hover .face {
-  transform: translateY(-0.1875rem);
+  translate: 0 -0.12rem;
+  box-shadow: var(--shadow-paper);
+}
+
+.tile:active .face {
+  scale: 0.96;
 }
 
 input:checked + .face {
-  border-color: var(--c-ink);
-  box-shadow: 0 0.25rem 0 0 var(--c-ink);
-  transform: translateY(-0.1875rem);
+  translate: 0 -0.2rem;
+  rotate: var(--tilt);
+  box-shadow: var(--shadow-paper-lift);
+}
+
+input:checked + .face .badge {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
 }
 
 input:checked ~ .name {
@@ -68,15 +111,16 @@ input:checked ~ .name {
 }
 
 input:focus-visible + .face {
-  outline: 0.1875rem solid var(--c-ink);
-  outline-offset: 0.1875rem;
+  outline: 0.19rem solid var(--c-ultramarine);
+  outline-offset: 0.2rem;
 }
 
 .taken {
   cursor: not-allowed;
-  opacity: 0.35;
+  opacity: 0.38;
 }
 
 .taken:hover .face {
-  transform: none;
+  translate: none;
+  box-shadow: var(--shadow-paper-press);
 }

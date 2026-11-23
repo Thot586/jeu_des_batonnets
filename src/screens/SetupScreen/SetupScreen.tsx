@@ -1,7 +1,8 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { AvatarPicker } from '../../components/AvatarPicker/AvatarPicker';
 import { Button } from '../../components/Button/Button';
 import { Character } from '../../components/Character/Character';
+import { CutoutTitle } from '../../components/CutoutTitle/CutoutTitle';
 import { Segmented } from '../../components/Segmented/Segmented';
 import { StickRow } from '../../components/StickRow/StickRow';
 import { NAME_MAX_LENGTH, validateNames } from '../../game/config';
@@ -18,6 +19,9 @@ import type {
 } from '../../game/types';
 import { cx } from '../../utils/cx';
 import styles from './SetupScreen.module.css';
+
+/** Le rideau met environ 0,75 s à s'ouvrir : le titre commence à se poser juste après. */
+const INTRO_MS = 750;
 
 interface SetupScreenProps {
   initial: MatchConfig;
@@ -46,6 +50,12 @@ export const SetupScreen = ({ initial, onStart }: SetupScreenProps) => {
   const [players, setPlayers] = useState<[PlayerConfig, PlayerConfig]>(initial.players);
   const [settings, setSettings] = useState<GameSettings>(initial.settings);
   const [submitted, setSubmitted] = useState(false);
+  // Pendant l'ouverture du rideau, les bâtonnets d'aperçu attendent avant de tomber.
+  const [intro, setIntro] = useState(true);
+  useEffect(() => {
+    const id = window.setTimeout(() => setIntro(false), INTRO_MS + 600);
+    return () => window.clearTimeout(id);
+  }, []);
 
   const errors = validateNames(players);
   const shownErrors = submitted ? errors : [null, null];
@@ -93,8 +103,8 @@ export const SetupScreen = ({ initial, onStart }: SetupScreenProps) => {
 
   return (
     <main className={styles.screen}>
-      <header className={styles.hero}>
-        <h1 className={styles.title}>Le jeu des bâtonnets</h1>
+      <header className={cx(styles.hero, intro && styles.intro)}>
+        <CutoutTitle kicker="Le jeu des" word="bâtonnets" delay={INTRO_MS} />
         <p className={styles.lead}>{describeRules(settings)}</p>
         <StickRow remaining={settings.totalSticks} size="compact" />
       </header>

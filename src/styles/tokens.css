@@ -1,57 +1,141 @@
+/*
+ * Direction artistique : « papier découpé ».
+ * Un petit théâtre de papier posé sur du kraft. Tout est découpe : aplats de gouache,
+ * bords coupés à la main, ombres de papier superposé, grain de la fibre.
+ * Le décor vit en stop motion (12 images par seconde) ; l'interface, elle, répond tout de suite.
+ */
 :root {
-  /* Couleurs */
-  --c-sky: #b9b4ff;
-  --c-sky-light: #dedbff;
-  --c-ink: #231c55;
-  --c-ink-soft: #544c91;
-  --c-paper: #fbfaff;
-  --c-line: #d6d2f4;
-  --c-table: #3b2f8f;
-  --c-table-light: #4c3fae;
-  --c-table-deep: #221a63;
-  --c-wood: #f1cf8e;
-  --c-wood-deep: #cf9c4f;
-  --c-head: #f2475a;
-  --c-head-deep: #b3233a;
-  --c-glow: #ffe3a1;
-  --c-error: #b3233a;
+  /* Papiers */
+  --c-kraft: #c9a57d;
+  --c-kraft-light: #d8bc96;
+  --c-kraft-deep: #b18a60;
+  --c-paper: #f7f1e3;
+  --c-paper-shade: #e9dfc8;
+  --c-card: #efdcb4;
+  --c-card-deep: #c9a86e;
 
-  /* Typographie (échelle 1,2). Toutes les tailles sont en rem :
-     elles suivent la taille de base fluide définie dans global.css. */
-  --font: 'Bricolage Grotesque', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Gouaches */
+  --c-tomato: #e2412b;
+  --c-tomato-deep: #b02f1d;
+  --c-saffron: #f2a71b;
+  --c-seafoam: #3f9a84;
+  --c-seafoam-light: #8fd0be;
+  --c-ultramarine: #2b3a9e;
+  --c-ultramarine-light: #3c4db8;
+  --c-ultramarine-deep: #1d2873;
+  --c-rose: #ee8fa8;
+  --c-brass: #c99a2e;
+
+  /* Encre */
+  --c-ink: #2a1f17;
+  --c-ink-soft: #4a3826;
+  --c-shadow: 42 31 23;
+
+  /* Alias historiques (utilisés par certains composants) */
+  --c-sky: var(--c-kraft);
+  --c-table: var(--c-ultramarine);
+  --c-table-light: var(--c-ultramarine-light);
+  --c-table-deep: var(--c-ultramarine-deep);
+  --c-wood: var(--c-card);
+  --c-wood-deep: var(--c-card-deep);
+  --c-head: var(--c-tomato);
+  --c-head-deep: var(--c-tomato-deep);
+  --c-glow: #fff1c2;
+  --c-error: var(--c-tomato-deep);
+
+  /* Grain du papier et fibres du kraft, générés en SVG (aucune image à charger) */
+  --tex-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .12 0 0 0 0 .09 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  --tex-fibers: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .22' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .24 0 0 0 0 .13 0 0 0 .55 -.18'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+
+  /* Typographie : pochoir découpé pour les titres et les chiffres, linéale ronde pour le texte */
+  --font: 'Fredoka', ui-rounded, 'SF Pro Rounded', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Saira Stencil One', 'Fredoka', ui-sans-serif, system-ui, sans-serif;
   --fs-xs: 0.8125rem;
   --fs-sm: 0.9375rem;
   --fs-md: 1.0625rem;
   --fs-lg: 1.3125rem;
   --fs-xl: 1.75rem;
-  --fs-display: clamp(2.5rem, 11vw, 6rem);
+  --fs-display: clamp(3.25rem, 15vw, 7.5rem);
 
-  /* Gouttières et largeurs de lecture */
+  /* Gouttières et largeurs */
   --gutter: 1rem;
   --page-max: 72rem;
 
-  /* Formes : plus l'objet est grand, plus il est rond */
-  --r-table: 1.75rem;
-  --r-card: 1.5rem;
-  --r-control: 1rem;
+  /* Formes : bords coupés à la main, jamais parfaitement réguliers */
+  --r-table: 1.6rem 1.9rem 1.5rem 1.8rem / 1.8rem 1.5rem 1.9rem 1.6rem;
+  --r-card: 1.1rem 1.35rem 1rem 1.25rem / 1.25rem 1rem 1.35rem 1.1rem;
+  --r-control: 0.8rem 0.95rem 0.75rem 0.9rem / 0.9rem 0.75rem 0.95rem 0.8rem;
   --r-pill: 999px;
 
-  --shadow-soft: 0 1.6rem 3rem -1.9rem rgb(35 28 85 / 0.6);
+  /* Ombres de papier : une ombre nette de découpe, une ombre douce de lumière */
+  --shadow-paper: 0.1rem 0.14rem 0 rgb(var(--c-shadow) / 0.22), 0.3rem 0.55rem 0.9rem -0.35rem rgb(var(--c-shadow) / 0.45);
+  --shadow-paper-lift: 0.16rem 0.24rem 0 rgb(var(--c-shadow) / 0.2), 0.5rem 0.9rem 1.2rem -0.4rem rgb(var(--c-shadow) / 0.42);
+  --shadow-paper-press: 0.04rem 0.06rem 0 rgb(var(--c-shadow) / 0.28), 0.1rem 0.2rem 0.3rem -0.1rem rgb(var(--c-shadow) / 0.35);
+  --shadow-soft: 0 1.6rem 3rem -1.9rem rgb(var(--c-shadow) / 0.6);
   --lip: 0 0.3rem 0 0;
   --lip-hover: 0 0.45rem 0 0;
   --lip-press: 0 0.06rem 0 0;
 
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Interface : réponse immédiate, sans rebond */
+  --ease-ui: cubic-bezier(0.2, 0, 0, 1);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in: cubic-bezier(0.55, 0, 0.75, 0.2);
+  --ease-spring: var(--ease-out);
+  --dur-ui: 160ms;
+
+  /* Théâtre : une image = 1/12 s */
+  --frame: 83.333ms;
+
+  /*
+   * Courbes « stop motion » : la courbe d'accélération est échantillonnée à 12 images/s
+   * et chaque image est tenue, comme une marionnette déplacée à la main entre deux prises.
+   * Repli : simples marches régulières.
+   */
+  --stop-out-3: steps(3, end);
+  --stop-out-4: steps(4, end);
+  --stop-out-6: steps(6, end);
+  --stop-out-8: steps(8, end);
+  --stop-back-3: steps(3, end);
+  --stop-back-4: steps(4, end);
+  --stop-back-6: steps(6, end);
+  --stop-back-8: steps(8, end);
+  --stop-in-3: steps(3, end);
+  --stop-in-4: steps(4, end);
+  --stop-in-6: steps(6, end);
+  --stop-in-8: steps(8, end);
+  --stop-inout-3: steps(3, end);
+  --stop-inout-4: steps(4, end);
+  --stop-inout-6: steps(6, end);
+  --stop-inout-8: steps(8, end);
+}
+
+@supports (animation-timing-function: linear(0, 1)) {
+  :root {
+    --stop-out-3: linear(0.704 0% 33.33%, 0.963 33.33% 66.67%, 1.0 66.67% 100%);
+    --stop-out-4: linear(0.578 0% 25%, 0.875 25% 50%, 0.984 50% 75%, 1.0 75% 100%);
+    --stop-out-6: linear(0.421 0% 16.67%, 0.704 16.67% 33.33%, 0.875 33.33% 50%, 0.963 50% 66.67%, 0.995 66.67% 83.33%, 1.0 83.33% 100%);
+    --stop-out-8: linear(0.33 0% 12.5%, 0.578 12.5% 25%, 0.756 25% 37.5%, 0.875 37.5% 50%, 0.947 50% 62.5%, 0.984 62.5% 75%, 0.998 75% 87.5%, 1.0 87.5% 100%);
+    --stop-back-3: linear(0.926 0% 33.33%, 1.074 33.33% 66.67%, 1.0 66.67% 100%);
+    --stop-back-4: linear(0.789 0% 25%, 1.062 25% 50%, 1.055 50% 75%, 1.0 75% 100%);
+    --stop-back-6: linear(0.595 0% 16.67%, 0.926 16.67% 33.33%, 1.062 33.33% 50%, 1.074 50% 66.67%, 1.03 66.67% 83.33%, 1.0 83.33% 100%);
+    --stop-back-8: linear(0.474 0% 12.5%, 0.789 12.5% 25%, 0.976 25% 37.5%, 1.062 37.5% 50%, 1.079 50% 62.5%, 1.055 62.5% 75%, 1.019 75% 87.5%, 1.0 87.5% 100%);
+    --stop-in-3: linear(0.037 0% 33.33%, 0.296 33.33% 66.67%, 1.0 66.67% 100%);
+    --stop-in-4: linear(0.016 0% 25%, 0.125 25% 50%, 0.422 50% 75%, 1.0 75% 100%);
+    --stop-in-6: linear(0.005 0% 16.67%, 0.037 16.67% 33.33%, 0.125 33.33% 50%, 0.296 50% 66.67%, 0.579 66.67% 83.33%, 1.0 83.33% 100%);
+    --stop-in-8: linear(0.002 0% 12.5%, 0.016 12.5% 25%, 0.053 25% 37.5%, 0.125 37.5% 50%, 0.244 50% 62.5%, 0.422 62.5% 75%, 0.67 75% 87.5%, 1.0 87.5% 100%);
+    --stop-inout-3: linear(0.148 0% 33.33%, 0.852 33.33% 66.67%, 1.0 66.67% 100%);
+    --stop-inout-4: linear(0.062 0% 25%, 0.5 25% 50%, 0.938 50% 75%, 1.0 75% 100%);
+    --stop-inout-6: linear(0.019 0% 16.67%, 0.148 16.67% 33.33%, 0.5 33.33% 50%, 0.852 50% 66.67%, 0.981 66.67% 83.33%, 1.0 83.33% 100%);
+    --stop-inout-8: linear(0.008 0% 12.5%, 0.062 12.5% 25%, 0.211 25% 37.5%, 0.5 37.5% 50%, 0.789 50% 62.5%, 0.938 62.5% 75%, 0.992 75% 87.5%, 1.0 87.5% 100%);
+  }
 }
 
 /* Tablette et au-delà : plus d'air */
 @media (min-width: 48em) {
   :root {
     --gutter: 2rem;
-    --r-table: 2.75rem;
-    --r-card: 1.9rem;
+    --r-table: 2.4rem 2.8rem 2.2rem 2.6rem / 2.6rem 2.2rem 2.8rem 2.4rem;
+    --r-card: 1.5rem 1.8rem 1.4rem 1.7rem / 1.7rem 1.4rem 1.8rem 1.5rem;
   }
 }
 

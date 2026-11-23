@@ -12,20 +12,22 @@
   font-weight: 600;
 }
 
+/* Une rainure de papier dans laquelle les étiquettes sont posées */
 .track {
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 0.25rem;
-  padding: 0.25rem;
-  border-radius: var(--r-pill);
+  gap: 0.3rem;
+  padding: 0.3rem;
+  border-radius: var(--r-control);
+  box-shadow: inset 0.06rem 0.1rem 0.2rem rgb(var(--c-shadow) / 0.18);
 }
 
 .card .track {
-  background: rgb(35 28 85 / 0.07);
+  background: var(--c-paper-shade);
 }
 
 .light .track {
-  background: rgb(255 255 255 / 0.45);
+  background: rgb(var(--c-shadow) / 0.1);
 }
 
 .option {
@@ -34,28 +36,38 @@
 
 .pill {
   display: block;
-  padding: 0.5em 1em;
-  border-radius: var(--r-pill);
+  min-height: 2.4rem;
+  padding: 0.55em 0.95em;
+  border-radius: 0.55rem 0.7rem 0.5rem 0.65rem / 0.65rem 0.5rem 0.7rem 0.55rem;
   font-size: var(--fs-sm);
   font-weight: 600;
+  line-height: 1.2;
   cursor: pointer;
   white-space: nowrap;
-  transition:
-    background-color 0.2s,
-    color 0.2s,
-    transform 0.2s var(--ease-spring);
+  transition-property: background-color, color, box-shadow, rotate, translate, scale;
+  transition-duration: var(--dur-ui);
+  transition-timing-function: var(--ease-ui);
 }
 
 .option:hover .pill {
-  background: rgb(35 28 85 / 0.08);
+  background-color: rgb(255 255 255 / 0.45);
 }
 
+.option:active .pill {
+  scale: 0.96;
+}
+
+/* L'option choisie : une étiquette outremer posée de travers, un peu soulevée */
 input:checked + .pill {
-  background: var(--c-ink);
-  color: #fff;
+  background: var(--tex-grain), var(--c-ultramarine);
+  background-size: 180px 180px, auto;
+  color: #fff8ee;
+  rotate: var(--tilt);
+  translate: 0 -0.06rem;
+  box-shadow: var(--shadow-paper);
 }
 
 input:focus-visible + .pill {
-  outline: 0.1875rem solid var(--c-ink);
-  outline-offset: 0.125rem;
+  outline: 0.19rem solid var(--c-ultramarine);
+  outline-offset: 0.15rem;
 }

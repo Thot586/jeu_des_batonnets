@@ -1,4 +1,6 @@
-import { useId } from 'react';
+import { useId, type CSSProperties } from 'react';
+import { handTilt } from '../../art/paper';
+import { useFeedback } from '../../feedback/FeedbackContext';
 import { cx } from '../../utils/cx';
 import styles from './Segmented.module.css';
 
@@ -16,7 +18,10 @@ interface SegmentedProps<T extends string | number> {
   tone?: 'light' | 'card';
 }
 
-/** Choix exclusif présenté en pastilles ; ce sont de vrais boutons radio, donc accessibles au clavier. */
+/**
+ * Choix exclusif en onglets de papier : l'option choisie est une étiquette de gouache posée
+ * de travers. Ce sont de vrais boutons radio, donc accessibles au clavier.
+ */
 export const Segmented = <T extends string | number>({
   legend,
   options,
@@ -26,19 +31,30 @@ export const Segmented = <T extends string | number>({
   tone = 'card',
 }: SegmentedProps<T>) => {
   const name = useId();
+  const { play, buzz } = useFeedback();
+
+  const choose = (next: T) => {
+    play('select');
+    buzz('tap');
+    onChange(next);
+  };
 
   return (
     <fieldset className={cx(styles.fieldset, styles[tone], className)}>
       <legend className={styles.legend}>{legend}</legend>
       <div className={styles.track}>
-        {options.map((option) => (
-          <label key={String(option.value)} className={styles.option}>
+        {options.map((option, index) => (
+          <label
+            key={String(option.value)}
+            className={styles.option}
+            style={{ '--tilt': `${handTilt(index + legend.length, 2.2)}deg` } as CSSProperties}
+          >
             <input
               type="radio"
               className="visually-hidden"
               name={name}
               checked={option.value === value}
-              onChange={() => onChange(option.value)}
+              onChange={() => choose(option.value)}
             />
             <span className={styles.pill}>{option.label}</span>
           </label>

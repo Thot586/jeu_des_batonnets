@@ -1,5 +1,24 @@
 @import './tokens.css';
 
+/*
+ * Polices hébergées avec le jeu (licence SIL OFL, voir src/assets/fonts) :
+ * aucun appel à un service tiers, et le jeu s'affiche correctement hors ligne.
+ */
+@font-face {
+  font-family: 'Fredoka';
+  src: url('../assets/fonts/fredoka-variable.woff') format('woff');
+  font-weight: 300 700;
+  font-stretch: 75% 125%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Saira Stencil One';
+  src: url('../assets/fonts/saira-stencil-one.woff') format('woff');
+  font-weight: 400;
+  font-display: swap;
+}
+
 *,
 *::before,
 *::after {
@@ -17,21 +36,25 @@
 html {
   -webkit-text-size-adjust: 100%;
   font-size: clamp(100%, min(0.95vw, 1.7vh), 240%);
+  background: var(--c-kraft);
 }
 
+/* Le kraft : fibres allongées, grain fin, et un léger vignettage comme sous une lampe. */
 body {
   margin: 0;
   min-height: 100dvh;
   font-family: var(--font);
   font-size: var(--fs-md);
+  font-weight: 450;
   line-height: 1.45;
-  font-optical-sizing: auto;
   color: var(--c-ink);
-  background-color: var(--c-sky);
+  background-color: var(--c-kraft);
   background-image:
-    radial-gradient(rgb(35 28 85 / 0.08) 1.2px, transparent 1.4px),
-    radial-gradient(120% 70% at 50% -10%, var(--c-sky-light) 0%, var(--c-sky) 60%);
-  background-size: 1.4rem 1.4rem, 100% 100%;
+    radial-gradient(120% 90% at 50% 30%, rgb(255 240 210 / 0.28) 0%, rgb(255 240 210 / 0) 55%, rgb(var(--c-shadow) / 0.18) 100%),
+    var(--tex-fibers),
+    var(--tex-grain);
+  background-size: 100% 100%, 420px 420px, 180px 180px;
+  background-attachment: fixed, scroll, scroll;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -53,8 +76,13 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
+::selection {
+  background: var(--c-saffron);
+  color: var(--c-ink);
+}
+
 :focus-visible {
-  outline: 3px solid var(--c-ink);
+  outline: 3px solid var(--c-ultramarine);
   outline-offset: 3px;
 }
 
@@ -70,12 +98,18 @@ button {
   border: 0;
 }
 
+/*
+ * Mouvement réduit : aucune animation de décor ; les éléments apparaissent
+ * directement dans leur état final, jamais bloqués invisibles.
+ */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
   }
 }

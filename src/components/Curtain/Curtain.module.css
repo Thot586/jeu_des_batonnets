@@ -1,0 +1,74 @@
+/*
+ * Rideau de papier : des bandes tomate de deux tons, posées côte à côte comme des plis.
+ * Il glisse en 8 images (2/3 de seconde) avec une courbe stop motion.
+ */
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Fermé ou en mouvement, il bloque les clics pour éviter un double changement d'écran. */
+.closed {
+  pointer-events: auto;
+}
+
+.panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 52%;
+  clip-path: var(--cut);
+  background:
+    var(--tex-grain),
+    linear-gradient(90deg, rgb(var(--c-shadow) / 0.16), transparent 18%, transparent 82%, rgb(var(--c-shadow) / 0.2)),
+    repeating-linear-gradient(
+      90deg,
+      var(--c-tomato) 0 2.4rem,
+      #c9351f 2.4rem 2.6rem,
+      #d23b24 2.6rem 4.1rem,
+      #b02f1d 4.1rem 4.3rem
+    );
+  background-size: 180px 180px, auto, auto;
+  transition: transform calc(var(--frame) * 8) var(--stop-inout-8);
+}
+
+.left {
+  left: 0;
+  transform: translateX(-104%);
+  filter: drop-shadow(0.5rem 0 0.6rem rgb(var(--c-shadow) / 0.45));
+}
+
+.right {
+  right: 0;
+  transform: translateX(104%);
+  filter: drop-shadow(-0.5rem 0 0.6rem rgb(var(--c-shadow) / 0.45));
+}
+
+.closed .left,
+.closed .right {
+  transform: translateX(0);
+}
+
+/* Lambrequin festonné en haut de la scène */
+.valance {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3.4rem;
+  background:
+    var(--tex-grain),
+    repeating-linear-gradient(90deg, var(--c-tomato-deep) 0 3rem, #9c2918 3rem 3.15rem);
+  background-size: 180px 180px, auto;
+  mask:
+    radial-gradient(circle at 50% 0, #000 1.55rem, transparent 1.6rem) 0 100% / 3.15rem 1.6rem repeat-x,
+    linear-gradient(#000, #000) top / 100% calc(100% - 1.55rem) no-repeat;
+  transform: translateY(-105%);
+  filter: drop-shadow(0 0.3rem 0.3rem rgb(var(--c-shadow) / 0.4));
+  transition: transform calc(var(--frame) * 4) var(--stop-out-4);
+}
+
+.closed .valance {
+  transform: translateY(0);
+}

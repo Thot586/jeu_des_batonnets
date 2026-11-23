@@ -1,77 +1,99 @@
+/*
+ * Bâtonnet de carton. Le décor est en stop motion : entrée, soulèvement et envol
+ * avancent par images tenues (courbes --stop-*).
+ * L'ombre s'allonge quand le bâtonnet se soulève : c'est elle qui dit « il quitte la table ».
+ */
 .stick {
   position: relative;
   display: block;
   width: var(--stick-w, 0.75rem);
   height: var(--stick-h, 8rem);
-  border-radius: calc(var(--stick-w, 0.75rem) / 2);
-  background: linear-gradient(
-    90deg,
-    var(--c-wood-deep) 0%,
-    var(--c-wood) 28%,
-    #f8dfae 50%,
-    var(--c-wood) 72%,
-    var(--c-wood-deep) 100%
-  );
-  box-shadow: 0 0.5rem 0.5rem -0.4rem rgb(10 6 40 / 0.55);
   rotate: var(--tilt);
   transform-origin: 50% 100%;
+  filter: drop-shadow(0.09rem 0.13rem 0 rgb(var(--c-shadow) / 0.45));
   transition:
-    transform 0.28s var(--ease-spring),
-    filter 0.2s ease;
-  animation: drop 0.6s var(--ease-spring) backwards;
-  animation-delay: calc(var(--i) * 28ms);
+    transform calc(var(--frame) * 3) var(--stop-out-3),
+    filter calc(var(--frame) * 3) steps(3, end);
+  animation: drop calc(var(--frame) * 6) var(--stop-back-6) backwards;
+  animation-delay: calc(var(--drop-delay, 0ms) + var(--i) * 26ms);
 }
 
-/* Tête de l'allumette */
-.stick::before {
-  content: '';
+/* La bande : carton découpé, un peu plus clair ou plus foncé selon le bâtonnet */
+.strip {
+  position: absolute;
+  inset: 0;
+  clip-path: var(--clip);
+  background:
+    linear-gradient(90deg, rgb(var(--c-shadow) / 0.1), transparent 30% 72%, rgb(var(--c-shadow) / 0.14)),
+    var(--tex-grain),
+    var(--c-card);
+  background-size: auto, 120px 120px, auto;
+  filter: brightness(calc(1 + var(--tone, 0)));
+}
+
+/* La tête : un rond de papier tomate découpé aux ciseaux */
+.head {
   position: absolute;
   left: 50%;
-  top: calc(var(--stick-w, 0.75rem) * -0.6);
-  width: 175%;
-  height: calc(var(--stick-w, 0.75rem) * 2);
+  top: calc(var(--stick-w, 0.75rem) * -0.55);
+  width: 170%;
+  height: calc(var(--stick-w, 0.75rem) * 2.05);
   translate: -50% 0;
-  border-radius: 50% 50% 46% 46% / 62% 62% 38% 38%;
-  background: radial-gradient(circle at 36% 30%, #ff9aa5 0 14%, var(--c-head) 42%, var(--c-head-deep) 100%);
+  border-radius: var(--head-shape, 50%);
+  background:
+    radial-gradient(circle at 34% 30%, rgb(255 255 255 / 0.22) 0 18%, transparent 19%),
+    var(--tex-grain),
+    var(--c-tomato);
+  background-size: auto, 120px 120px, auto;
 }
 
 .preview {
-  transform: translateY(-0.9rem);
-  filter: drop-shadow(0 0 0.6rem var(--c-glow));
+  transform: translateY(-0.9rem) rotate(calc(var(--dir) * -3deg));
+  filter: drop-shadow(0.3rem 0.55rem 0.05rem rgb(var(--c-shadow) / 0.32));
+}
+
+.preview .head {
+  background:
+    radial-gradient(circle at 34% 30%, rgb(255 255 255 / 0.3) 0 18%, transparent 19%),
+    var(--tex-grain),
+    #f05238;
+  background-size: auto, 120px 120px, auto;
 }
 
 .grabbed {
-  transform: translateY(-1.9rem) rotate(calc(var(--dir) * -9deg));
-  filter: drop-shadow(0 0 0.75rem var(--c-glow));
-  animation: wiggle 0.18s ease-in-out infinite alternate;
+  transform: translateY(-1.9rem) rotate(calc(var(--dir) * -10deg));
+  filter: drop-shadow(0.45rem 0.9rem 0.1rem rgb(var(--c-shadow) / 0.28));
+  animation: tug calc(var(--frame) * 2) steps(1, end) infinite;
 }
 
 .flying {
-  animation: fly 0.62s var(--ease-in) forwards;
+  animation: pulled calc(var(--frame) * 8) var(--stop-inout-8) forwards;
 }
 
 @keyframes drop {
   from {
-    transform: translateY(-4.4rem);
+    transform: translateY(-4.4rem) rotate(calc(var(--dir, 1) * 14deg));
     opacity: 0;
   }
 }
 
-@keyframes wiggle {
-  from {
+/* Le bâtonnet résiste un peu entre deux images, comme tenu entre deux doigts. */
+@keyframes tug {
+  0% {
     translate: -0.06rem 0;
   }
-  to {
-    translate: 0.06rem -0.2rem;
+  50% {
+    translate: 0.06rem -0.18rem;
   }
 }
 
-@keyframes fly {
-  0% {
-    transform: translateY(-1.9rem) rotate(calc(var(--dir) * -9deg));
+@keyframes pulled {
+  from {
+    transform: translateY(-1.9rem) rotate(calc(var(--dir) * -10deg));
+    opacity: 1;
   }
-  100% {
-    transform: translate(calc(var(--dir) * 42vw), -3.75rem) rotate(calc(var(--dir) * 100deg)) scale(0.45);
+  to {
+    transform: translate(calc(var(--dir) * 42vw), -3.5rem) rotate(calc(var(--dir) * 96deg)) scale(0.5);
     opacity: 0;
   }
 }

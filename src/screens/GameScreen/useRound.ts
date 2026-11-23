@@ -20,7 +20,9 @@ export interface Timing {
   result: number;
 }
 
-const NORMAL: Timing = { reach: 430, pull: 640, think: 850, thinkJitter: 600, result: 650 };
+// Durées calées sur le stop motion : 1 image = 1/12 s (tendre le bras : 5 images, tirer : 8 images).
+const FRAME = 1000 / 12;
+const NORMAL: Timing = { reach: 5 * FRAME, pull: 8 * FRAME, think: 10 * FRAME, thinkJitter: 6 * FRAME, result: 8 * FRAME };
 const REDUCED: Timing = { reach: 120, pull: 160, think: 450, thinkJitter: 0, result: 250 };
 
 /**
