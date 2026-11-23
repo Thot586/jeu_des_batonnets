@@ -57,6 +57,8 @@ export const Character = ({
     '--shade': look.shade,
     '--belly': look.belly,
     '--accent': look.accent,
+    // Chaque marionnette respire à son propre rythme : les deux joueurs ne bougent jamais ensemble.
+    '--idle-delay': `${(-((look.seed * 0.37) % 3)).toFixed(2)}s`,
   } as CSSProperties;
 
   return (
