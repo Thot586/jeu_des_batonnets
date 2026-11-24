@@ -63,7 +63,7 @@ export const plural = (count: number, singular: string, pluralForm = `${singular
   `${count} ${count > 1 ? pluralForm : singular}`;
 
 export const describeRules = (settings: Pick<GameSettings, 'maxTake' | 'lastStick'>): string =>
-  `Chacun son tour, on prend de 1 à ${settings.maxTake} bâtonnets. ` +
+  `Chacun son tour, on prend de 1 à ${settings.maxTake} bâtonnets. ` +
   (settings.lastStick === 'perd'
     ? 'Celui qui prend le dernier a perdu.'
     : 'Celui qui prend le dernier a gagné.');

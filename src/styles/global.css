@@ -39,6 +39,9 @@
  * (collines, nuages) puissent glisser entre le mur et la scène.
  */
 html {
+  /* Thème clair assumé : barres de défilement et champs natifs restent clairs même en mode sombre. */
+  color-scheme: light;
+  scrollbar-color: var(--c-kraft-deep) var(--c-kraft);
   -webkit-text-size-adjust: 100%;
   font-size: clamp(100%, min(0.95vw, 1.7vh), 240%);
   background-color: var(--c-kraft);
@@ -76,6 +79,23 @@ p {
   margin: 0;
 }
 
+/* Titres aux lignes équilibrées ; texte courant sans mot orphelin en dernière ligne. */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p,
+li,
+dt,
+dd,
+label,
+legend,
+summary {
+  text-wrap: pretty;
+}
+
 button,
 input {
   font: inherit;
@@ -85,6 +105,20 @@ input {
 button {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  /* Deux appuis rapides ne zooment pas la page et ne sélectionnent pas le texte du bouton. */
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+label,
+summary {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input {
+  caret-color: var(--c-tomato-ink);
 }
 
 ::selection {

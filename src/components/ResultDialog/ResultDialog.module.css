@@ -112,6 +112,17 @@
   box-shadow: var(--shadow-paper-press);
 }
 
+.winnerScore {
+  background-color: var(--c-saffron);
+  box-shadow: var(--shadow-paper);
+}
+
+/* Le point s'ajoute : le chiffre est posé un peu trop fort, puis se cale (4 images). */
+.bump {
+  display: inline-block;
+  animation: bump calc(var(--frame) * 4) steps(1, end) both;
+}
+
 .score:nth-child(odd) {
   rotate: -1.5deg;
 }
@@ -170,6 +181,56 @@
 @keyframes dim {
   from {
     opacity: 0;
+  }
+}
+
+/* Fermeture : la salle se rallume pendant que la pancarte remonte (4 images, plus court que l'arrivée). */
+.leaving {
+  animation: undim calc(var(--frame) * 4) steps(4, end) both;
+}
+
+.leaving .dialog {
+  animation: lift calc(var(--frame) * 4) steps(1, end) both;
+}
+
+/* Seule la salle se rallume : la pancarte, elle, reste opaque (le papier ne devient pas transparent). */
+@keyframes undim {
+  to {
+    background-color: transparent;
+    backdrop-filter: none;
+  }
+}
+
+@keyframes lift {
+  0% {
+    transform: translateY(0.25rem) rotate(0.6deg);
+  }
+  25% {
+    transform: translateY(-0.75rem) rotate(-0.8deg);
+  }
+  50% {
+    transform: translateY(-14vh) rotate(-2deg);
+  }
+  75% {
+    transform: translateY(-55vh) rotate(-3deg);
+  }
+  100% {
+    transform: translateY(-110vh) rotate(-4deg);
+  }
+}
+
+@keyframes bump {
+  0% {
+    transform: scale(1.45) rotate(-8deg);
+  }
+  25% {
+    transform: scale(0.9) rotate(3deg);
+  }
+  50% {
+    transform: scale(1.06) rotate(-1deg);
+  }
+  75% {
+    transform: none;
   }
 }
 

@@ -16,6 +16,10 @@
   margin-bottom: 3.5rem;
 }
 
+.sentence {
+  display: inline-block;
+}
+
 .lead {
   max-width: 34em;
   font-size: var(--fs-md);

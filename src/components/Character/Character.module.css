@@ -7,6 +7,9 @@
 .wrap {
   position: relative;
   width: 100%;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .svg {
@@ -366,37 +369,37 @@
 
 /* Bâiller : on s'étire, les yeux se plissent, la bouche s'ouvre lentement (22 images). */
 .yawn .figure {
-  animation: yawn-body calc(var(--frame) * 22) steps(1, end) both;
+  animation: yawn-body calc(var(--frame) * var(--yawn-frames, 22)) steps(1, end) both;
 }
 
 .yawn .eyes {
-  animation: yawn-eyes calc(var(--frame) * 22) steps(1, end) both;
+  animation: yawn-eyes calc(var(--frame) * var(--yawn-frames, 22)) steps(1, end) both;
 }
 
 .yawnMouth {
   transform-box: view-box;
   transform-origin: 82px 114px;
-  animation: yawn-mouth calc(var(--frame) * 22) steps(1, end) both;
+  animation: yawn-mouth calc(var(--frame) * var(--yawn-frames, 22)) steps(1, end) both;
 }
 
 /* Bleuet et Praline, bien élevés, mettent la main devant la bouche. */
 [data-avatar='bleuet'].yawn .arm,
 [data-avatar='praline'].yawn .arm {
-  animation: yawn-cover calc(var(--frame) * 22) steps(1, end) both;
+  animation: yawn-cover calc(var(--frame) * var(--yawn-frames, 22)) steps(1, end) both;
 }
 
 /* Pépin s'étire les deux bras en l'air. */
 [data-avatar='pepin'].yawn .arm {
-  animation: yawn-stretch calc(var(--frame) * 22) steps(1, end) both;
+  animation: yawn-stretch calc(var(--frame) * var(--yawn-frames, 22)) steps(1, end) both;
 }
 
 [data-avatar='pepin'].yawn .backArm {
-  animation: yawn-stretch-back calc(var(--frame) * 22) steps(1, end) both;
+  animation: yawn-stretch-back calc(var(--frame) * var(--yawn-frames, 22)) steps(1, end) both;
 }
 
 /* Mousse laisse tomber son antenne ; Zeste s'aplatit les cheveux. */
 [data-avatar='mousse'].yawn .antenna {
-  animation: yawn-antenna calc(var(--frame) * 22) steps(1, end) both;
+  animation: yawn-antenna calc(var(--frame) * var(--yawn-frames, 22)) steps(1, end) both;
 }
 
 [data-avatar='zeste'].yawn .hair {

@@ -14,19 +14,21 @@ export interface Personality {
   breath: number;
   /** Intervalle moyen entre deux clignements, en secondes. */
   blink: number;
+  /** Longueur d'un bâillement, en images : le rêveur s'étire, le nerveux expédie. */
+  yawnFrames: number;
 }
 
 export const PERSONALITIES: Record<AvatarId, Personality> = {
   // Vif, sûr de lui : tend le bras d'un geste sec, tire fort, tapote du pied quand il attend.
-  pepin: { trait: 'vif et sûr de lui', reachFrames: 4, breath: 2.6, blink: 4.4 },
+  pepin: { trait: 'vif et sûr de lui', reachFrames: 4, breath: 2.6, blink: 4.4, yawnFrames: 20 },
   // Calme, rêveur : tout est un peu plus lent, l'antenne suit le mouvement avec retard.
-  mousse: { trait: 'calme et rêveur', reachFrames: 7, breath: 4.2, blink: 5.2 },
+  mousse: { trait: 'calme et rêveur', reachFrames: 7, breath: 4.2, blink: 5.2, yawnFrames: 28 },
   // Nerveux, aux aguets : regarde partout, cligne souvent, se hérisse en tirant.
-  zeste: { trait: 'nerveux et aux aguets', reachFrames: 4, breath: 2.3, blink: 3.1 },
+  zeste: { trait: 'nerveux et aux aguets', reachFrames: 4, breath: 2.3, blink: 3.1, yawnFrames: 17 },
   // Posé, réfléchi : remonte ses lunettes et hésite un instant avant de tirer.
-  bleuet: { trait: 'posé et réfléchi', reachFrames: 8, breath: 3.4, blink: 6.2 },
+  bleuet: { trait: 'posé et réfléchi', reachFrames: 8, breath: 3.4, blink: 6.2, yawnFrames: 24 },
   // Élégante, malicieuse : penche la tête, tire avec un petit mouvement de poignet.
-  praline: { trait: 'élégante et malicieuse', reachFrames: 5, breath: 3, blink: 4.8 },
+  praline: { trait: 'élégante et malicieuse', reachFrames: 5, breath: 3, blink: 4.8, yawnFrames: 22 },
 };
 
 export const getPersonality = (avatar: AvatarId): Personality => PERSONALITIES[avatar];

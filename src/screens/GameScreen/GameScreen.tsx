@@ -129,7 +129,10 @@ export const GameScreen = ({
   }, [canHumanPlay, available, play]);
 
   // Pendant l'attente d'une personne : tic, puis bâillement (parfois contagieux).
-  const idleGestures = useIdleChoreography(canHumanPlay && preview === 0, game.current);
+  const idleGestures = useIdleChoreography(canHumanPlay && preview === 0, game.current, [
+    players[0].avatar,
+    players[1].avatar,
+  ]);
 
   const gestureFor = (id: PlayerId): Gesture | null =>
     idleGestures[id] ?? (catcher === id ? 'catch' : null);
@@ -177,7 +180,7 @@ export const GameScreen = ({
       <header className={styles.topbar}>
         <h1 className={styles.round}>Manche {round + 1}</h1>
         <p className={styles.rule}>
-          Prise de 1 à {settings.maxTake}, le dernier bâtonnet {settings.lastStick === 'perd' ? 'fait perdre' : 'fait gagner'}
+          Prise de 1 à {settings.maxTake}, le dernier bâtonnet {settings.lastStick === 'perd' ? 'fait perdre' : 'fait gagner'}
         </p>
         <div className={styles.actions}>
           <SoundToggle />
@@ -302,6 +305,6 @@ const describeStatus = ({ pending, isAiThinking, winner, available, players, cur
   if (winner !== null) return `${players[winner].name} remporte la manche.`;
   if (pending) return `${players[pending.player].name} prend ${plural(pending.count, 'bâtonnet')}.`;
   if (isAiThinking) return `${players[current].name} réfléchit…`;
-  if (available === 1) return `À toi, ${players[current].name}. Il ne reste qu'un bâtonnet : il est pour toi.`;
+  if (available === 1) return `À toi, ${players[current].name}. Il ne reste qu'un bâtonnet : il est pour toi.`;
   return `À toi, ${players[current].name}. Prends ${formatChoices(available)} bâtonnets.`;
 };

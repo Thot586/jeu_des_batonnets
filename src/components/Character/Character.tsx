@@ -127,6 +127,7 @@ export const Character = ({
     '--glance-cycle': `${rhythm.glanceCycle.toFixed(2)}s`,
     '--glance-delay': `${rhythm.glanceDelay.toFixed(2)}s`,
     '--breath-cycle': `${personality.breath}s`,
+    '--yawn-frames': personality.yawnFrames,
     '--look': lookSign,
   } as CSSProperties;
 

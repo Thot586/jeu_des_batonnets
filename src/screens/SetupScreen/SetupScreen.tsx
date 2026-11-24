@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { Fragment, useEffect, useState, type FormEvent } from 'react';
 import { AvatarPicker } from '../../components/AvatarPicker/AvatarPicker';
 import { Button } from '../../components/Button/Button';
 import { Character } from '../../components/Character/Character';
@@ -45,14 +45,14 @@ const LAST_STICK_OPTIONS = [
   { value: 'gagne', label: 'fait gagner' },
 ] as const satisfies readonly { value: LastStickRule; label: string }[];
 
-const TAKE_CHOICES = TAKE_OPTIONS.map((n) => ({ value: n as number, label: `1 à ${n}` }));
+const TAKE_CHOICES = TAKE_OPTIONS.map((n) => ({ value: n as number, label: `1 à ${n}` }));
 
 export const SetupScreen = ({ initial, onStart }: SetupScreenProps) => {
   const [players, setPlayers] = useState<[PlayerConfig, PlayerConfig]>(initial.players);
   const [settings, setSettings] = useState<GameSettings>(initial.settings);
   const [submitted, setSubmitted] = useState(false);
   // Si on les laisse attendre, les deux portraits s'occupent puis bâillent.
-  const portraitGestures = useIdleChoreography(true, 0);
+  const portraitGestures = useIdleChoreography(true, 0, [players[0].avatar, players[1].avatar]);
   // Pendant l'ouverture du rideau, les bâtonnets d'aperçu attendent avant de tomber.
   const [intro, setIntro] = useState(true);
   useEffect(() => {
@@ -124,7 +124,17 @@ export const SetupScreen = ({ initial, onStart }: SetupScreenProps) => {
     <main className={styles.screen}>
       <header className={cx(styles.hero, intro && styles.intro)}>
         <CutoutTitle kicker="Le jeu des" word="bâtonnets" delay={INTRO_MS} />
-        <p className={styles.lead}>{describeRules(settings)}</p>
+        <p className={styles.lead}>
+          {/* Une phrase par bloc : si la ligne est trop courte, on passe à la ligne entre les deux phrases. */}
+          {describeRules(settings)
+            .split(/(?<=\.) /)
+            .map((sentence, index) => (
+              <Fragment key={index}>
+                {index > 0 && ' '}
+                <span className={styles.sentence}>{sentence}</span>
+              </Fragment>
+            ))}
+        </p>
         <StickRow remaining={settings.totalSticks} size="compact" />
       </header>
 
@@ -153,7 +163,7 @@ export const SetupScreen = ({ initial, onStart }: SetupScreenProps) => {
 
                 {id === 1 && (
                   <Segmented
-                    legend="Qui joue ?"
+                    legend="Qui joue ?"
                     options={KIND_OPTIONS}
                     value={player.kind}
                     onChange={changeKind}
@@ -211,7 +221,7 @@ export const SetupScreen = ({ initial, onStart }: SetupScreenProps) => {
           <div className={styles.rulesGrid}>
             <div className={styles.field}>
               <label htmlFor="total-sticks" className={styles.label}>
-                Nombre de bâtonnets : <output htmlFor="total-sticks">{settings.totalSticks}</output>
+                Nombre de bâtonnets : <output htmlFor="total-sticks">{settings.totalSticks}</output>
               </label>
               <input
                 id="total-sticks"
@@ -242,7 +252,7 @@ export const SetupScreen = ({ initial, onStart }: SetupScreenProps) => {
 
             <Segmented
               tone="light"
-              legend="Qui commence ?"
+              legend="Qui commence ?"
               options={starterOptions}
               value={String(settings.starter)}
               onChange={(value) =>

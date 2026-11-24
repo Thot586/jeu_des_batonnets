@@ -126,11 +126,15 @@ Chacun a son caractère, joué par de petits détails plutôt que par des exagé
 - Celui qui ne joue pas suit des yeux celui qui joue ou réfléchit.
 - Au survol d'un coup, votre personnage regarde les bâtonnets et prépare son bras (anticipation).
 - Quand les bâtonnets arrivent dans la pile, le personnage se tasse une image (impact).
-- Après 8 secondes sans rien faire, il s'occupe (son tic) ; à 15 secondes, il bâille ; parfois l'autre bâille aussi, un peu après.
+- Quand on le fait attendre, il s'occupe (son tic) vers 8 à 10 secondes, puis bâille vers 15 à 19 secondes. Rien n'arrive à heure fixe, l'autre a parfois son propre tic à un autre moment, et ce n'est pas toujours le même qui commence.
+- Chacun bâille à son rythme : Mousse s'étire longuement, Zeste expédie. Le bâillement est parfois contagieux, mais l'autre ne bâille qu'après avoir vu le premier finir, jamais en même temps.
 - En fin de partie serrée, tout le monde respire et cligne un peu plus vite.
 - L'ombre au sol rétrécit quand un personnage saute et s'élargit à l'atterrissage.
 - L'ordinateur ne joue pas tant que l'onglet est caché : on ne rate jamais son coup.
 - Chaque bruit répété change légèrement de hauteur : deux coups de suite ne sonnent jamais pareil.
+- Sur la pancarte de fin, le point du gagnant s'ajoute sous nos yeux quand elle s'arrête de se balancer. Fermée avec Échap, elle remonte au bout de ses ficelles au lieu de disparaître.
+- Typographie française : espaces insécables avant les deux-points et les points d'interrogation, et dans les guillemets ; « 1 à 3 » ne se coupe jamais en fin de ligne.
+- On peut taper vite sur les boutons et les bâtonnets : ni zoom par double appui, ni sélection de texte, ni menu d'appui long.
 - Le gagnant de la manche est bordé d'un liseré blanc, comme un autocollant, sur la scène et sur la pancarte de fin.
 - Trois victoires d'affilée : les lunettes de soleil tombent sur le nez en quelques images, avec un petit rebond, et un reflet traverse les verres de temps en temps. À la première défaite, elles glissent puis tombent. Bleuet range ses lunettes rondes pendant ce temps.
 

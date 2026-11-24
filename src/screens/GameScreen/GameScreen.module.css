@@ -93,6 +93,10 @@
     var(--c-ultramarine);
   background-size: auto, 180px 180px, auto;
   color: #fff8ee;
+  /* On tape vite sur les bâtonnets : ni sélection de texte, ni menu d'appui long. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
   box-shadow:
     var(--edge-stage),
     0.4rem 0.9rem 1.2rem -0.4rem rgb(var(--c-shadow) / 0.5),

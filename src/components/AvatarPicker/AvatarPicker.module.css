@@ -122,6 +122,8 @@ input:focus-visible + .face {
 }
 
 .taken .face,
-.taken:hover .face {
+.taken:hover .face,
+.taken:active .face {
   translate: none;
+  scale: none;
 }
