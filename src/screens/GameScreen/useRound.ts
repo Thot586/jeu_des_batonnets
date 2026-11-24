@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { chooseAiMove } from '../../game/ai';
+import { getPersonality } from '../../game/personalities';
 import { applyMove, createGame, isLegalMove } from '../../game/rules';
 import type { MatchConfig, PlayerId } from '../../game/types';
+import { usePageVisible } from '../../hooks/usePageVisible';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 
 export interface PendingMove {
@@ -31,14 +33,17 @@ const REDUCED: Timing = { reach: 120, pull: 160, think: 450, thinkJitter: 0, res
  */
 export const useRound = (config: MatchConfig, firstPlayer: PlayerId) => {
   const { settings, players } = config;
-  const timing = usePrefersReducedMotion() ? REDUCED : NORMAL;
+  const reducedMotion = usePrefersReducedMotion();
+  const timing = reducedMotion ? REDUCED : NORMAL;
+  const pageVisible = usePageVisible();
 
   const [game, setGame] = useState(() => createGame(settings.totalSticks, firstPlayer));
   const [pending, setPending] = useState<PendingMove | null>(null);
 
   const isOver = game.winner !== null;
   const currentKind = players[game.current].kind;
-  const isAiThinking = !isOver && pending === null && currentKind === 'ai';
+  // L'ordinateur ne joue pas pendant que l'onglet est caché : on ne rate jamais son coup.
+  const isAiThinking = !isOver && pending === null && currentKind === 'ai' && pageVisible;
   const canHumanPlay = !isOver && pending === null && currentKind === 'human';
 
   const play = useCallback(
@@ -70,7 +75,11 @@ export const useRound = (config: MatchConfig, firstPlayer: PlayerId) => {
     if (pending === null) return;
 
     if (pending.stage === 'reach') {
-      const id = window.setTimeout(() => setPending({ ...pending, stage: 'pull' }), timing.reach);
+      // Chaque personnage tend le bras à son rythme (Bleuet hésite, Pépin est vif).
+      const reach = reducedMotion
+        ? timing.reach
+        : getPersonality(players[pending.player].avatar).reachFrames * FRAME;
+      const id = window.setTimeout(() => setPending({ ...pending, stage: 'pull' }), reach);
       return () => window.clearTimeout(id);
     }
 
@@ -79,7 +88,7 @@ export const useRound = (config: MatchConfig, firstPlayer: PlayerId) => {
       setPending(null);
     }, timing.pull);
     return () => window.clearTimeout(id);
-  }, [pending, settings, timing]);
+  }, [pending, settings, timing, players, reducedMotion]);
 
   return { game, pending, isAiThinking, canHumanPlay, play, timing };
 };

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { Mood } from '../../components/Character/Character';
+import type { Gesture, Mood } from '../../components/Character/Character';
 import { Button } from '../../components/Button/Button';
 import { SoundToggle } from '../../components/SoundToggle/SoundToggle';
 import { useFeedback } from '../../feedback/FeedbackContext';
+import { useIdleChoreography } from '../../hooks/useIdleChoreography';
 import { MovePicker } from '../../components/MovePicker/MovePicker';
 import { ResultDialog } from '../../components/ResultDialog/ResultDialog';
 import { Seat } from '../../components/Seat/Seat';
@@ -68,11 +69,20 @@ export const GameScreen = ({
     if (pending?.stage === 'pull') sound('slide', pending.count);
   }, [pending?.stage, pending?.count, sound]);
 
+  // Les bâtonnets arrivent dans la pile : bruit sourd, et le joueur se tasse une image (impact).
+  const [catcher, setCatcher] = useState<PlayerId | null>(null);
   const movesRef = useRef(moves);
   useEffect(() => {
-    if (moves > movesRef.current) sound('drop');
+    if (moves > movesRef.current) {
+      sound('drop');
+      const mover = game.history[moves - 1]?.player;
+      if (mover !== undefined) {
+        setCatcher(mover);
+        window.setTimeout(() => setCatcher(null), 3 * (1000 / 12) + 20);
+      }
+    }
     movesRef.current = moves;
-  }, [moves, sound]);
+  }, [moves, sound, game.history]);
 
   // Petit signal quand c'est de nouveau au tour d'une personne.
   useEffect(() => {
@@ -115,6 +125,23 @@ export const GameScreen = ({
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [canHumanPlay, available, play]);
 
+  // Pendant l'attente d'une personne : tic, puis bâillement (parfois contagieux).
+  const idleGestures = useIdleChoreography(canHumanPlay && preview === 0, game.current);
+
+  const gestureFor = (id: PlayerId): Gesture | null =>
+    idleGestures[id] ?? (catcher === id ? 'catch' : null);
+
+  // L'autre suit des yeux celui qui joue ou réfléchit.
+  const lookAtFor = (id: PlayerId): 'left' | 'right' | null => {
+    if (winner !== null) return null;
+    const actor = pending ? pending.player : isAiThinking ? game.current : null;
+    if (actor === null || actor === id) return null;
+    return actor === 0 ? 'left' : 'right';
+  };
+
+  // Fin de partie serrée : il reste au plus de quoi faire un dernier coup décisif.
+  const tense = winner === null && game.remaining > 0 && game.remaining <= settings.maxTake + 1;
+
   const moodFor = (id: PlayerId): Mood => {
     if (winner !== null) return id === winner ? 'happy' : 'sad';
     if (pending?.player === id) return pending.stage === 'reach' ? 'reaching' : 'pulling';
@@ -122,6 +149,14 @@ export const GameScreen = ({
     if (isAiThinking && game.current === id) return 'thinking';
     return 'idle';
   };
+
+  // Distribution : les bâtonnets tombent sur la table au début de la manche (après le rideau la première fois).
+  useEffect(() => {
+    const id = window.setTimeout(() => sound('deal', settings.totalSticks), round === 0 ? 760 : 60);
+    return () => window.clearTimeout(id);
+    // Une seule fois par manche : la manche suivante remonte ce composant.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Pancarte fermée (Échap) : on regarde la table finale, et « Rejouer » reçoit le focus.
   useEffect(() => {
@@ -161,6 +196,9 @@ export const GameScreen = ({
             collected={game.taken[id]}
             wins={scores[id]}
             holding={pending?.player === id && pending.stage === 'pull' ? pending.count : 0}
+            gesture={gestureFor(id)}
+            lookAt={lookAtFor(id)}
+            tense={tense}
           />
         ))}
 
@@ -186,13 +224,22 @@ export const GameScreen = ({
               onPreview={setPreview}
               onPick={play}
             />
+            {game.remaining === 0 && (
+              <div className={styles.emptyNote}>
+                <p className={styles.emptyTitle}>La table est vide.</p>
+                <p>
+                  {players[0].name} a ramassé {plural(game.taken[0], 'bâtonnet')}, {players[1].name}{' '}
+                  {plural(game.taken[1], 'bâtonnet')}.
+                </p>
+              </div>
+            )}
           </div>
 
-          <p className={styles.status} aria-live="polite">
-            {status}
-          </p>
-
+          {/* Le message du tour fait partie de la barre d'action : sur téléphone, il reste toujours visible. */}
           <div className={styles.controls}>
+            <p className={styles.status} aria-live="polite">
+              {status}
+            </p>
             {hasHuman && winner === null ? (
               <>
                 <MovePicker

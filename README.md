@@ -93,9 +93,34 @@ Toutes les mesures sont en `rem`, et la taille de base grandit avec l'écran au-
 
 **Formes générées.** Chaque contour (corps, yeux, bâtonnets, étiquettes) est calculé à partir d'une graine (`src/art/paper.ts`) : légèrement irrégulier, mais identique à chaque affichage.
 
-**Son.** Tout vient du papier : tapotement de carton, glissement de bandes, froissement du rideau, et un petit air de kalimba en fin de manche. Les sons sont synthétisés avec Web Audio (aucun fichier audio) et ne démarrent qu'après un premier geste, comme l'exigent les navigateurs.
+**Son.** Tout vient du papier : tapotement de carton, glissement de bandes, froissement du rideau, et un petit air de kalimba en fin de manche. Les sons sont synthétisés avec Web Audio (aucun fichier audio) et ne démarrent qu'après un premier geste, comme l'exigent les navigateurs. Les niveaux ont été mesurés hors ligne (moyenne de 8 rendus) pour une hiérarchie claire : victoire en crête à -6 dBFS, impacts vers -10, actions vers -12, clics vers -14, jamais au-dessus de -6.
 
 **Mouvement réduit.** Si le système le demande, aucune animation de décor : tout s'affiche directement dans son état final.
+
+## Les personnages
+
+Chacun a son caractère, joué par de petits détails plutôt que par des exagérations (`src/game/personalities.ts` pour le tempo, `Character.module.css` pour les gestes).
+
+| | Caractère | Pour tirer | Pour réfléchir | En attendant | Victoire | Défaite |
+| --- | --- | --- | --- | --- | --- | --- |
+| Pépin | vif, sûr de lui | geste sec, se penche franchement | tapote du pied | tapote du pied, s'étire en bâillant | saute, le pompon rebondit | donne un coup de pied dans le sol |
+| Mousse | calme, rêveur | lentement ; l'antenne suit avec retard | l'antenne tourne doucement | l'antenne se balance | petits sauts lents | l'antenne tombe |
+| Zeste | nerveux, aux aguets | coup d'œil de côté, se hérisse | regarde partout | regarde à droite, à gauche | sauts rapides, deux bras levés | les cheveux s'aplatissent |
+| Bleuet | posé, réfléchi | remonte ses lunettes, hésite un instant | main au menton | remonte ses lunettes | hoche la tête, bras levé | les lunettes glissent |
+| Praline | élégante, malicieuse | penche la tête, le nœud frémit | lève les yeux, tête penchée | penche la tête, agite son nœud | fait un tour sur elle-même | le nœud tombe, regard ailleurs |
+
+## Les petits détails
+
+- Chaque personnage cligne des yeux, respire et jette des coups d'œil à son propre rythme ; certains clignent deux fois de suite.
+- Au repos, ils suivent le curseur du regard (souris uniquement, par petites poses).
+- Celui qui ne joue pas suit des yeux celui qui joue ou réfléchit.
+- Au survol d'un coup, votre personnage regarde les bâtonnets et prépare son bras (anticipation).
+- Quand les bâtonnets arrivent dans la pile, le personnage se tasse une image (impact).
+- Après 8 secondes sans rien faire, il s'occupe (son tic) ; à 15 secondes, il bâille ; parfois l'autre bâille aussi, un peu après.
+- En fin de partie serrée, tout le monde respire et cligne un peu plus vite.
+- L'ombre au sol rétrécit quand un personnage saute et s'élargit à l'atterrissage.
+- L'ordinateur ne joue pas tant que l'onglet est caché : on ne rate jamais son coup.
+- Chaque bruit répété change légèrement de hauteur : deux coups de suite ne sonnent jamais pareil.
 
 ## Choix techniques
 

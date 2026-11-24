@@ -3,6 +3,7 @@ import { AvatarPicker } from '../../components/AvatarPicker/AvatarPicker';
 import { Button } from '../../components/Button/Button';
 import { Character } from '../../components/Character/Character';
 import { CutoutTitle } from '../../components/CutoutTitle/CutoutTitle';
+import { useIdleChoreography } from '../../hooks/useIdleChoreography';
 import { Segmented } from '../../components/Segmented/Segmented';
 import { StickRow } from '../../components/StickRow/StickRow';
 import { NAME_MAX_LENGTH, validateNames } from '../../game/config';
@@ -50,6 +51,8 @@ export const SetupScreen = ({ initial, onStart }: SetupScreenProps) => {
   const [players, setPlayers] = useState<[PlayerConfig, PlayerConfig]>(initial.players);
   const [settings, setSettings] = useState<GameSettings>(initial.settings);
   const [submitted, setSubmitted] = useState(false);
+  // Si on les laisse attendre, les deux portraits s'occupent puis bâillent.
+  const portraitGestures = useIdleChoreography(true, 0);
   // Pendant l'ouverture du rideau, les bâtonnets d'aperçu attendent avant de tomber.
   const [intro, setIntro] = useState(true);
   useEffect(() => {
@@ -139,6 +142,7 @@ export const SetupScreen = ({ initial, onStart }: SetupScreenProps) => {
                       key={player.avatar}
                       avatar={player.avatar}
                       facing={id === 0 ? 'right' : 'left'}
+                      gesture={portraitGestures[id]}
                       className={styles.portraitFigure}
                     />
                   </div>

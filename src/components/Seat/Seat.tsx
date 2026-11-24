@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import type { PlayerConfig } from '../../game/types';
 import { plural } from '../../game/rules';
-import { Character, type Mood } from '../Character/Character';
+import { Character, type Gesture, type Mood } from '../Character/Character';
 import { cx } from '../../utils/cx';
 import styles from './Seat.module.css';
 
@@ -14,6 +14,9 @@ interface SeatProps {
   collected: number;
   wins: number;
   holding: number;
+  gesture?: Gesture | null;
+  lookAt?: 'left' | 'right' | null;
+  tense?: boolean;
   className?: string;
 }
 
@@ -28,6 +31,9 @@ export const Seat = ({
   collected,
   wins,
   holding,
+  gesture = null,
+  lookAt = null,
+  tense = false,
   className,
 }: SeatProps) => (
   <section
@@ -41,6 +47,9 @@ export const Seat = ({
         mood={mood}
         facing={side === 'left' ? 'right' : 'left'}
         holding={holding}
+        gesture={gesture}
+        lookAt={lookAt}
+        tense={tense}
       />
     </div>
 

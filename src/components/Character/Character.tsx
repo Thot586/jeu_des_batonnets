@@ -1,11 +1,19 @@
-import { useMemo, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { blobPath, roundRectPath, stripPath } from '../../art/paper';
+import { subscribePointer } from '../../art/pointer';
 import { getAvatar } from '../../game/avatars';
+import { getPersonality, type Personality } from '../../game/personalities';
 import type { AvatarId } from '../../game/types';
 import { cx } from '../../utils/cx';
 import styles from './Character.module.css';
 
 export type Mood = 'idle' | 'aiming' | 'thinking' | 'reaching' | 'pulling' | 'happy' | 'sad';
+
+/**
+ * Gestes ponctuels, joués par-dessus l'humeur :
+ * bâiller (longue attente), s'occuper (tic propre au personnage), encaisser (les bâtonnets arrivent).
+ */
+export type Gesture = 'yawn' | 'fidget' | 'catch';
 
 interface CharacterProps {
   avatar: AvatarId;
@@ -14,6 +22,14 @@ interface CharacterProps {
   facing?: 'right' | 'left';
   /** Nombre de bâtonnets tenus en main. */
   holding?: number;
+  /** Geste ponctuel en cours. */
+  gesture?: Gesture | null;
+  /** Regarde vers ce côté de l'écran (l'adversaire qui joue). */
+  lookAt?: 'left' | 'right' | null;
+  /** Fin de partie serrée : respiration et clignements un peu plus rapides. */
+  tense?: boolean;
+  /** Suit le curseur du regard quand il ne fait rien d'autre. */
+  followPointer?: boolean;
   /** Texte alternatif ; sans lui le dessin est décoratif. */
   label?: string;
   className?: string;
@@ -23,8 +39,8 @@ interface CharacterProps {
  * Rythme propre à chaque marionnette affichée : clignements, respiration et coups d'œil
  * ne tombent jamais en même temps d'un personnage à l'autre (ni d'une vignette à l'autre).
  */
-const drawRhythm = () => ({
-  blinkCycle: 4 + Math.random() * 1.6,
+const drawRhythm = (personality: Personality) => ({
+  blinkCycle: personality.blink * (0.88 + Math.random() * 0.24),
   blinkDelay: -Math.random() * 6,
   doubleBlink: Math.random() < 0.35,
   breathDelay: -Math.random() * 3,
@@ -60,12 +76,36 @@ export const Character = ({
   mood = 'idle',
   facing = 'right',
   holding = 0,
+  gesture = null,
+  lookAt = null,
+  tense = false,
+  followPointer = true,
   label,
   className,
 }: CharacterProps) => {
   const look = getAvatar(avatar);
+  const personality = getPersonality(avatar);
   const pieces = useMemo(() => cutPieces(look.seed), [look.seed]);
-  const [rhythm] = useState(drawRhythm);
+  const [rhythm] = useState(() => drawRhythm(personality));
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  // Le regard suit le curseur (souris), par petites poses : 2,6 px au plus, jamais en continu.
+  useEffect(() => {
+    if (!followPointer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    return subscribePointer((x, y) => {
+      const el = wrapRef.current;
+      if (!el) return;
+      const box = el.getBoundingClientRect();
+      const clamp = (v: number) => Math.max(-1, Math.min(1, v));
+      const dx = clamp((x - (box.left + box.width / 2)) / (box.width * 2.5));
+      const dy = clamp((y - (box.top + box.height * 0.46)) / (box.height * 2.5));
+      el.style.setProperty('--gaze-x', `${((facing === 'left' ? -dx : dx) * 2.6).toFixed(2)}px`);
+      el.style.setProperty('--gaze-y', `${(dy * 1.8).toFixed(2)}px`);
+    });
+  }, [facing, followPointer]);
+
+  // Côté de l'écran converti dans le repère du dessin (retourné quand il regarde à gauche).
+  const lookSign = lookAt ? (lookAt === 'left' ? -1 : 1) * (facing === 'left' ? -1 : 1) : 0;
   const colors = {
     '--body': look.color,
     '--shade': look.shade,
@@ -76,11 +116,23 @@ export const Character = ({
     '--blink-delay': `${rhythm.blinkDelay.toFixed(2)}s`,
     '--glance-cycle': `${rhythm.glanceCycle.toFixed(2)}s`,
     '--glance-delay': `${rhythm.glanceDelay.toFixed(2)}s`,
+    '--breath-cycle': `${personality.breath}s`,
+    '--look': lookSign,
   } as CSSProperties;
 
   return (
     <div
-      className={cx(styles.wrap, styles[mood], rhythm.doubleBlink && styles.doubleBlink, className)}
+      ref={wrapRef}
+      data-avatar={avatar}
+      className={cx(
+        styles.wrap,
+        styles[mood],
+        gesture && styles[gesture],
+        lookAt && styles.looking,
+        tense && styles.tense,
+        rhythm.doubleBlink && styles.doubleBlink,
+        className,
+      )}
       style={colors}
     >
       <svg
@@ -100,7 +152,7 @@ export const Character = ({
           </g>
 
           <path className={styles.foot} d={pieces.footLeft} />
-          <path className={styles.foot} d={pieces.footRight} />
+          <path className={cx(styles.foot, styles.footTap)} d={pieces.footRight} />
           <path className={styles.torso} d={pieces.torso} />
           <path className={styles.grain} d={pieces.torso} />
           <path className={styles.belly} d={pieces.belly} filter="url(#paper-lift)" />
@@ -108,16 +160,25 @@ export const Character = ({
           <g className={styles.eyes} filter="url(#paper-lift)">
             <path className={styles.eyeWhite} d={pieces.eyeLeft} />
             <path className={styles.eyeWhite} d={pieces.eyeRight} />
-            <g className={styles.pupils}>
-              <circle cx="68" cy="93" r="6.4" />
-              <circle cx="102" cy="93" r="6.4" />
-              <circle className={styles.glint} cx="70.2" cy="90.4" r="1.9" />
-              <circle className={styles.glint} cx="104.2" cy="90.4" r="1.9" />
+            <g className={styles.gaze}>
+              <g className={styles.pupils}>
+                <circle cx="68" cy="93" r="6.4" />
+                <circle cx="102" cy="93" r="6.4" />
+                <circle className={styles.glint} cx="70.2" cy="90.4" r="1.9" />
+                <circle className={styles.glint} cx="104.2" cy="90.4" r="1.9" />
+              </g>
             </g>
           </g>
           <path className={styles.cheek} d={pieces.cheekLeft} />
           <path className={styles.cheek} d={pieces.cheekRight} />
-          <Mouth mood={mood} />
+          {gesture === 'yawn' ? (
+            <g className={styles.yawnMouth}>
+              <ellipse className={styles.mouth} cx="82" cy="121" rx="8.6" ry="11" />
+              <ellipse className={styles.tongue} cx="82" cy="127.5" rx="5" ry="3.2" />
+            </g>
+          ) : (
+            <Mouth mood={mood} />
+          )}
           <Accessory avatar={avatar} seed={look.seed} />
           <Fastener x={38} y={116} />
 
@@ -196,7 +257,7 @@ const Accessory = ({ avatar, seed }: { avatar: AvatarId; seed: number }) => {
           <path className={styles.accent} d="M36.4 62.4 C35.2 31.6 55.8 17.2 80.6 17.6 C105.4 18 125.8 31.4 124.2 62.8 Z" />
           <path className={styles.grain} d="M36.4 62.4 C35.2 31.6 55.8 17.2 80.6 17.6 C105.4 18 125.8 31.4 124.2 62.8 Z" />
           <path className={styles.accentBand} d={shapes.band} />
-          <path className={styles.accentBand} d={shapes.pompom} />
+          <path className={cx(styles.accentBand, styles.pompom)} d={shapes.pompom} />
         </g>
       );
     case 'mousse':
@@ -229,8 +290,8 @@ const Accessory = ({ avatar, seed }: { avatar: AvatarId; seed: number }) => {
     case 'praline':
       return (
         <g filter="url(#paper-lift)">
-          <path className={styles.accent} d="M98 38 L79.4 26.4 Q73.8 38.6 79.6 50.2 Z" />
-          <path className={styles.accent} d="M98 38 L116.6 26.2 Q122.4 38.4 116.4 50 Z" />
+          <path className={cx(styles.accent, styles.bowWing)} d="M98 38 L79.4 26.4 Q73.8 38.6 79.6 50.2 Z" />
+          <path className={cx(styles.accent, styles.bowWing, styles.bowWingRight)} d="M98 38 L116.6 26.2 Q122.4 38.4 116.4 50 Z" />
           <path className={styles.accentBand} d={shapes.knot} />
         </g>
       );

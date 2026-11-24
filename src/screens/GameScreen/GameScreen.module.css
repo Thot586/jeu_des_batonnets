@@ -144,6 +144,54 @@
   color: rgb(255 248 238 / 0.78);
 }
 
+/* Table vide, une fois la pancarte de fin fermée : un petit mot posé au milieu de la scène */
+.emptyNote {
+  position: relative;
+  align-self: center;
+  display: grid;
+  gap: 0.25rem;
+  max-width: 22rem;
+  margin: auto 0;
+  padding: 0.9rem 1.2rem 1rem;
+  border-radius: var(--r-control);
+  background-color: var(--c-paper);
+  background-image: var(--tex-grain);
+  background-size: 180px 180px;
+  color: var(--c-ink);
+  text-align: center;
+  font-size: var(--fs-sm);
+  box-shadow: var(--shadow-paper);
+  rotate: -1.5deg;
+  animation: note-in calc(var(--frame) * 4) var(--stop-back-4) both;
+  animation-delay: calc(var(--frame) * 8);
+}
+
+.emptyNote::before {
+  content: '';
+  position: absolute;
+  top: -0.5rem;
+  left: 50%;
+  width: 3.6rem;
+  height: 1.1rem;
+  translate: -50% 0;
+  rotate: 3deg;
+  background: rgb(242 167 27 / 0.6);
+  clip-path: polygon(3% 8%, 97% 0, 100% 92%, 0 100%);
+}
+
+.emptyTitle {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  line-height: 1.1;
+}
+
+@keyframes note-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.8rem) rotate(-6deg) scale(0.9);
+  }
+}
+
 .number {
   display: inline-block;
   animation: tick calc(var(--frame) * 3) var(--stop-back-3);
@@ -192,7 +240,7 @@
   justify-items: center;
   gap: 0.75rem;
   margin-inline: calc(var(--gutter) * -1);
-  padding: 0.75rem var(--gutter) max(0.75rem, env(safe-area-inset-bottom));
+  padding: 1.1rem var(--gutter) max(0.75rem, env(safe-area-inset-bottom));
   /* Même kraft que la page (même éclairage, mêmes fibres), fondu vers le haut : pas de bande visible. */
   background:
     radial-gradient(120% 90% at 50% 30%, rgb(255 240 210 / 0.28) 0%, rgb(255 240 210 / 0) 55%, rgb(var(--c-shadow) / 0.1) 100%) fixed,

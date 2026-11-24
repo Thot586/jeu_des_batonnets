@@ -30,7 +30,7 @@
   transform-box: view-box;
   transform-origin: 80px 190px;
   /* Au repos : une pose tenue longtemps, puis une petite respiration (cycle de 3 s). */
-  animation: breathe calc(var(--frame) * 36) steps(1, end) infinite;
+  animation: breathe var(--breath-cycle, 3s) steps(1, end) infinite;
   animation-delay: var(--idle-delay, 0s);
   transition: transform calc(var(--frame) * 4) var(--stop-out-4);
 }
@@ -124,6 +124,7 @@
 .antenna {
   transform-box: view-box;
   transform-origin: 80px 44px;
+  transition: transform calc(var(--frame) * 4) var(--stop-back-4);
   animation: antenna calc(var(--frame) * 30) steps(1, end) infinite;
   animation-delay: var(--idle-delay, 0s);
 }
@@ -237,6 +238,382 @@
 
 .sad .svg {
   filter: saturate(0.55) brightness(0.96);
+}
+
+
+/* ------------------------------------------------------------------
+ * Pièces qui bougent seules (tics de caractère)
+ * ------------------------------------------------------------------ */
+
+.ground {
+  transform-box: view-box;
+  transform-origin: 80px 193px;
+}
+
+.footTap {
+  transform-box: view-box;
+  transform-origin: 112px 189px;
+}
+
+.hair {
+  transform-box: view-box;
+  transform-origin: 80px 62px;
+  transition: transform calc(var(--frame) * 3) var(--stop-back-3);
+}
+
+.glasses {
+  transform-box: view-box;
+  transform-origin: 81px 92px;
+  transition: transform calc(var(--frame) * 3) var(--stop-out-3);
+}
+
+.bowWing {
+  transform-box: view-box;
+  transform-origin: 98px 38px;
+  transition: transform calc(var(--frame) * 3) var(--stop-out-3);
+}
+
+.pompom {
+  transform-box: view-box;
+  transform-origin: 80px 24px;
+}
+
+/* Regard qui suit le curseur (variables posées par le script), seulement au repos */
+.gaze {
+  transform: translate(var(--gaze-x, 0px), var(--gaze-y, 0px));
+}
+
+.aiming .gaze,
+.thinking .gaze,
+.reaching .gaze,
+.pulling .gaze,
+.happy .gaze,
+.sad .gaze,
+.looking .gaze,
+.yawn .gaze {
+  transform: none;
+}
+
+/* Il suit des yeux l'adversaire qui joue */
+.looking .pupils {
+  animation: none;
+  transform: translate(calc(var(--look, 0) * 3.2px), 1px);
+}
+
+/* Fin de partie serrée : on respire et on cligne un peu plus vite */
+.tense .figure {
+  animation-duration: calc(var(--breath-cycle, 3s) * 0.6);
+}
+
+.tense .eyes {
+  animation-duration: calc(var(--blink-cycle, 4.6s) * 0.7);
+}
+
+/* ------------------------------------------------------------------
+ * Gestes ponctuels
+ * ------------------------------------------------------------------ */
+
+/* Encaisser : les bâtonnets arrivent dans la pile, le personnage se tasse une image. */
+.catch .figure {
+  animation: catch calc(var(--frame) * 3) steps(1, end);
+}
+
+/* Bâiller : on s'étire, les yeux se plissent, la bouche s'ouvre lentement (22 images). */
+.yawn .figure {
+  animation: yawn-body calc(var(--frame) * 22) steps(1, end) both;
+}
+
+.yawn .eyes {
+  animation: yawn-eyes calc(var(--frame) * 22) steps(1, end) both;
+}
+
+.yawnMouth {
+  transform-box: view-box;
+  transform-origin: 82px 114px;
+  animation: yawn-mouth calc(var(--frame) * 22) steps(1, end) both;
+}
+
+/* Bleuet et Praline, bien élevés, mettent la main devant la bouche. */
+[data-avatar='bleuet'].yawn .arm,
+[data-avatar='praline'].yawn .arm {
+  animation: yawn-cover calc(var(--frame) * 22) steps(1, end) both;
+}
+
+/* Pépin s'étire les deux bras en l'air. */
+[data-avatar='pepin'].yawn .arm {
+  animation: yawn-stretch calc(var(--frame) * 22) steps(1, end) both;
+}
+
+[data-avatar='pepin'].yawn .backArm {
+  animation: yawn-stretch-back calc(var(--frame) * 22) steps(1, end) both;
+}
+
+/* Mousse laisse tomber son antenne ; Zeste s'aplatit les cheveux. */
+[data-avatar='mousse'].yawn .antenna {
+  animation: yawn-antenna calc(var(--frame) * 22) steps(1, end) both;
+}
+
+[data-avatar='zeste'].yawn .hair {
+  transform: scaleY(0.9);
+}
+
+/* S'occuper : le tic de chacun quand l'attente dure (16 images). */
+[data-avatar='pepin'].fidget .footTap {
+  animation: tap calc(var(--frame) * 4) steps(1, end) 4;
+}
+
+[data-avatar='mousse'].fidget .antenna {
+  animation: antenna-sway calc(var(--frame) * 16) steps(1, end);
+}
+
+[data-avatar='zeste'].fidget .pupils {
+  animation: glance-fast calc(var(--frame) * 16) steps(1, end);
+}
+
+[data-avatar='zeste'].fidget .hair {
+  animation: bristle calc(var(--frame) * 16) steps(1, end);
+}
+
+[data-avatar='bleuet'].fidget .glasses {
+  animation: glasses-push calc(var(--frame) * 16) steps(1, end);
+}
+
+[data-avatar='bleuet'].fidget .arm {
+  animation: push-arm calc(var(--frame) * 16) steps(1, end);
+}
+
+[data-avatar='praline'].fidget .figure {
+  animation: tilt calc(var(--frame) * 16) steps(1, end);
+}
+
+[data-avatar='praline'].fidget .bowWing {
+  animation: bow-flutter calc(var(--frame) * 4) steps(1, end) 3;
+}
+
+[data-avatar='praline'].fidget .bowWingRight,
+[data-avatar='praline'].pulling .bowWingRight {
+  animation-direction: reverse;
+}
+
+/* ------------------------------------------------------------------
+ * Chacun sa manière de tirer
+ * ------------------------------------------------------------------ */
+
+/* Pépin : geste sec et sûr, il se penche franchement et tire fort. */
+[data-avatar='pepin'] .arm {
+  transition-duration: calc(var(--frame) * 3);
+  transition-timing-function: var(--stop-out-3);
+}
+
+[data-avatar='pepin'].reaching .figure {
+  transform: rotate(9deg) translateX(8px);
+}
+
+[data-avatar='pepin'].reaching .arm {
+  transform: rotate(-74deg);
+}
+
+[data-avatar='pepin'].pulling .figure {
+  transform: rotate(-12deg) translateX(-10px);
+}
+
+/* Mousse : tout en douceur ; son antenne traîne derrière, puis continue sur sa lancée. */
+[data-avatar='mousse'] .arm,
+[data-avatar='mousse'] .figure {
+  transition-duration: calc(var(--frame) * 6);
+  transition-timing-function: var(--stop-out-6);
+}
+
+[data-avatar='mousse'].reaching .figure {
+  transform: rotate(3deg) translateX(3px);
+}
+
+[data-avatar='mousse'].reaching .arm {
+  transform: rotate(-62deg);
+}
+
+[data-avatar='mousse'].reaching .antenna {
+  animation: none;
+  transform: rotate(-12deg);
+}
+
+[data-avatar='mousse'].pulling .figure {
+  transform: rotate(-5deg) translateX(-4px);
+}
+
+[data-avatar='mousse'].pulling .antenna {
+  animation: none;
+  transform: rotate(14deg);
+}
+
+/* Zeste : coup d'œil inquiet de côté, bras qui part trop loin, cheveux hérissés en tirant. */
+[data-avatar='zeste'].reaching .arm {
+  transform: rotate(-80deg);
+  transition-duration: calc(var(--frame) * 3);
+  transition-timing-function: var(--stop-back-3);
+}
+
+[data-avatar='zeste'].reaching .pupils {
+  animation: dart calc(var(--frame) * 4) steps(1, end) both;
+}
+
+[data-avatar='zeste'].pulling .figure {
+  transform: rotate(-11deg) translateX(-9px);
+}
+
+[data-avatar='zeste'].pulling .hair {
+  transform: scaleY(1.12);
+}
+
+/* Bleuet : remonte ses lunettes, regarde bien, puis tend le bras avec un temps de retard. */
+[data-avatar='bleuet'].reaching .glasses {
+  animation: glasses-adjust calc(var(--frame) * 4) steps(1, end) both;
+}
+
+[data-avatar='bleuet'].reaching .figure {
+  transform: rotate(4deg) translateX(3px);
+}
+
+[data-avatar='bleuet'].reaching .arm {
+  transform: rotate(-66deg);
+  transition-delay: calc(var(--frame) * 3);
+}
+
+[data-avatar='bleuet'].reaching .pupils {
+  transform: translate(3px, 4px);
+}
+
+[data-avatar='bleuet'].pulling .figure {
+  transform: rotate(-5deg) translateX(-4px);
+}
+
+/* Praline : penche la tête, tire d'un petit mouvement de poignet, le nœud frémit. */
+[data-avatar='praline'].reaching .figure {
+  transform: rotate(7deg) translateX(5px);
+}
+
+[data-avatar='praline'].reaching .arm {
+  transform: rotate(-64deg);
+}
+
+[data-avatar='praline'].pulling .figure {
+  transform: rotate(-7deg) translateX(-6px);
+}
+
+[data-avatar='praline'].pulling .bowWing {
+  animation: bow-flutter calc(var(--frame) * 4) steps(1, end) 2;
+}
+
+/* ------------------------------------------------------------------
+ * Chacun sa manière de réfléchir (l'ordinateur)
+ * ------------------------------------------------------------------ */
+
+[data-avatar='pepin'].thinking .footTap {
+  animation: tap calc(var(--frame) * 4) steps(1, end) infinite;
+}
+
+[data-avatar='mousse'].thinking .antenna {
+  animation: antenna-think calc(var(--frame) * 24) steps(1, end) infinite;
+}
+
+[data-avatar='zeste'].thinking .pupils {
+  animation: glance-fast calc(var(--frame) * 16) steps(1, end) infinite;
+}
+
+[data-avatar='bleuet'].thinking .arm {
+  transform: rotate(92deg);
+}
+
+[data-avatar='bleuet'].thinking .pupils {
+  transform: translate(-2px, -4px);
+}
+
+[data-avatar='praline'].thinking .figure {
+  transform: rotate(-6deg);
+}
+
+/* ------------------------------------------------------------------
+ * Chacun sa manière de gagner, et de perdre
+ * ------------------------------------------------------------------ */
+
+/* L'ombre au sol rétrécit quand le personnage saute, et s'élargit à l'atterrissage. */
+.happy .ground {
+  animation: shadow-hop calc(var(--frame) * 8) steps(1, end) infinite;
+}
+
+[data-avatar='pepin'].happy .pompom {
+  animation: pompom calc(var(--frame) * 8) steps(1, end) infinite;
+}
+
+[data-avatar='mousse'].happy .figure {
+  animation: hop-soft calc(var(--frame) * 12) steps(1, end) infinite;
+}
+
+[data-avatar='mousse'].happy .ground {
+  animation: shadow-hop-soft calc(var(--frame) * 12) steps(1, end) infinite;
+}
+
+[data-avatar='mousse'].happy .antenna {
+  animation: antenna-spin calc(var(--frame) * 12) steps(1, end) infinite;
+}
+
+[data-avatar='zeste'].happy .figure {
+  animation: hop-quick calc(var(--frame) * 6) steps(1, end) infinite;
+}
+
+[data-avatar='zeste'].happy .ground {
+  animation: shadow-hop-quick calc(var(--frame) * 6) steps(1, end) infinite;
+}
+
+[data-avatar='zeste'].happy .backArm {
+  animation: wave-back calc(var(--frame) * 4) steps(1, end) infinite;
+}
+
+[data-avatar='bleuet'].happy .figure {
+  animation: nod calc(var(--frame) * 12) steps(1, end) infinite;
+}
+
+[data-avatar='bleuet'].happy .arm {
+  animation: none;
+  transform: rotate(-140deg);
+}
+
+[data-avatar='bleuet'].happy .ground,
+[data-avatar='praline'].happy .ground {
+  animation: none;
+}
+
+[data-avatar='praline'].happy .figure {
+  animation: twirl calc(var(--frame) * 24) steps(1, end) infinite;
+}
+
+[data-avatar='pepin'].sad .footTap {
+  animation: kick calc(var(--frame) * 24) steps(1, end) infinite;
+}
+
+[data-avatar='mousse'].sad .antenna {
+  animation: none;
+  transform: rotate(-34deg);
+}
+
+[data-avatar='zeste'].sad .hair {
+  transform: scaleY(0.8);
+}
+
+[data-avatar='bleuet'].sad .glasses {
+  transform: translateY(3.5px);
+}
+
+[data-avatar='praline'].sad .bowWing {
+  transform: rotate(-16deg);
+}
+
+[data-avatar='praline'].sad .bowWingRight {
+  transform: rotate(16deg);
+}
+
+[data-avatar='praline'].sad .pupils {
+  transform: translate(-3px, 3px);
 }
 
 /* Bulle de réflexion : un petit papier découpé, les points s'allument tour à tour */
@@ -407,5 +784,564 @@
   from {
     opacity: 0;
     transform: translateY(0.4rem) scale(0.4);
+  }
+}
+
+@keyframes catch {
+  0% {
+    transform: translateY(1.5px) scale(1.04, 0.95);
+  }
+  33% {
+    transform: translateY(0.5px) scale(1.015, 0.985);
+  }
+  66% {
+    transform: none;
+  }
+}
+
+@keyframes yawn-body {
+  0% {
+    transform: none;
+  }
+  9% {
+    transform: translateY(-1px) scaleY(1.01);
+  }
+  18% {
+    transform: translateY(-2.5px) scaleY(1.03) rotate(-1deg);
+  }
+  64% {
+    transform: translateY(-1px) scaleY(1.01);
+  }
+  82% {
+    transform: translateY(0.6px) scaleY(0.99);
+  }
+  91% {
+    transform: none;
+  }
+}
+
+@keyframes yawn-eyes {
+  0% {
+    transform: scaleY(1);
+  }
+  14% {
+    transform: scaleY(0.6);
+  }
+  23% {
+    transform: scaleY(0.22);
+  }
+  68% {
+    transform: scaleY(0.6);
+  }
+  82% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes yawn-mouth {
+  0% {
+    transform: scale(0.3, 0.25);
+  }
+  9% {
+    transform: scale(0.55, 0.5);
+  }
+  18% {
+    transform: scale(0.85, 0.85);
+  }
+  27% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.06, 1.1);
+  }
+  68% {
+    transform: scale(0.7, 0.6);
+  }
+  77% {
+    transform: scale(0.4, 0.3);
+  }
+  86% {
+    transform: scale(0.25, 0.15);
+  }
+}
+
+@keyframes yawn-cover {
+  0% {
+    transform: none;
+  }
+  14% {
+    transform: rotate(60deg);
+  }
+  23% {
+    transform: rotate(104deg);
+  }
+  64% {
+    transform: rotate(100deg);
+  }
+  77% {
+    transform: rotate(40deg);
+  }
+  86% {
+    transform: none;
+  }
+}
+
+@keyframes yawn-stretch {
+  0% {
+    transform: none;
+  }
+  14% {
+    transform: rotate(-90deg);
+  }
+  23% {
+    transform: rotate(-150deg);
+  }
+  64% {
+    transform: rotate(-146deg);
+  }
+  77% {
+    transform: rotate(-70deg);
+  }
+  86% {
+    transform: none;
+  }
+}
+
+@keyframes yawn-stretch-back {
+  0% {
+    transform: none;
+  }
+  14% {
+    transform: rotate(80deg);
+  }
+  23% {
+    transform: rotate(140deg);
+  }
+  64% {
+    transform: rotate(136deg);
+  }
+  77% {
+    transform: rotate(60deg);
+  }
+  86% {
+    transform: none;
+  }
+}
+
+@keyframes yawn-antenna {
+  0% {
+    transform: none;
+  }
+  23% {
+    transform: rotate(-22deg);
+  }
+  64% {
+    transform: rotate(-26deg);
+  }
+  82% {
+    transform: rotate(4deg);
+  }
+  91% {
+    transform: none;
+  }
+}
+
+@keyframes tap {
+  0% {
+    transform: rotate(-11deg) translateY(-1px);
+  }
+  50% {
+    transform: none;
+  }
+}
+
+@keyframes kick {
+  0% {
+    transform: none;
+  }
+  66% {
+    transform: rotate(-14deg) translateY(-2px);
+  }
+  75% {
+    transform: rotate(4deg);
+  }
+  83% {
+    transform: none;
+  }
+}
+
+@keyframes antenna-sway {
+  0% {
+    transform: none;
+  }
+  12.5% {
+    transform: rotate(-10deg);
+  }
+  25% {
+    transform: rotate(-15deg);
+  }
+  37.5% {
+    transform: rotate(-6deg);
+  }
+  50% {
+    transform: rotate(9deg);
+  }
+  62.5% {
+    transform: rotate(14deg);
+  }
+  75% {
+    transform: rotate(6deg);
+  }
+  87.5% {
+    transform: none;
+  }
+}
+
+@keyframes antenna-think {
+  0% {
+    transform: rotate(-6deg);
+  }
+  25% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(6deg);
+  }
+  75% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes antenna-spin {
+  0% {
+    transform: rotate(-14deg);
+  }
+  25% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(18deg);
+  }
+  75% {
+    transform: rotate(-4deg);
+  }
+}
+
+@keyframes glance-fast {
+  0% {
+    transform: translate(-3px, 0);
+  }
+  25% {
+    transform: translate(3px, 0.5px);
+  }
+  37.5% {
+    transform: translate(-2px, -1px);
+  }
+  62.5% {
+    transform: translate(3px, 1px);
+  }
+  87.5% {
+    transform: none;
+  }
+}
+
+@keyframes dart {
+  0% {
+    transform: translate(-3px, -1px);
+  }
+  50% {
+    transform: translate(3px, 3px);
+  }
+}
+
+@keyframes bristle {
+  0% {
+    transform: none;
+  }
+  37.5% {
+    transform: scaleY(1.08);
+  }
+  62.5% {
+    transform: scaleY(1.03);
+  }
+  87.5% {
+    transform: none;
+  }
+}
+
+@keyframes glasses-push {
+  0% {
+    transform: none;
+  }
+  25% {
+    transform: translateY(1.8px);
+  }
+  56% {
+    transform: translateY(-1.2px);
+  }
+  69% {
+    transform: none;
+  }
+}
+
+@keyframes glasses-adjust {
+  0% {
+    transform: translateY(-1.4px);
+  }
+  50% {
+    transform: translateY(-0.4px);
+  }
+  75% {
+    transform: none;
+  }
+}
+
+@keyframes push-arm {
+  0% {
+    transform: none;
+  }
+  31% {
+    transform: rotate(80deg);
+  }
+  44% {
+    transform: rotate(140deg);
+  }
+  62% {
+    transform: rotate(140deg);
+  }
+  75% {
+    transform: rotate(60deg);
+  }
+  87.5% {
+    transform: none;
+  }
+}
+
+@keyframes tilt {
+  0% {
+    transform: rotate(2deg);
+  }
+  25% {
+    transform: rotate(4.5deg);
+  }
+  75% {
+    transform: rotate(2deg);
+  }
+  87.5% {
+    transform: none;
+  }
+}
+
+@keyframes bow-flutter {
+  0% {
+    transform: rotate(-8deg);
+  }
+  50% {
+    transform: rotate(6deg);
+  }
+}
+
+@keyframes pompom {
+  0% {
+    transform: none;
+  }
+  25% {
+    transform: translateY(2px) scale(1.05, 0.92);
+  }
+  37.5% {
+    transform: translateY(3px) scale(1.08, 0.88);
+  }
+  62.5% {
+    transform: translateY(-1px);
+  }
+  75% {
+    transform: translateY(-3px) scale(0.94, 1.08);
+  }
+}
+
+@keyframes wave-back {
+  0% {
+    transform: rotate(150deg);
+  }
+  50% {
+    transform: rotate(124deg);
+  }
+}
+
+@keyframes hop-soft {
+  0% {
+    transform: none;
+  }
+  16.7% {
+    transform: translateY(-5px);
+  }
+  33.3% {
+    transform: translateY(-9px) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(-1.5deg);
+  }
+  66.7% {
+    transform: translateY(-6px) rotate(-0.5deg);
+  }
+  83.3% {
+    transform: translateY(0) scale(1.02, 0.98);
+  }
+}
+
+@keyframes hop-quick {
+  0% {
+    transform: translateY(0) scale(1.04, 0.95);
+  }
+  16.7% {
+    transform: translateY(-14px) scale(0.97, 1.04);
+  }
+  33.3% {
+    transform: translateY(-24px) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-18px) rotate(2deg);
+  }
+  66.7% {
+    transform: translateY(-6px);
+  }
+  83.3% {
+    transform: translateY(0) scale(1.05, 0.94);
+  }
+}
+
+@keyframes nod {
+  0% {
+    transform: none;
+  }
+  16.7% {
+    transform: rotate(3deg) translateY(1px);
+  }
+  33.3% {
+    transform: none;
+  }
+  50% {
+    transform: rotate(3deg) translateY(1px);
+  }
+  66.7% {
+    transform: translateY(-2px) scaleY(1.02);
+  }
+}
+
+@keyframes twirl {
+  0% {
+    transform: none;
+  }
+  29% {
+    transform: rotate(3deg);
+  }
+  58% {
+    transform: translateY(-3px);
+  }
+  62.5% {
+    transform: translateY(-6px) scaleX(0.45);
+  }
+  66.7% {
+    transform: translateY(-8px) scaleX(-0.35);
+  }
+  70.8% {
+    transform: translateY(-8px) scaleX(-1);
+  }
+  75% {
+    transform: translateY(-7px) scaleX(-0.4);
+  }
+  79.2% {
+    transform: translateY(-5px) scaleX(0.45);
+  }
+  83.3% {
+    transform: translateY(0) scale(1.03, 0.97);
+  }
+  87.5% {
+    transform: none;
+  }
+}
+
+@keyframes shadow-hop {
+  0% {
+    transform: scale(1.06, 1);
+    opacity: 1;
+  }
+  12.5% {
+    transform: scale(0.9);
+    opacity: 0.85;
+  }
+  25% {
+    transform: scale(0.78);
+    opacity: 0.7;
+  }
+  37.5% {
+    transform: scale(0.74);
+    opacity: 0.65;
+  }
+  50% {
+    transform: scale(0.78);
+    opacity: 0.7;
+  }
+  62.5% {
+    transform: scale(0.9);
+    opacity: 0.85;
+  }
+  75% {
+    transform: scale(1.08, 1);
+    opacity: 1;
+  }
+  87.5% {
+    transform: none;
+  }
+}
+
+@keyframes shadow-hop-soft {
+  0% {
+    transform: none;
+  }
+  16.7% {
+    transform: scale(0.94);
+    opacity: 0.9;
+  }
+  33.3% {
+    transform: scale(0.88);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(0.86);
+    opacity: 0.78;
+  }
+  66.7% {
+    transform: scale(0.92);
+    opacity: 0.88;
+  }
+  83.3% {
+    transform: scale(1.03, 1);
+  }
+}
+
+@keyframes shadow-hop-quick {
+  0% {
+    transform: scale(1.06, 1);
+  }
+  16.7% {
+    transform: scale(0.84);
+    opacity: 0.8;
+  }
+  33.3% {
+    transform: scale(0.7);
+    opacity: 0.62;
+  }
+  50% {
+    transform: scale(0.76);
+    opacity: 0.68;
+  }
+  66.7% {
+    transform: scale(0.92);
+    opacity: 0.88;
+  }
+  83.3% {
+    transform: scale(1.07, 1);
+    opacity: 1;
   }
 }
