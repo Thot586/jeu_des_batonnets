@@ -33,13 +33,23 @@
  * mais peu haut ne fasse pas déborder la page. Toute l'interface étant en rem,
  * elle s'agrandit d'un bloc sur les écrans géants.
  */
+/*
+ * Le kraft du mur du fond : fibres allongées, grain fin, léger vignettage comme sous une lampe.
+ * Il est posé sur la racine de la page (et non sur body) pour que les plans du décor
+ * (collines, nuages) puissent glisser entre le mur et la scène.
+ */
 html {
   -webkit-text-size-adjust: 100%;
   font-size: clamp(100%, min(0.95vw, 1.7vh), 240%);
-  background: var(--c-kraft);
+  background-color: var(--c-kraft);
+  background-image:
+    radial-gradient(120% 90% at 50% 30%, rgb(255 240 210 / 0.28) 0%, rgb(255 240 210 / 0) 55%, rgb(var(--c-shadow) / 0.1) 100%),
+    var(--tex-fibers),
+    var(--tex-grain);
+  background-size: 100% 100%, 420px 420px, 180px 180px;
+  background-attachment: fixed, scroll, scroll;
 }
 
-/* Le kraft : fibres allongées, grain fin, et un léger vignettage comme sous une lampe. */
 body {
   margin: 0;
   min-height: 100dvh;
@@ -48,14 +58,15 @@ body {
   font-weight: 450;
   line-height: 1.45;
   color: var(--c-ink);
-  background-color: var(--c-kraft);
-  background-image:
-    radial-gradient(120% 90% at 50% 30%, rgb(255 240 210 / 0.28) 0%, rgb(255 240 210 / 0) 55%, rgb(var(--c-shadow) / 0.1) 100%),
-    var(--tex-fibers),
-    var(--tex-grain);
-  background-size: 100% 100%, 420px 420px, 180px 180px;
-  background-attachment: fixed, scroll, scroll;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Mouvement réduit : pas de parallaxe, la caméra reste au centre. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --px: 0 !important;
+    --py: 0 !important;
+  }
 }
 
 h1,

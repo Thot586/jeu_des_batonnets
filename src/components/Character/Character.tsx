@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { blobPath, roundRectPath, stripPath } from '../../art/paper';
 import { subscribePointer } from '../../art/pointer';
 import { getAvatar } from '../../game/avatars';
@@ -30,6 +30,12 @@ interface CharacterProps {
   tense?: boolean;
   /** Suit le curseur du regard quand il ne fait rien d'autre. */
   followPointer?: boolean;
+  /** Lunettes de soleil (série de victoires). Elles tombent sur le nez, et en tombent. */
+  shades?: boolean;
+  /** Liseré blanc d'autocollant autour de la silhouette (le gagnant). */
+  sticker?: boolean;
+  /** Ombre portée sur le mur du fond (désactivée dans les petites vignettes). */
+  castShadow?: boolean;
   /** Texte alternatif ; sans lui le dessin est décoratif. */
   label?: string;
   className?: string;
@@ -80,6 +86,9 @@ export const Character = ({
   lookAt = null,
   tense = false,
   followPointer = true,
+  shades = false,
+  sticker = false,
+  castShadow = true,
   label,
   className,
 }: CharacterProps) => {
@@ -88,6 +97,7 @@ export const Character = ({
   const pieces = useMemo(() => cutPieces(look.seed), [look.seed]);
   const [rhythm] = useState(() => drawRhythm(personality));
   const wrapRef = useRef<HTMLDivElement>(null);
+  const shadesPhase = useShadesPhase(shades);
 
   // Le regard suit le curseur (souris), par petites poses : 2,6 px au plus, jamais en continu.
   useEffect(() => {
@@ -130,6 +140,7 @@ export const Character = ({
         gesture && styles[gesture],
         lookAt && styles.looking,
         tense && styles.tense,
+        castShadow && styles.wallShadow,
         rhythm.doubleBlink && styles.doubleBlink,
         className,
       )}
@@ -143,6 +154,7 @@ export const Character = ({
         aria-hidden={label ? undefined : true}
       >
         <path className={styles.ground} d={pieces.ground} />
+        <g filter={sticker ? 'url(#paper-sticker)' : undefined}>
         <g className={styles.figure}>
           <g className={styles.backArm}>
             <g transform="translate(38 116) rotate(22)">
@@ -153,6 +165,8 @@ export const Character = ({
 
           <path className={styles.foot} d={pieces.footLeft} />
           <path className={cx(styles.foot, styles.footTap)} d={pieces.footRight} />
+          {/* Tranche du carton : la même découpe, décalée, un ton plus sombre. */}
+          <path className={styles.edge} d={pieces.torso} transform="translate(1.3 1.9)" />
           <path className={styles.torso} d={pieces.torso} />
           <path className={styles.grain} d={pieces.torso} />
           <path className={styles.belly} d={pieces.belly} filter="url(#paper-lift)" />
@@ -179,7 +193,8 @@ export const Character = ({
           ) : (
             <Mouth mood={mood} />
           )}
-          <Accessory avatar={avatar} seed={look.seed} />
+          <Accessory avatar={avatar} seed={look.seed} hideGlasses={shadesPhase === 'on'} />
+          {shadesPhase !== 'off' && <Shades phase={shadesPhase} />}
           <Fastener x={38} y={116} />
 
           <g className={styles.arm}>
@@ -190,6 +205,7 @@ export const Character = ({
             </g>
             <Fastener x={122} y={116} />
           </g>
+        </g>
         </g>
       </svg>
       {mood === 'thinking' && (
@@ -239,7 +255,60 @@ const Mouth = ({ mood }: { mood: Mood }) => {
   }
 };
 
-const Accessory = ({ avatar, seed }: { avatar: AvatarId; seed: number }) => {
+type ShadesPhase = 'off' | 'arriving' | 'on' | 'leaving';
+
+/**
+ * Cycle de vie des lunettes : déjà portées à l'affichage (sans animation), elles tombent
+ * sur le nez quand la série commence, et glissent puis tombent à la première défaite.
+ */
+const useShadesPhase = (shades: boolean): ShadesPhase => {
+  const [phase, setPhase] = useState<ShadesPhase>(shades ? 'on' : 'off');
+  // Comparé à la valeur précédente (et non à « premier rendu ») : sûr en mode strict.
+  const previous = useRef(shades);
+
+  useEffect(() => {
+    if (previous.current === shades) return;
+    previous.current = shades;
+    const frame = 1000 / 12;
+    if (shades) {
+      setPhase('arriving');
+      const id = window.setTimeout(() => setPhase('on'), 6 * frame);
+      return () => window.clearTimeout(id);
+    }
+    setPhase((current) => (current === 'off' ? 'off' : 'leaving'));
+    const id = window.setTimeout(() => setPhase('off'), 9 * frame);
+    return () => window.clearTimeout(id);
+  }, [shades]);
+
+  return phase;
+};
+
+/** Lunettes de soleil en papier noir, avec un reflet qui passe de temps en temps. */
+const LENS_LEFT = 'M44 76.4 L81 76 L80.4 92 Q79.6 106 66 107.6 Q50 108.4 46.4 96 Z';
+const LENS_RIGHT = 'M120 76.4 L83 76 L83.6 92 Q84.4 106 98 107.6 Q114 108.4 117.6 96 Z';
+
+const Shades = ({ phase }: { phase: ShadesPhase }) => {
+  const clip = useId();
+  return (
+    <g className={cx(styles.shades, styles[`shades-${phase}`])} filter="url(#paper-lift)">
+      <defs>
+        <clipPath id={clip}>
+          <path d={LENS_LEFT} />
+          <path d={LENS_RIGHT} />
+        </clipPath>
+      </defs>
+      <path className={styles.shadesFrame} d="M40.6 74.8 L123.4 74.2 L123 80.2 L41 80.6 Z" />
+      <path className={styles.shadesLens} d={LENS_LEFT} />
+      <path className={styles.shadesLens} d={LENS_RIGHT} />
+      <g clipPath={`url(#${clip})`}>
+        <path className={styles.shadesGlint} d="M53 78 L59.4 78 L52 106 L45.6 106 Z" />
+        <path className={cx(styles.shadesGlint, styles.shadesGlintRight)} d="M91 78 L97.4 78 L90 106 L83.6 106 Z" />
+      </g>
+    </g>
+  );
+};
+
+const Accessory = ({ avatar, seed, hideGlasses = false }: { avatar: AvatarId; seed: number; hideGlasses?: boolean }) => {
   const shapes = useMemo(
     () => ({
       pompom: blobPath(80, 15, 9.5, 9, seed + 20, 0.12),
@@ -280,11 +349,11 @@ const Accessory = ({ avatar, seed }: { avatar: AvatarId; seed: number }) => {
       return (
         <g filter="url(#paper-lift)">
           <path className={styles.hair} d="M66.4 45.2 Q70.6 24.2 91.4 28.4 Q96.4 29.8 93.8 33.2 Q84.2 31.4 86.6 43.6 Z" />
-          <path
+          {!hideGlasses && <path
             className={styles.glasses}
             fillRule="evenodd"
             d="M64 74 A18 18 0 1 0 64.01 74 Z M64 79 A13 13 0 1 1 63.99 79 Z M98 74 A18 18 0 1 0 98.01 74 Z M98 79 A13 13 0 1 1 97.99 79 Z M78.6 88.6 Q81 84.6 83.4 88.6 L83.4 91 Q81 88.4 78.6 91 Z"
-          />
+          />}
         </g>
       );
     case 'praline':

@@ -78,6 +78,20 @@
   color: var(--c-ink-soft);
 }
 
+.streak {
+  display: inline-block;
+  margin-top: 0.6rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 0.45rem 0.6rem 0.4rem 0.55rem;
+  background: var(--tex-grain), var(--c-saffron);
+  background-size: 180px 180px, auto;
+  color: var(--c-ink);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  rotate: -1.5deg;
+  box-shadow: var(--shadow-paper-press);
+}
+
 .scores {
   display: flex;
   justify-content: center;

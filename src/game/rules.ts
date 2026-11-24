@@ -56,6 +56,9 @@ export const formatChoices = (max: number): string => {
   return `${values.slice(0, -1).join(', ')} ou ${values[values.length - 1]}`;
 };
 
+/** À partir de 3 victoires d'affilée, le joueur porte des lunettes de soleil. */
+export const COOL_STREAK = 3;
+
 export const plural = (count: number, singular: string, pluralForm = `${singular}s`): string =>
   `${count} ${count > 1 ? pluralForm : singular}`;
 

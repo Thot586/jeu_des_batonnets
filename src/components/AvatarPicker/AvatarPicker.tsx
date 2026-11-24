@@ -47,7 +47,7 @@ export const AvatarPicker = ({ value, taken, onChange }: AvatarPickerProps) => {
                 onChange={() => choose(avatar.id)}
               />
               <span className={styles.face} style={{ backgroundColor: avatar.belly }}>
-                <Character avatar={avatar.id} className={styles.mini} />
+                <Character avatar={avatar.id} castShadow={false} className={styles.mini} />
                 <span className={styles.badge} aria-hidden="true">
                   <svg viewBox="0 0 16 16">
                     <path d="M3.4 8.6 L6.6 11.6 L12.8 4.4" />

@@ -1,0 +1,76 @@
+/*
+ * Les draperies n'apparaissent que là où il reste de la marge de chaque côté du jeu :
+ * leur largeur est la marge disponible, plafonnée. Elles ne passent jamais sur le contenu.
+ */
+.frame {
+  display: none;
+}
+
+@media (min-width: 80em) {
+  .frame {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    --drape: clamp(0rem, calc((100vw - var(--page-max)) / 2 - 0.5rem), 7.5rem);
+  }
+}
+
+.drape {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--drape);
+  /* Le bord découpé est porté par un pseudo-élément, pour que l'ombre ne soit pas rognée. */
+  translate: calc(var(--px, 0) * -0.4rem) calc(var(--py, 0) * -0.15rem);
+  filter: drop-shadow(0 0 0.7rem rgb(var(--c-shadow) / 0.45));
+}
+
+.drape::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  clip-path: var(--cut);
+  background:
+    var(--tex-grain),
+    linear-gradient(90deg, rgb(var(--c-shadow) / 0.22), transparent 30%, transparent 70%, rgb(var(--c-shadow) / 0.22)),
+    repeating-linear-gradient(
+      90deg,
+      var(--c-tomato) 0 1.6rem,
+      #c9351f 1.6rem 1.75rem,
+      #d23b24 1.75rem 2.9rem,
+      #b02f1d 2.9rem 3.05rem
+    );
+  background-size: 180px 180px, auto, auto;
+}
+
+.left {
+  left: 0;
+}
+
+.right {
+  right: 0;
+}
+
+/* L'embrasse : une bande de papier safran qui retient la draperie. */
+.tie {
+  position: absolute;
+  top: 53%;
+  width: 72%;
+  height: 1.1rem;
+  border-radius: 0.35rem 0.5rem 0.4rem 0.3rem;
+  background: var(--tex-grain), var(--c-saffron);
+  background-size: 180px 180px, auto;
+  box-shadow: var(--shadow-paper);
+}
+
+.left .tie {
+  left: 0;
+  rotate: 4deg;
+}
+
+.right .tie {
+  right: 0;
+  rotate: -4deg;
+}

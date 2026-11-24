@@ -1,7 +1,8 @@
 /**
  * Définitions SVG partagées par tous les dessins de papier, montées une seule fois.
  * - paper-grain : grain de fibre posé par-dessus les aplats de gouache ;
- * - paper-lift : ombre d'une découpe posée sur une autre (épaisseur du papier).
+ * - paper-lift : ombre d'une découpe posée sur une autre (épaisseur du papier) ;
+ * - paper-sticker : liseré blanc d'autocollant autour du gagnant.
  */
 export const PaperDefs = () => (
   <svg width="0" height="0" aria-hidden="true" focusable="false" style={{ position: 'absolute' }}>
@@ -13,6 +14,21 @@ export const PaperDefs = () => (
       <pattern id="paper-grain" patternUnits="userSpaceOnUse" width="90" height="90">
         <rect width="90" height="90" filter="url(#paper-noise)" />
       </pattern>
+      {/* Autocollant : la silhouette est bordée de papier blanc, posé un peu au-dessus du fond. */}
+      <filter id="paper-sticker" x="-15%" y="-15%" width="130%" height="130%">
+        <feMorphology in="SourceAlpha" operator="dilate" radius="4.2" result="grown" />
+        <feFlood floodColor="#fbf7ec" result="white" />
+        <feComposite in="white" in2="grown" operator="in" result="border" />
+        <feOffset in="grown" dx="1.6" dy="2.6" result="offset" />
+        <feGaussianBlur in="offset" stdDeviation="1.6" result="blurred" />
+        <feFlood floodColor="#2a1f17" floodOpacity="0.32" result="ink" />
+        <feComposite in="ink" in2="blurred" operator="in" result="shadow" />
+        <feMerge>
+          <feMergeNode in="shadow" />
+          <feMergeNode in="border" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
       <filter id="paper-lift" x="-20%" y="-20%" width="150%" height="150%">
         <feDropShadow dx="1.1" dy="1.6" stdDeviation="0.5" floodColor="#2a1f17" floodOpacity="0.32" />
       </filter>

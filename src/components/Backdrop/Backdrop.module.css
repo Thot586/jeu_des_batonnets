@@ -1,0 +1,54 @@
+/*
+ * Le décor ne s'installe que sur les écrans assez grands pour avoir de la marge autour du jeu.
+ * Sur téléphone, la barre d'actions collée en bas le recouvrirait de toute façon.
+ */
+.backdrop {
+  display: none;
+}
+
+@media (min-width: 48em) {
+  .backdrop {
+    display: block;
+    position: fixed;
+    inset: auto -3rem -1rem;
+    height: min(32vh, 22rem);
+    z-index: -1;
+    pointer-events: none;
+  }
+}
+
+.far,
+.near {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * Plus un plan est loin, plus il suit la souris : le plus lointain se décale le plus,
+ * la scène (le jeu) ne bouge pas, le cadre de scène part en sens inverse.
+ * Chaque découpe pose une ombre floue sur le plan derrière elle : c'est ce qui les décolle.
+ */
+.far {
+  translate: calc(var(--px, 0) * 1.1rem) calc(var(--py, 0) * 0.35rem);
+  filter: drop-shadow(0.2rem -0.1rem 0.5rem rgb(var(--c-shadow) / 0.2));
+}
+
+.near {
+  translate: calc(var(--px, 0) * 0.55rem) calc(var(--py, 0) * 0.2rem);
+  filter: drop-shadow(0.25rem -0.15rem 0.55rem rgb(var(--c-shadow) / 0.26));
+}
+
+.sun {
+  fill: var(--c-saffron);
+  opacity: 0.9;
+}
+
+.farHills {
+  fill: #e3d0aa;
+}
+
+.nearHills {
+  fill: #c3d3ae;
+}

@@ -19,6 +19,8 @@ interface GameScreenProps {
   round: number;
   firstPlayer: PlayerId;
   scores: Scores;
+  /** Victoires d'affilée : à partir de 3, le joueur porte des lunettes de soleil. */
+  streaks: Scores;
   onRoundEnd: (winner: PlayerId) => void;
   onRematch: () => void;
   onOpenSettings: () => void;
@@ -31,6 +33,7 @@ export const GameScreen = ({
   round,
   firstPlayer,
   scores,
+  streaks,
   onRoundEnd,
   onRematch,
   onOpenSettings,
@@ -195,6 +198,8 @@ export const GameScreen = ({
             isTurn={winner === null && game.current === id}
             collected={game.taken[id]}
             wins={scores[id]}
+            streak={streaks[id]}
+            sticker={winner === id}
             holding={pending?.player === id && pending.stage === 'pull' ? pending.count : 0}
             gesture={gestureFor(id)}
             lookAt={lookAtFor(id)}
@@ -275,6 +280,7 @@ export const GameScreen = ({
           winner={winner}
           lastStick={settings.lastStick}
           scores={scores}
+          streaks={streaks}
           onRematch={onRematch}
           onOpenSettings={onOpenSettings}
         />

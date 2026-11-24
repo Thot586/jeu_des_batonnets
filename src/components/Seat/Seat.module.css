@@ -137,6 +137,11 @@
   color: var(--c-ink-soft);
 }
 
+.streak {
+  color: var(--c-ink);
+  font-weight: 700;
+}
+
 .wins {
   font-size: var(--fs-xs);
   font-weight: 600;

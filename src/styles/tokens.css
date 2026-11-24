@@ -70,10 +70,35 @@
   --r-control: 0.8rem 0.95rem 0.75rem 0.9rem / 0.9rem 0.75rem 0.95rem 0.8rem;
   --r-pill: 999px;
 
-  /* Ombres de papier : une ombre nette de découpe, une ombre douce de lumière */
-  --shadow-paper: 0.1rem 0.14rem 0 rgb(var(--c-shadow) / 0.22), 0.3rem 0.55rem 0.9rem -0.35rem rgb(var(--c-shadow) / 0.45);
-  --shadow-paper-lift: 0.16rem 0.24rem 0 rgb(var(--c-shadow) / 0.2), 0.5rem 0.9rem 1.2rem -0.4rem rgb(var(--c-shadow) / 0.42);
-  --shadow-paper-press: 0.04rem 0.06rem 0 rgb(var(--c-shadow) / 0.28), 0.1rem 0.2rem 0.3rem -0.1rem rgb(var(--c-shadow) / 0.35);
+  /*
+   * Ombres de papier, en trois couches comme sous une vraie lampe :
+   * 1. la tranche du carton (trois décalages nets empilés, du plus foncé au plus clair),
+   * 2. l'ombre de contact, courte et douce,
+   * 3. l'ombre ambiante, large et légère : elle dit à quelle hauteur la découpe flotte.
+   * La lumière vient d'en haut à gauche ; plus une pièce est haute, plus elle s'étire.
+   */
+  --shadow-paper:
+    0.05rem 0.07rem 0 rgb(var(--c-shadow) / 0.26),
+    0.1rem 0.14rem 0 rgb(var(--c-shadow) / 0.18),
+    0.15rem 0.21rem 0 rgb(var(--c-shadow) / 0.1),
+    0.3rem 0.55rem 0.9rem -0.35rem rgb(var(--c-shadow) / 0.42),
+    0.9rem 1.6rem 2.4rem -1.2rem rgb(var(--c-shadow) / 0.28);
+  --shadow-paper-lift:
+    0.06rem 0.09rem 0 rgb(var(--c-shadow) / 0.24),
+    0.12rem 0.18rem 0 rgb(var(--c-shadow) / 0.16),
+    0.18rem 0.27rem 0 rgb(var(--c-shadow) / 0.09),
+    0.5rem 0.9rem 1.2rem -0.4rem rgb(var(--c-shadow) / 0.4),
+    1.3rem 2.2rem 3rem -1.4rem rgb(var(--c-shadow) / 0.3);
+  --shadow-paper-press:
+    0.04rem 0.06rem 0 rgb(var(--c-shadow) / 0.28),
+    0.08rem 0.12rem 0 rgb(var(--c-shadow) / 0.12),
+    0.1rem 0.2rem 0.3rem -0.1rem rgb(var(--c-shadow) / 0.32);
+  /* Tranche d'une pièce épaisse (la scène), vue d'un peu au-dessus */
+  --edge-stage:
+    0 0.12rem 0 var(--c-ultramarine-deep),
+    0 0.24rem 0 var(--c-ultramarine-deep),
+    0 0.36rem 0 #161f57,
+    0 0.48rem 0 #161f57;
   --shadow-soft: 0 1.6rem 3rem -1.9rem rgb(var(--c-shadow) / 0.6);
   --lip: 0 0.3rem 0 0;
   --lip-hover: 0 0.45rem 0 0;

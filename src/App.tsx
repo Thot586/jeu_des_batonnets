@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { PaperDefs } from './art/PaperDefs';
+import { startParallax } from './art/parallax';
+import { Backdrop } from './components/Backdrop/Backdrop';
 import { Curtain } from './components/Curtain/Curtain';
 import { Footer } from './components/Footer/Footer';
+import { Proscenium } from './components/Proscenium/Proscenium';
 import { FeedbackProvider, useFeedback } from './feedback/FeedbackContext';
 import { DEFAULT_CONFIG, isMatchConfig } from './game/config';
 import type { MatchConfig, PlayerId, Scores } from './game/types';
@@ -24,13 +27,22 @@ const pickStarter = (config: MatchConfig): PlayerId => {
   return Math.random() < 0.5 ? 0 : 1;
 };
 
-/** Point d'entrée : définitions de papier partagées, son et vibrations, puis la scène. */
-export const App = () => (
-  <FeedbackProvider>
-    <PaperDefs />
-    <Theatre />
-  </FeedbackProvider>
-);
+/**
+ * Point d'entrée : définitions de papier partagées, son et vibrations, puis le théâtre
+ * en trois profondeurs : le décor du fond, la scène (le jeu), le cadre de scène devant.
+ */
+export const App = () => {
+  useEffect(() => startParallax(), []);
+
+  return (
+    <FeedbackProvider>
+      <PaperDefs />
+      <Backdrop />
+      <Theatre />
+      <Proscenium />
+    </FeedbackProvider>
+  );
+};
 
 /** Enchaîne les écrans derrière le rideau et garde le score de la série de manches. */
 const Theatre = () => {
@@ -38,6 +50,8 @@ const Theatre = () => {
   const [screen, setScreen] = useState<Screen>('setup');
   const [round, setRound] = useState(0);
   const [scores, setScores] = useState<Scores>([0, 0]);
+  /** Victoires d'affilée de chaque joueur (remises à zéro à la première défaite). */
+  const [streaks, setStreaks] = useState<Scores>([0, 0]);
   const [firstStarter, setFirstStarter] = useState<PlayerId>(0);
   const [curtainClosed, setCurtainClosed] = useState(true);
   const reducedMotion = usePrefersReducedMotion();
@@ -78,6 +92,7 @@ const Theatre = () => {
     changeScene(() => {
       setConfig(next);
       setScores([0, 0]);
+      setStreaks([0, 0]);
       setRound(0);
       setFirstStarter(pickStarter(next));
       setScreen('game');
@@ -86,6 +101,7 @@ const Theatre = () => {
 
   const handleRoundEnd = useCallback((winner: PlayerId) => {
     setScores(([left, right]) => (winner === 0 ? [left + 1, right] : [left, right + 1]));
+    setStreaks(([left, right]) => (winner === 0 ? [left + 1, 0] : [0, right + 1]));
   }, []);
 
   // Chaque écran s'ouvre en haut de page, quel que soit le défilement de l'écran précédent.
@@ -108,6 +124,7 @@ const Theatre = () => {
             round={round}
             firstPlayer={starterOfRound}
             scores={scores}
+            streaks={streaks}
             onRoundEnd={handleRoundEnd}
             onRematch={() => setRound((r) => r + 1)}
             onOpenSettings={() => changeScene(() => setScreen('setup'))}

@@ -29,9 +29,17 @@
   display: inline-block;
   color: var(--paper);
   rotate: var(--tilt);
+  --side: color-mix(in srgb, var(--paper) 58%, #2a1f17);
   text-shadow:
     0.035em 0.045em 0 rgb(var(--c-shadow) / 0.3),
     0.06em 0.1em 0.12em rgb(var(--c-shadow) / 0.28);
+  text-shadow:
+    0.01em 0.014em 0 var(--side),
+    0.02em 0.028em 0 var(--side),
+    0.03em 0.042em 0 var(--side),
+    0.04em 0.056em 0 var(--side),
+    0.07em 0.1em 0.06em rgb(var(--c-shadow) / 0.32),
+    0.12em 0.2em 0.22em rgb(var(--c-shadow) / 0.24);
   animation: place calc(var(--frame) * 4) var(--stop-back-4) both;
   animation-delay: var(--d);
 }

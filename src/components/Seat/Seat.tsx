@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { PlayerConfig } from '../../game/types';
-import { plural } from '../../game/rules';
+import { COOL_STREAK, plural } from '../../game/rules';
 import { Character, type Gesture, type Mood } from '../Character/Character';
 import { cx } from '../../utils/cx';
 import styles from './Seat.module.css';
@@ -13,6 +13,10 @@ interface SeatProps {
   /** Bâtonnets ramassés pendant la manche. */
   collected: number;
   wins: number;
+  /** Victoires d'affilée en cours. */
+  streak?: number;
+  /** Liseré d'autocollant : c'est le gagnant de la manche. */
+  sticker?: boolean;
   holding: number;
   gesture?: Gesture | null;
   lookAt?: 'left' | 'right' | null;
@@ -30,6 +34,8 @@ export const Seat = ({
   isTurn,
   collected,
   wins,
+  streak = 0,
+  sticker = false,
   holding,
   gesture = null,
   lookAt = null,
@@ -48,6 +54,8 @@ export const Seat = ({
         facing={side === 'left' ? 'right' : 'left'}
         holding={holding}
         gesture={gesture}
+        shades={streak >= COOL_STREAK}
+        sticker={sticker}
         lookAt={lookAt}
         tense={tense}
       />
@@ -65,7 +73,10 @@ export const Seat = ({
         {collected > PILE_LIMIT && <span className={styles.more}>+{collected - PILE_LIMIT}</span>}
         {collected === 0 && <span className={styles.empty}>aucun bâtonnet</span>}
       </p>
-      <p className={styles.wins}>{plural(wins, 'victoire')}</p>
+      <p className={styles.wins}>
+        {plural(wins, 'victoire')}
+        {streak >= COOL_STREAK && <span className={styles.streak}>, {streak} d'affilée</span>}
+      </p>
     </div>
   </section>
 );

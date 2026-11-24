@@ -1,4 +1,5 @@
-import { useEffect, useRef, type SyntheticEvent } from 'react';
+import { useEffect, useRef, useState, type SyntheticEvent } from 'react';
+import { COOL_STREAK } from '../../game/rules';
 import type { LastStickRule, PlayerConfig, PlayerId, Scores } from '../../game/types';
 import { Button } from '../Button/Button';
 import { Character } from '../Character/Character';
@@ -10,6 +11,7 @@ interface ResultDialogProps {
   winner: PlayerId;
   lastStick: LastStickRule;
   scores: Scores;
+  streaks: Scores;
   onRematch: () => void;
   onOpenSettings: () => void;
   /** Échap : la pancarte se ferme, on peut regarder la table finale. */
@@ -23,6 +25,7 @@ export const ResultDialog = ({
   winner,
   lastStick,
   scores,
+  streaks,
   onRematch,
   onOpenSettings,
   onClose,
@@ -30,6 +33,13 @@ export const ResultDialog = ({
 }: ResultDialogProps) => {
   const rematchRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  // Le liseré d'autocollant se pose une fois la pancarte arrêtée.
+  const [stickerOn, setStickerOn] = useState(false);
+  useEffect(() => {
+    const id = window.setTimeout(() => setStickerOn(true), 16 * (1000 / 12));
+    return () => window.clearTimeout(id);
+  }, []);
+  const streak = streaks[winner];
   const champion = players[winner];
   const other = players[winner === 0 ? 1 : 0];
   const humanLost = champion.kind === 'ai' && other.kind === 'human';
@@ -71,7 +81,13 @@ export const ResultDialog = ({
       <div className={styles.dialog}>
         <span className={styles.strings} aria-hidden="true" />
         <div className={styles.podium} aria-hidden="true">
-          <Character avatar={champion.avatar} mood="happy" className={styles.champion} />
+          <Character
+            avatar={champion.avatar}
+            mood="happy"
+            shades={streak >= COOL_STREAK}
+            sticker={stickerOn}
+            className={styles.champion}
+          />
           <Character avatar={other.avatar} mood="sad" facing="left" className={styles.runnerUp} />
         </div>
 
@@ -81,6 +97,11 @@ export const ResultDialog = ({
         <p id="result-reason" className={styles.reason}>
           {reason}
         </p>
+        {streak >= COOL_STREAK && (
+          <p className={styles.streak}>
+            {streak} victoires d'affilée{streak === COOL_STREAK ? ' : les lunettes de soleil sont méritées.' : '.'}
+          </p>
+        )}
 
         <dl className={styles.scores}>
           {players.map((player, index) => (

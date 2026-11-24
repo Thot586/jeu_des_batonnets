@@ -11,7 +11,7 @@ chacun son tour, on tire de 1 à 3 bâtonnets, et celui qui prend le dernier a p
 - Direction artistique « papier découpé » : un petit théâtre de papier sur du kraft, animé en stop motion (voir plus bas).
 - Marionnettes de papier articulées : elles tendent le bras, tirent les bâtonnets vers elles, réfléchissent, sautent de joie ou boudent.
 - Son et vibrations : bruitages de papier synthétisés en direct, vibrations sur Android, un bouton pour tout couper.
-- Score cumulé sur plusieurs manches, avec alternance du joueur qui commence.
+- Score cumulé sur plusieurs manches, avec alternance du joueur qui commence. Après 3 victoires d'affilée, le joueur met des lunettes de soleil, jusqu'à sa prochaine défaite.
 - Jouable à la souris (survol puis clic sur les derniers bâtonnets ou sur « Prendre 1, 2, 3 »), au clavier (touches 1 à 4) et au doigt.
 - Responsive mobile first : pensé d'abord pour le téléphone (portrait et paysage), puis la tablette et l'ordinateur, et il s'agrandit en proportion sur les écrans géants (2K, 4K).
 - Accessible : vrais boutons et boutons radio, annonces de tour pour les lecteurs d'écran, focus visible, animations réduites si le système le demande.
@@ -45,7 +45,7 @@ Le workflow `.github/workflows/deploy.yml` construit le jeu et le publie à chaq
 ```
 src/
   main.tsx                 point d'entrée
-  App.tsx                  enchaînement des écrans, score de la série
+  App.tsx                  enchaînement des écrans, score et séries de victoires
   game/                    logique pure, sans React
     types.ts               types du domaine
     rules.ts               règles : créer une manche, jouer un coup, désigner le gagnant
@@ -59,6 +59,8 @@ src/
   components/
     Character/             marionnette de papier (SVG) et ses humeurs
     Curtain/               rideau de théâtre entre les écrans
+    Backdrop/              décor du fond : collines de papier et soleil
+    Proscenium/            draperies du cadre de scène (grands écrans)
     CutoutTitle/           titre en lettres découpées
     SoundToggle/           bouton son et vibrations
     Stick/, StickRow/      bâtonnets et rangée interactive
@@ -66,7 +68,8 @@ src/
     MovePicker/            boutons « Prendre 1, 2, 3 »
     ResultDialog/          fin de manche
     AvatarPicker/, Segmented/, Button/, Confetti/
-  art/                     formes découpées à la main (générées), définitions SVG partagées
+  art/                     formes découpées à la main (générées), définitions SVG partagées,
+                           regard qui suit la souris, parallaxe du décor
   feedback/                son (Web Audio) et vibrations
   assets/fonts/            polices hébergées avec le jeu (licence SIL OFL)
   hooks/                   localStorage, préférence de mouvement réduit
@@ -91,11 +94,18 @@ Toutes les mesures sont en `rem`, et la taille de base grandit avec l'écran au-
 
 **Moments-clés.** Le rideau se lève à l'arrivée et se ferme puis se rouvre entre deux écrans ; les lettres du titre sont posées une à une ; chaque coup se joue en trois temps (tendre le bras, tirer, ramasser) ; la fin de manche descend au bout de deux ficelles et se balance.
 
+**Profondeur.** Le jeu est construit comme un diorama, en trois plans :
+- au fond, devant le mur de kraft, deux rangées de collines découpées et un soleil qui dépasse entre elles (à partir de la tablette) ;
+- au milieu, la scène : un bloc de carton épais (on voit sa tranche), posé sur une feuille safran ;
+- devant, sur les grands écrans, deux draperies retenues par une embrasse.
+
+Chaque plan pose une ombre floue sur celui de derrière. Les découpes ont une vraie épaisseur : leur ombre empile la tranche du carton, une ombre de contact et une ombre ambiante, et les lettres du titre ont leur tranche d'un ton plus sombre. Les marionnettes ont un liseré d'épaisseur et projettent leur ombre sur le mur. À la souris, la caméra bouge un peu (parallaxe à 12 images par seconde) : le fond suit le curseur, les draperies partent dans l'autre sens, la scène reste immobile pour ne jamais gêner le jeu. Aucune parallaxe au doigt ni en mouvement réduit.
+
 **Formes générées.** Chaque contour (corps, yeux, bâtonnets, étiquettes) est calculé à partir d'une graine (`src/art/paper.ts`) : légèrement irrégulier, mais identique à chaque affichage.
 
 **Son.** Tout vient du papier : tapotement de carton, glissement de bandes, froissement du rideau, et un petit air de kalimba en fin de manche. Les sons sont synthétisés avec Web Audio (aucun fichier audio) et ne démarrent qu'après un premier geste, comme l'exigent les navigateurs. Les niveaux ont été mesurés hors ligne (moyenne de 8 rendus) pour une hiérarchie claire : victoire en crête à -6 dBFS, impacts vers -10, actions vers -12, clics vers -14, jamais au-dessus de -6.
 
-**Mouvement réduit.** Si le système le demande, aucune animation de décor : tout s'affiche directement dans son état final.
+**Mouvement réduit.** Si le système le demande, aucune animation de décor ni parallaxe : tout s'affiche directement dans son état final. Les informations ne passent jamais par le mouvement seul : la série de victoires est aussi écrite en toutes lettres.
 
 ## Les personnages
 
@@ -121,6 +131,8 @@ Chacun a son caractère, joué par de petits détails plutôt que par des exagé
 - L'ombre au sol rétrécit quand un personnage saute et s'élargit à l'atterrissage.
 - L'ordinateur ne joue pas tant que l'onglet est caché : on ne rate jamais son coup.
 - Chaque bruit répété change légèrement de hauteur : deux coups de suite ne sonnent jamais pareil.
+- Le gagnant de la manche est bordé d'un liseré blanc, comme un autocollant, sur la scène et sur la pancarte de fin.
+- Trois victoires d'affilée : les lunettes de soleil tombent sur le nez en quelques images, avec un petit rebond, et un reflet traverse les verres de temps en temps. À la première défaite, elles glissent puis tombent. Bleuet range ses lunettes rondes pendant ce temps.
 
 ## Choix techniques
 

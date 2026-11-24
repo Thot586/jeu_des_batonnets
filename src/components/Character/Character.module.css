@@ -39,6 +39,52 @@
   fill: var(--body);
 }
 
+/* Tranche du carton : donne son épaisseur à la marionnette */
+.edge {
+  fill: var(--shade);
+}
+
+/*
+ * Ombre portée sur le mur du fond, comme sous la lampe d'un théâtre de papier.
+ * Posée sur l'enveloppe (non retournée) : la lumière vient toujours d'en haut à gauche.
+ */
+.wallShadow {
+  filter: drop-shadow(0.55rem 0.4rem 0.35rem rgb(var(--c-shadow) / 0.2));
+}
+
+/* Lunettes de soleil (série de 3 victoires) */
+.shades {
+  transform-box: view-box;
+  transform-origin: 82px 92px;
+}
+
+.shadesFrame,
+.shadesLens {
+  fill: #1c1612;
+}
+
+.shadesGlint {
+  fill: rgb(255 255 255 / 0.85);
+  opacity: 0;
+  transform-box: view-box;
+  animation: glint var(--glint-cycle, 4.6s) steps(1, end) infinite;
+  animation-delay: var(--glint-delay, 0s);
+}
+
+.shadesGlintRight {
+  animation-name: glint-right;
+}
+
+/* Elles tombent sur le nez en 4 images, et se posent avec un petit rebond. */
+.shades-arriving {
+  animation: shades-in calc(var(--frame) * 6) steps(1, end) both;
+}
+
+/* À la défaite, elles glissent puis tombent. */
+.shades-leaving {
+  animation: shades-out calc(var(--frame) * 9) steps(1, end) both;
+}
+
 .grain {
   fill: url(#paper-grain);
   mix-blend-mode: multiply;
@@ -1343,5 +1389,90 @@
   83.3% {
     transform: scale(1.07, 1);
     opacity: 1;
+  }
+}
+
+@keyframes shades-in {
+  0% {
+    transform: translateY(-60px) rotate(-14deg);
+    opacity: 0;
+  }
+  16.7% {
+    transform: translateY(-34px) rotate(-10deg);
+    opacity: 1;
+  }
+  33.3% {
+    transform: translateY(-10px) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(2.5px) rotate(2deg);
+  }
+  66.7% {
+    transform: translateY(-1px) rotate(-1deg);
+  }
+  83.3% {
+    transform: none;
+  }
+}
+
+@keyframes shades-out {
+  0% {
+    transform: translateY(3px) rotate(3deg);
+  }
+  22% {
+    transform: translateY(5px) rotate(5deg);
+  }
+  44% {
+    transform: translateY(22px) rotate(18deg);
+    opacity: 1;
+  }
+  66% {
+    transform: translateY(52px) rotate(34deg);
+    opacity: 0.8;
+  }
+  88% {
+    transform: translateY(86px) rotate(48deg);
+    opacity: 0;
+  }
+}
+
+/* Le reflet traverse le verre en trois images, puis disparaît longtemps. */
+@keyframes glint {
+  0% {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  86% {
+    opacity: 1;
+    transform: translateX(-12px);
+  }
+  89% {
+    transform: translateX(6px);
+  }
+  92% {
+    transform: translateX(24px);
+  }
+  95% {
+    opacity: 0;
+  }
+}
+
+@keyframes glint-right {
+  0% {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  89% {
+    opacity: 1;
+    transform: translateX(-12px);
+  }
+  92% {
+    transform: translateX(6px);
+  }
+  95% {
+    transform: translateX(24px);
+  }
+  98% {
+    opacity: 0;
   }
 }

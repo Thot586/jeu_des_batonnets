@@ -63,6 +63,31 @@ export const blobPath = (
   return closedCurve(points);
 };
 
+/**
+ * Ligne de collines découpée dans une bande de papier, pour le décor du fond.
+ * Les sommets alternent avec des creux, chacun un peu différent ; le bas de la forme
+ * descend sous le cadre pour que seule la crête se voie.
+ */
+export const ridgePath = (
+  width: number,
+  height: number,
+  baseline: number,
+  amplitude: number,
+  humps: number,
+  seed: number,
+): string => {
+  const random = seededRandom(seed);
+  const steps = humps * 2;
+  const ridge: Point[] = Array.from({ length: steps + 3 }, (_, i) => {
+    const x = ((i - 1) / steps) * width + (random() - 0.5) * (width / steps) * 0.5;
+    const peak = i % 2 === 1;
+    const lift = peak ? amplitude * (0.55 + random() * 0.45) : amplitude * random() * 0.18;
+    return [x, baseline - lift];
+  });
+  const bottom = height + 40;
+  return closedCurve([[ridge[ridge.length - 1][0] + 40, bottom], [ridge[0][0] - 40, bottom], ...ridge], 0.9);
+};
+
 /** Rectangle aux coins arrondis, découpé à la main. */
 export const roundRectPath = (
   x: number,
