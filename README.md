@@ -103,7 +103,22 @@ Chaque plan pose une ombre floue sur celui de derrière. Les découpes ont une v
 
 **Formes générées.** Chaque contour (corps, yeux, bâtonnets, étiquettes) est calculé à partir d'une graine (`src/art/paper.ts`) : légèrement irrégulier, mais identique à chaque affichage.
 
-**Son.** Tout vient du papier : tapotement de carton, glissement de bandes, froissement du rideau, et un petit air de kalimba en fin de manche. Les sons sont synthétisés avec Web Audio (aucun fichier audio) et ne démarrent qu'après un premier geste, comme l'exigent les navigateurs. Les niveaux ont été mesurés hors ligne (moyenne de 8 rendus) pour une hiérarchie claire : victoire en crête à -6 dBFS, impacts vers -10, actions vers -12, clics vers -14, jamais au-dessus de -6.
+**Son.** Tout vient du papier : tapotement de carton, glissement de bandes, froissement du rideau, et un petit air de kalimba en fin de manche. Les sons sont synthétisés avec Web Audio (aucun fichier audio) et ne démarrent qu'après un premier geste, comme l'exigent les navigateurs.
+
+Pour qu'on ne s'en lasse pas, aucun son n'est rejoué à l'identique :
+- **variantes sans répétition** : chaque bruitage existe en plusieurs versions (4 façons de tirer une bande, 3 de la poser, 5 petits motifs de tour, 3 airs de victoire...), et la même ne sort jamais deux fois de suite ;
+- **petites variations** dans chaque version : hauteur, durée, départ et volume (± 1,5 dB) bougent un peu ;
+- **une voix par personnage** : Mousse frotte lentement un papier sourd, Zeste arrache d'un coup sec et clair, Bleuet tire avec précaution, Praline a un papier léger et soyeux, Pépin est vif ;
+- **le nombre compte** : tirer 3 bâtonnets fait entendre 3 bandes, décalées, de moins en moins fortes ;
+- **la stéréo** : le son vient du côté du joueur qui tire ; le son de fin, du côté du gagnant ;
+- **une mélodie qui monte** : à chaque tirage, une note de bois sonne dans la pile, un cran plus haut que la précédente, sur une gamme pentatonique (toutes les notes vont ensemble). La manche grimpe ainsi vers sa fin, et on entend où on en est ;
+- **l'accoutumance** : un son entendu souvent dans les dernières secondes se fait un peu plus discret (jusqu'à -3 dB), puis retrouve son niveau ;
+- **une petite pièce** : une réverbération très légère réchauffe l'ensemble et évite la sécheresse qui fatigue l'oreille ;
+- **la série** : après 3 victoires d'affilée, l'air de victoire se termine par une pluie d'étincelles, un peu plus longue à chaque victoire.
+
+Les niveaux ont été mesurés hors ligne sur toutes les variantes et toutes les voix pour garder une hiérarchie claire : victoire en crête vers -7 dBFS, défaite vers -8, impacts et glissements vers -11, actions et clics vers -12, distribution et sélection vers -15, jamais au-dessus de -5.
+
+**Vibrations.** Une seule par action validée : une impulsion par bâtonnet pris (on sent combien on en a tiré), un motif joyeux pour la victoire, et une seule impulsion courte pour la défaite, jamais plus forte qu'une victoire.
 
 **Mouvement réduit.** Si le système le demande, aucune animation de décor ni parallaxe : tout s'affiche directement dans son état final. Les informations ne passent jamais par le mouvement seul : la série de victoires est aussi écrite en toutes lettres.
 
@@ -132,6 +147,7 @@ Chacun a son caractère, joué par de petits détails plutôt que par des exagé
 - L'ombre au sol rétrécit quand un personnage saute et s'élargit à l'atterrissage.
 - L'ordinateur ne joue pas tant que l'onglet est caché : on ne rate jamais son coup.
 - Chaque bruit répété change légèrement de hauteur : deux coups de suite ne sonnent jamais pareil.
+- La fête suit le gagnant : sur la pancarte, chacun garde sa place à table (le gagnant de droite fête sa victoire à droite, le perdant le regarde), et les confettis tombent surtout de son côté.
 - Sur la pancarte de fin, le point du gagnant s'ajoute sous nos yeux quand elle s'arrête de se balancer. Fermée avec Échap, elle remonte au bout de ses ficelles au lieu de disparaître.
 - Typographie française : espaces insécables avant les deux-points et les points d'interrogation, et dans les guillemets ; « 1 à 3 » ne se coupe jamais en fin de ligne.
 - On peut taper vite sur les boutons et les bâtonnets : ni zoom par double appui, ni sélection de texte, ni menu d'appui long.

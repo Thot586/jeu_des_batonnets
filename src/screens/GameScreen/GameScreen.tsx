@@ -28,6 +28,9 @@ interface GameScreenProps {
 
 const PLAYER_IDS: readonly PlayerId[] = [0, 1];
 
+/** Le son vient du côté du joueur concerné (stéréo discrète). */
+const panFor = (player: PlayerId): number => (player === 0 ? -0.35 : 0.35);
+
 export const GameScreen = ({
   config,
   round,
@@ -60,46 +63,57 @@ export const GameScreen = ({
   const play = useCallback(
     (count: number) => {
       if (!canHumanPlay) return;
-      sound('tap');
-      buzz('pick');
+      sound('tap', { pan: panFor(game.current) });
+      buzz('pick', count);
       playMove(count);
     },
-    [canHumanPlay, sound, buzz, playMove],
+    [canHumanPlay, sound, buzz, playMove, game.current],
   );
 
-  // Bruitages du décor : les bandes glissent, puis retombent dans la pile du joueur.
+  // Bruitages du décor : les bandes glissent, à la manière du personnage qui tire, de son côté.
   useEffect(() => {
-    if (pending?.stage === 'pull') sound('slide', pending.count);
-  }, [pending?.stage, pending?.count, sound]);
+    if (pending?.stage !== 'pull') return;
+    sound('slide', { count: pending.count, voice: players[pending.player].avatar, pan: panFor(pending.player) });
+  }, [pending?.stage, pending?.count, pending?.player, players, sound]);
 
   // Les bâtonnets arrivent dans la pile : bruit sourd, et le joueur se tasse une image (impact).
   const [catcher, setCatcher] = useState<PlayerId | null>(null);
   const movesRef = useRef(moves);
   useEffect(() => {
     if (moves > movesRef.current) {
-      sound('drop');
-      const mover = game.history[moves - 1]?.player;
+      const last = game.history[moves - 1];
+      if (last) {
+        // La note de bois de la pile monte à chaque tirage : la manche grimpe vers sa fin.
+        sound('drop', {
+          count: last.count,
+          voice: players[last.player].avatar,
+          pan: panFor(last.player),
+          progress: 1 - game.remaining / settings.totalSticks,
+        });
+      }
+      const mover = last?.player;
       if (mover !== undefined) {
         setCatcher(mover);
         window.setTimeout(() => setCatcher(null), 3 * (1000 / 12) + 20);
       }
     }
     movesRef.current = moves;
-  }, [moves, sound, game.history]);
+  }, [moves, sound, game.history, game.remaining, players, settings.totalSticks]);
 
   // Petit signal quand c'est de nouveau au tour d'une personne.
   useEffect(() => {
-    if (canHumanPlay && moves > 0) sound('turn');
-  }, [canHumanPlay, moves, sound]);
+    if (canHumanPlay && moves > 0) sound('turn', { pan: panFor(game.current) * 0.6 });
+  }, [canHumanPlay, moves, sound, game.current]);
 
   // Fin de manche : air de victoire, ou trois notes qui descendent si l'ordinateur a gagné.
   useEffect(() => {
     if (!showResult || winner === null) return;
     const loser = players[winner === 0 ? 1 : 0];
     const humanLost = players[winner].kind === 'ai' && loser.kind === 'human';
-    sound(humanLost ? 'lose' : 'win');
+    // Le son de fin vient du côté du gagnant, comme la fête sur la pancarte.
+    sound(humanLost ? 'lose' : 'win', { streak: streaks[winner], pan: panFor(winner) * 0.5 });
     buzz(humanLost ? 'lose' : 'win');
-  }, [showResult, winner, players, sound, buzz]);
+  }, [showResult, winner, players, sound, buzz, streaks]);
 
   // La manche est comptée une seule fois, puis le résultat s'affiche après la dernière animation.
   useEffect(() => {
@@ -158,7 +172,7 @@ export const GameScreen = ({
 
   // Distribution : les bâtonnets tombent sur la table au début de la manche (après le rideau la première fois).
   useEffect(() => {
-    const id = window.setTimeout(() => sound('deal', settings.totalSticks), round === 0 ? 760 : 60);
+    const id = window.setTimeout(() => sound('deal', { count: settings.totalSticks }), round === 0 ? 760 : 60);
     return () => window.clearTimeout(id);
     // Une seule fois par manche : la manche suivante remonte ce composant.
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,23 +1,28 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, type ReactNode } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import { playSound, unlockAudio, type SoundName } from './sound';
+import { playSound, unlockAudio, type SoundName, type SoundOptions } from './sound';
 
 export type HapticName = 'tap' | 'pick' | 'win' | 'lose';
 
-/** Motifs de vibration (Android ; ignorés ailleurs). */
-const HAPTICS: Record<HapticName, number | number[]> = {
-  tap: 8,
-  pick: [12, 30, 18],
-  win: [30, 60, 30, 60, 60],
-  lose: [80],
+/**
+ * Motifs de vibration (Android ; ignorés ailleurs). Une seule vibration par action validée.
+ * - pick : une impulsion par bâtonnet pris, pour sentir combien on en a tiré ;
+ * - lose : une seule impulsion courte, jamais plus forte qu'une victoire (on ne punit pas).
+ */
+const HAPTICS: Record<HapticName, (count: number) => number | number[]> = {
+  tap: () => 8,
+  pick: (count) => Array.from({ length: Math.max(1, Math.min(count, 4)) * 2 - 1 }, (_, i) => (i % 2 === 0 ? 12 : 45)),
+  win: () => [30, 60, 30, 60, 60],
+  lose: () => 24,
 };
 
 interface Feedback {
   /** Son et vibrations activés. */
   enabled: boolean;
   toggle: () => void;
-  play: (name: SoundName, count?: number) => void;
-  buzz: (name: HapticName) => void;
+  play: (name: SoundName, options?: SoundOptions) => void;
+  /** `count` : nombre de bâtonnets, pour la vibration « pick ». */
+  buzz: (name: HapticName, count?: number) => void;
 }
 
 const FeedbackContext = createContext<Feedback | null>(null);
@@ -44,17 +49,17 @@ export const FeedbackProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const play = useCallback(
-    (name: SoundName, count?: number) => {
-      if (enabled) playSound(name, count);
+    (name: SoundName, options?: SoundOptions) => {
+      if (enabled) playSound(name, options);
     },
     [enabled],
   );
 
   const buzz = useCallback(
-    (name: HapticName) => {
+    (name: HapticName, count = 1) => {
       if (!enabled || typeof navigator === 'undefined' || !('vibrate' in navigator)) return;
       try {
-        navigator.vibrate(HAPTICS[name]);
+        navigator.vibrate(HAPTICS[name](count));
       } catch {
         // Certains navigateurs refusent la vibration hors geste : sans conséquence.
       }

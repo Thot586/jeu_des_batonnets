@@ -57,6 +57,10 @@
   margin-bottom: 0.5rem;
 }
 
+.podiumRight {
+  flex-direction: row-reverse;
+}
+
 .champion {
   width: 7.5rem;
 }

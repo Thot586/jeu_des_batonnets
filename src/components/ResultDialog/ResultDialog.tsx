@@ -61,6 +61,7 @@ export const ResultDialog = ({
   const leaveTimer = useRef(0);
   useEffect(() => () => window.clearTimeout(leaveTimer.current), []);
   const streak = streaks[winner];
+  const winnerSide = winner === 0 ? 'left' : 'right';
   const champion = players[winner];
   const other = players[winner === 0 ? 1 : 0];
   const humanLost = champion.kind === 'ai' && other.kind === 'human';
@@ -125,18 +126,25 @@ export const ResultDialog = ({
       onKeyDown={handleKeyDown}
       onClose={handleNativeClose}
     >
-      {!humanLost && <Confetti />}
+      {!humanLost && <Confetti side={winnerSide} />}
       <div className={styles.dialog}>
         <span className={styles.strings} aria-hidden="true" />
-        <div className={styles.podium} aria-hidden="true">
+        {/* Chacun garde sa place à table : le gagnant de droite fête sa victoire à droite. */}
+        <div className={cx(styles.podium, winnerSide === 'right' && styles.podiumRight)} aria-hidden="true">
           <Character
             avatar={champion.avatar}
             mood="happy"
+            facing={winnerSide === 'right' ? 'left' : 'right'}
             shades={streak >= COOL_STREAK}
             sticker={settled}
             className={styles.champion}
           />
-          <Character avatar={other.avatar} mood="sad" facing="left" className={styles.runnerUp} />
+          <Character
+            avatar={other.avatar}
+            mood="sad"
+            facing={winnerSide === 'right' ? 'right' : 'left'}
+            className={styles.runnerUp}
+          />
         </div>
 
         <h2 id="result-title" className={styles.title}>
