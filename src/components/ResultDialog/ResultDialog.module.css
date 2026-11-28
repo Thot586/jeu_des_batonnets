@@ -29,7 +29,7 @@
   border-radius: var(--r-card);
   background-color: var(--c-paper);
   background-image: var(--tex-card);
-  background-size: 11.25rem 11.25rem;
+  background-size: var(--tex-card-size);
   text-align: center;
   box-shadow: var(--shadow-paper-lift), 0 2.5rem 4rem -2rem rgb(var(--c-shadow) / 0.7);
   transform-origin: 50% -40vh;
@@ -112,7 +112,7 @@
   border-radius: var(--r-control);
   background-color: var(--c-paper-shade);
   background-image: var(--tex-card);
-  background-size: 11.25rem 11.25rem;
+  background-size: var(--tex-card-size);
   box-shadow: var(--shadow-paper-press);
 }
 

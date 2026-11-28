@@ -65,7 +65,7 @@
   border-radius: var(--r-control);
   background-color: var(--c-paper);
   background-image: var(--tex-card);
-  background-size: 11.25rem 11.25rem;
+  background-size: var(--tex-card-size);
   box-shadow: var(--shadow-paper);
   rotate: -0.4deg;
   text-align: left;

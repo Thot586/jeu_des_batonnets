@@ -48,7 +48,7 @@ html {
   background-image:
     radial-gradient(120% 90% at 50% 30%, rgb(255 240 210 / 0.28) 0%, rgb(255 240 210 / 0) 55%, rgb(var(--c-shadow) / 0.1) 100%),
     var(--tex-kraft);
-  background-size: 100% 100%, 16rem 16rem;
+  background-size: 100% 100%, var(--tex-kraft-size);
   background-attachment: fixed, scroll;
 }
 

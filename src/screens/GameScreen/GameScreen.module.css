@@ -166,7 +166,7 @@
   border-radius: var(--r-control);
   background-color: var(--c-paper);
   background-image: var(--tex-card);
-  background-size: 11.25rem 11.25rem;
+  background-size: var(--tex-card-size);
   color: var(--c-ink);
   text-align: center;
   font-size: var(--fs-sm);
@@ -256,7 +256,7 @@
     radial-gradient(120% 90% at 50% 30%, rgb(255 240 210 / 0.28) 0%, rgb(255 240 210 / 0) 55%, rgb(var(--c-shadow) / 0.1) 100%) fixed,
     var(--tex-kraft),
     var(--c-kraft);
-  background-size: 100% 100%, 16rem 16rem, auto;
+  background-size: 100% 100%, var(--tex-kraft-size), auto;
   mask-image: linear-gradient(to bottom, transparent, #000 1.1rem);
 }
 

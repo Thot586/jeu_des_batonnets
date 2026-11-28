@@ -60,6 +60,9 @@
   --tex-wood: url('../assets/textures/wood.webp');
   --tex-board: url('../assets/textures/board.webp');
   --tex-head: url('../assets/textures/head.webp');
+  /* Taille d'affichage des tuiles qui ne sont pas carrées ou pas à l'échelle commune. */
+  --tex-kraft-size: 32rem 32rem;
+  --tex-card-size: 20rem 11.72rem;
 
   /* Typographie : pochoir découpé pour les titres et les chiffres, linéale ronde pour le texte */
   --font: 'Fredoka', ui-rounded, 'SF Pro Rounded', system-ui, -apple-system, 'Segoe UI', sans-serif;
