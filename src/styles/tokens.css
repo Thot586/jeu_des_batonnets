@@ -48,7 +48,9 @@
 
   /* Grain du papier et fibres du kraft, générés en SVG (aucune image à charger) */
   /*
-   * Vraies matières (scripts/textures.py) : tuiles raccordables, faites pour un écran de densité 2.
+   * Vraies matières : bois des bâtonnets et planches de la scène scannés par Poly Haven
+   * (scripts/scans.py, licence CC0) ; papiers fabriqués par scripts/textures.py.
+   * Tuiles raccordables, faites pour un écran de densité 2.
    * Les calques (grain, carte, planche, tête) sont transparents : ils se posent sur n'importe quelle
    * couleur de la palette sans la changer, en creusant les ombres et en éclairant les reliefs.
    */

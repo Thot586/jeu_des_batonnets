@@ -75,7 +75,8 @@ src/
   assets/textures/         vraies matières : kraft, papier Canson, papier aquarelle, bois, planche peinte
   hooks/                   localStorage, préférence de mouvement réduit
   styles/                  jetons de design (couleurs, typographie, formes) et styles globaux
-scripts/textures.py        fabrique les textures de matières (Python, numpy et Pillow)
+scripts/textures.py        fabrique les textures de papier (Python, numpy et Pillow)
+scripts/scans.py           convertit les scans de bois de Poly Haven (bâtonnets, planches)
 ```
 
 Chaque composant a son propre fichier de styles (CSS Modules). La logique du jeu (`src/game`) ne dépend pas de React : on peut la tester ou la réutiliser telle quelle.
@@ -107,10 +108,12 @@ Chaque plan pose une ombre floue sur celui de derrière. Les découpes ont une v
 - le mur du fond est en **papier kraft** : fibres longues couchées dans le sens de fabrication, petits amas de pâte, éclats de bois ;
 - les personnages, les boutons, les étiquettes et le décor sont en **papier Canson** de couleur, avec ses fibres feutrées ;
 - les cartes, la pancarte de fin et les boutons « Prendre » sont en **papier aquarelle** épais, avec les bosses du grain à froid éclairées en rasant ;
-- la scène est une **planche peinte** en bleu : le veinage du bois ressort en relief sous la peinture, avec les traces du pinceau ;
-- les bâtonnets sont en **bois clair** (veines, fibres, pores), chacun avec son morceau de veinage et sa teinte, et leur tête est une pâte rugueuse et mate.
+- la scène est une vraie table de **planches peintes** en bleu, avec leurs rainures (scan Poly Haven) ;
+- les bâtonnets sont en **vrai bois** (scan d'un placage d'érable), chacun avec son morceau de veinage et sa teinte, et leur tête est une pâte rugueuse et mate.
 
-Les textures sont fabriquées par `scripts/textures.py` à partir de la structure physique de chaque matière, sans couture, pour un écran de densité 2. Les papiers et la planche sont des calques transparents : ils se posent sur n'importe quelle couleur de la palette sans la changer, ce qui garde les contrastes du texte. Elles suivent la taille de l'interface (en rem), si bien qu'une fibre garde la même taille par rapport à l'objet sur un téléphone comme sur un écran 4K. Poids total : environ 300 ko. Pour remplacer une matière par une photo (par exemple un scan de Poly Haven ou d'ambientCG, sous licence CC0), il suffit de déposer une image raccordable du même nom dans `src/assets/textures`.
+**Des bâtonnets posés sur la table.** Chaque bâtonnet a du volume : arête gauche éclairée, flanc droit dans l'ombre, petite lumière renvoyée par la table au bord, tête bombée avec son reflet. Il pose sur les planches une ombre en deux parties, comme une vraie : une ombre de contact nette, collée à lui, et une ombre portée plus floue vers le bas à droite. Quand on vise des bâtonnets, ils se soulèvent et leur ombre reste sur la table, plus loin et plus pâle : on voit qu'ils la quittent.
+
+Le bois et les planches viennent de [Poly Haven](https://polyhaven.com) (licence CC0) : « White Maple Veneer » de Jenelle van Heerden et « White Planks Clean » de Rob Tuytel, convertis par `scripts/scans.py` (veinage remis dans le bon sens, teinte ramenée à la palette). Poly Haven ne propose pas de papier : les papiers sont fabriqués par `scripts/textures.py` à partir de la structure physique de chaque matière. Toutes les textures se raccordent sans couture et sont faites pour un écran de densité 2. Les papiers et la planche sont des calques transparents : ils se posent sur n'importe quelle couleur de la palette sans la changer, ce qui garde les contrastes du texte. Elles suivent la taille de l'interface (en rem), si bien qu'une fibre garde la même taille par rapport à l'objet sur un téléphone comme sur un écran 4K. Poids total : environ 300 ko. Pour remplacer une matière par une photo (par exemple un papier d'ambientCG, sous licence CC0), il suffit de déposer une image raccordable du même nom dans `src/assets/textures`.
 
 **Formes générées.** Chaque contour (corps, yeux, bâtonnets, étiquettes) est calculé à partir d'une graine (`src/art/paper.ts`) : légèrement irrégulier, mais identique à chaque affichage.
 

@@ -91,7 +91,7 @@
     radial-gradient(120% 85% at 50% 15%, rgb(255 255 255 / 0.1), transparent 60%),
     var(--tex-board),
     var(--c-ultramarine);
-  background-size: auto, 32rem 8rem, auto;
+  background-size: auto, 48rem 48rem, auto;
   color: #fff8ee;
   /* On tape vite sur les bâtonnets : ni sélection de texte, ni menu d'appui long. */
   -webkit-user-select: none;
