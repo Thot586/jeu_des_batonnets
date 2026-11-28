@@ -31,7 +31,7 @@
       #d23b24 2.6rem 4.1rem,
       #b02f1d 4.1rem 4.3rem
     );
-  background-size: 180px 180px, auto, auto;
+  background-size: 11.25rem 11.25rem, auto, auto;
   transition: transform calc(var(--frame) * 8) var(--stop-inout-8);
 }
 
@@ -60,7 +60,7 @@
   background:
     var(--tex-grain),
     repeating-linear-gradient(90deg, var(--c-tomato-deep) 0 3rem, #9c2918 3rem 3.15rem);
-  background-size: 180px 180px, auto;
+  background-size: 11.25rem 11.25rem, auto;
   mask:
     radial-gradient(circle at 50% 0, #000 1.55rem, transparent 1.6rem) 0 100% / 3.15rem 1.6rem repeat-x,
     linear-gradient(#000, #000) top / 100% calc(100% - 1.55rem) no-repeat;

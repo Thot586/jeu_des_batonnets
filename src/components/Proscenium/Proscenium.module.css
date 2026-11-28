@@ -42,7 +42,7 @@
       #d23b24 1.75rem 2.9rem,
       #b02f1d 2.9rem 3.05rem
     );
-  background-size: 180px 180px, auto, auto;
+  background-size: 11.25rem 11.25rem, auto, auto;
 }
 
 .left {
@@ -61,7 +61,7 @@
   height: 1.1rem;
   border-radius: 0.35rem 0.5rem 0.4rem 0.3rem;
   background: var(--tex-grain), var(--c-saffron);
-  background-size: 180px 180px, auto;
+  background-size: 11.25rem 11.25rem, auto;
   box-shadow: var(--shadow-paper);
 }
 

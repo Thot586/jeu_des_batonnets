@@ -89,9 +89,8 @@
 }
 
 .grain {
+  /* Calque de vrai papier : déjà transparent, il se pose tel quel (pas de mode de fusion à calculer). */
   fill: url(#paper-grain);
-  mix-blend-mode: multiply;
-  opacity: 0.75;
   pointer-events: none;
 }
 
@@ -675,7 +674,7 @@
   padding: 0.5rem 0.75rem;
   border-radius: 0.9rem 1.1rem 0.8rem 1rem / 1rem 0.8rem 1.1rem 0.9rem;
   background: var(--tex-grain), var(--c-paper);
-  background-size: 180px 180px, auto;
+  background-size: 11.25rem 11.25rem, auto;
   box-shadow: var(--shadow-paper);
   rotate: -4deg;
   animation: pop calc(var(--frame) * 4) var(--stop-back-4) both;

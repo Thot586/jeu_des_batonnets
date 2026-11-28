@@ -47,10 +47,9 @@ html {
   background-color: var(--c-kraft);
   background-image:
     radial-gradient(120% 90% at 50% 30%, rgb(255 240 210 / 0.28) 0%, rgb(255 240 210 / 0) 55%, rgb(var(--c-shadow) / 0.1) 100%),
-    var(--tex-fibers),
-    var(--tex-grain);
-  background-size: 100% 100%, 420px 420px, 180px 180px;
-  background-attachment: fixed, scroll, scroll;
+    var(--tex-kraft);
+  background-size: 100% 100%, 16rem 16rem;
+  background-attachment: fixed, scroll;
 }
 
 body {

@@ -35,16 +35,21 @@
   background: rgb(var(--c-shadow));
 }
 
-/* La bande : carton découpé, un peu plus clair ou plus foncé selon le bâtonnet */
+/*
+ * La bande : un vrai bâtonnet de bois clair. Chacun montre un autre morceau du veinage
+ * (décalage tiré de son numéro) et a sa propre teinte : pas deux bâtonnets pareils.
+ * Le dégradé arrondit la tige : lumière à gauche, ombre propre à droite.
+ */
 .strip {
   position: absolute;
   inset: 0;
   clip-path: var(--clip);
   background:
-    linear-gradient(90deg, rgb(var(--c-shadow) / 0.1), transparent 30% 72%, rgb(var(--c-shadow) / 0.14)),
-    var(--tex-grain),
+    linear-gradient(90deg, rgb(255 255 255 / 0.16), transparent 32%, transparent 62%, rgb(var(--c-shadow) / 0.2)),
+    var(--tex-wood),
     var(--c-card);
-  background-size: auto, 120px 120px, auto;
+  background-size: auto, 3rem 32rem, auto;
+  background-position: 0 0, calc(var(--i, 0) * -1.06rem) calc(var(--i, 0) * -3.8rem), 0 0;
   filter: brightness(calc(1 + var(--tone, 0)));
 }
 
@@ -57,11 +62,13 @@
   height: calc(var(--stick-w, 0.75rem) * 2.05);
   translate: -50% 0;
   border-radius: var(--head-shape, 50%);
+  /* Pâte rugueuse et mate, un peu bombée : reflet doux en haut à gauche, ombre en bas à droite. */
   background:
-    radial-gradient(circle at 34% 30%, rgb(255 255 255 / 0.22) 0 18%, transparent 19%),
-    var(--tex-grain),
+    radial-gradient(circle at 34% 30%, rgb(255 255 255 / 0.24) 0 16%, transparent 30%),
+    radial-gradient(circle at 70% 78%, rgb(var(--c-shadow) / 0.28), transparent 55%),
+    var(--tex-head),
     var(--c-tomato);
-  background-size: auto, 120px 120px, auto;
+  background-size: auto, auto, 2.5rem 2.5rem, auto;
 }
 
 .preview {
@@ -75,10 +82,11 @@
 
 .preview > .head {
   background:
-    radial-gradient(circle at 34% 30%, rgb(255 255 255 / 0.3) 0 18%, transparent 19%),
-    var(--tex-grain),
+    radial-gradient(circle at 34% 30%, rgb(255 255 255 / 0.32) 0 16%, transparent 30%),
+    radial-gradient(circle at 70% 78%, rgb(var(--c-shadow) / 0.24), transparent 55%),
+    var(--tex-head),
     #f05238;
-  background-size: auto, 120px 120px, auto;
+  background-size: auto, auto, 2.5rem 2.5rem, auto;
 }
 
 .grabbed {

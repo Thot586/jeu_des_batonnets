@@ -64,8 +64,8 @@
   padding: 1rem 1.1rem;
   border-radius: var(--r-control);
   background-color: var(--c-paper);
-  background-image: var(--tex-grain);
-  background-size: 180px 180px;
+  background-image: var(--tex-card);
+  background-size: 11.25rem 11.25rem;
   box-shadow: var(--shadow-paper);
   rotate: -0.4deg;
   text-align: left;

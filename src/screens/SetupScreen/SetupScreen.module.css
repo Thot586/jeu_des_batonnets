@@ -60,8 +60,8 @@
   padding: 1.25rem 1.1rem 1.5rem;
   border-radius: var(--r-card);
   background-color: var(--c-paper);
-  background-image: var(--tex-grain);
-  background-size: 180px 180px;
+  background-image: var(--tex-card);
+  background-size: 11.25rem 11.25rem;
   box-shadow: var(--shadow-paper);
 }
 
@@ -232,7 +232,7 @@
   border: 0;
   border-radius: 48% 52% 46% 54% / 54% 46% 52% 48%;
   background: var(--tex-grain), var(--c-tomato);
-  background-size: 120px 120px, auto;
+  background-size: 7.5rem 7.5rem, auto;
   box-shadow: var(--shadow-paper);
   appearance: none;
   -webkit-appearance: none;
@@ -247,7 +247,7 @@
   border: 0;
   border-radius: 48% 52% 46% 54% / 54% 46% 52% 48%;
   background: var(--tex-grain), var(--c-tomato);
-  background-size: 120px 120px, auto;
+  background-size: 7.5rem 7.5rem, auto;
   box-shadow: var(--shadow-paper);
 }
 

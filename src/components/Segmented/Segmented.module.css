@@ -64,7 +64,7 @@
 /* L'option choisie : une étiquette outremer posée de travers, un peu soulevée */
 input:checked + .pill {
   background: var(--tex-grain), var(--c-ultramarine);
-  background-size: 180px 180px, auto;
+  background-size: 11.25rem 11.25rem, auto;
   color: #fff8ee;
   rotate: var(--tilt);
   translate: 0 -0.06rem;

@@ -171,6 +171,7 @@ export const Character = ({
           <path className={styles.torso} d={pieces.torso} />
           <path className={styles.grain} d={pieces.torso} />
           <path className={styles.belly} d={pieces.belly} filter="url(#paper-lift)" />
+          <path className={styles.grain} d={pieces.belly} />
 
           <g className={styles.eyes} filter="url(#paper-lift)">
             <path className={styles.eyeWhite} d={pieces.eyeLeft} />

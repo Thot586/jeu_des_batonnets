@@ -72,8 +72,10 @@ src/
                            regard qui suit la souris, parallaxe du décor
   feedback/                son (Web Audio) et vibrations
   assets/fonts/            polices hébergées avec le jeu (licence SIL OFL)
+  assets/textures/         vraies matières : kraft, papier Canson, papier aquarelle, bois, planche peinte
   hooks/                   localStorage, préférence de mouvement réduit
   styles/                  jetons de design (couleurs, typographie, formes) et styles globaux
+scripts/textures.py        fabrique les textures de matières (Python, numpy et Pillow)
 ```
 
 Chaque composant a son propre fichier de styles (CSS Modules). La logique du jeu (`src/game`) ne dépend pas de React : on peut la tester ou la réutiliser telle quelle.
@@ -100,6 +102,15 @@ Toutes les mesures sont en `rem`, et la taille de base grandit avec l'écran au-
 - devant, sur les grands écrans, deux draperies retenues par une embrasse.
 
 Chaque plan pose une ombre floue sur celui de derrière. Les découpes ont une vraie épaisseur : leur ombre empile la tranche du carton, une ombre de contact et une ombre ambiante, et les lettres du titre ont leur tranche d'un ton plus sombre. Les marionnettes ont un liseré d'épaisseur et projettent leur ombre sur le mur. À la souris, la caméra bouge un peu (parallaxe à 12 images par seconde) : le fond suit le curseur, les draperies partent dans l'autre sens, la scène reste immobile pour ne jamais gêner le jeu. Aucune parallaxe au doigt ni en mouvement réduit.
+
+**Vraies matières.** Chaque surface a la matière qu'elle aurait dans un vrai théâtre de papier :
+- le mur du fond est en **papier kraft** : fibres longues couchées dans le sens de fabrication, petits amas de pâte, éclats de bois ;
+- les personnages, les boutons, les étiquettes et le décor sont en **papier Canson** de couleur, avec ses fibres feutrées ;
+- les cartes, la pancarte de fin et les boutons « Prendre » sont en **papier aquarelle** épais, avec les bosses du grain à froid éclairées en rasant ;
+- la scène est une **planche peinte** en bleu : le veinage du bois ressort en relief sous la peinture, avec les traces du pinceau ;
+- les bâtonnets sont en **bois clair** (veines, fibres, pores), chacun avec son morceau de veinage et sa teinte, et leur tête est une pâte rugueuse et mate.
+
+Les textures sont fabriquées par `scripts/textures.py` à partir de la structure physique de chaque matière, sans couture, pour un écran de densité 2. Les papiers et la planche sont des calques transparents : ils se posent sur n'importe quelle couleur de la palette sans la changer, ce qui garde les contrastes du texte. Elles suivent la taille de l'interface (en rem), si bien qu'une fibre garde la même taille par rapport à l'objet sur un téléphone comme sur un écran 4K. Poids total : environ 300 ko. Pour remplacer une matière par une photo (par exemple un scan de Poly Haven ou d'ambientCG, sous licence CC0), il suffit de déposer une image raccordable du même nom dans `src/assets/textures`.
 
 **Formes générées.** Chaque contour (corps, yeux, bâtonnets, étiquettes) est calculé à partir d'une graine (`src/art/paper.ts`) : légèrement irrégulier, mais identique à chaque affichage.
 
