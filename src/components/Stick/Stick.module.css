@@ -119,8 +119,31 @@
   transform: translate(0.5rem, 2.3rem);
 }
 
-.flying {
-  animation: pulled calc(var(--frame) * 8) var(--stop-inout-8) forwards;
+/* Parti de la table : sa place reste là (la rangée ne bouge pas), mais il n'y est plus. */
+.gone {
+  visibility: hidden;
+  animation: none;
+}
+
+.marker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* En vol : c'est le trajet qui le place ; en l'air, son ombre tombe plus loin et plus floue. */
+.inFlight {
+  rotate: none;
+  animation: none;
+  transition: none;
+  filter: drop-shadow(0.5rem 0.9rem 0.5rem rgb(var(--c-shadow) / 0.3));
+}
+
+.inFlight .ghost {
+  display: none;
 }
 
 @keyframes drop {
@@ -137,16 +160,5 @@
   }
   50% {
     translate: 0.06rem -0.18rem;
-  }
-}
-
-@keyframes pulled {
-  from {
-    transform: translateY(-1.9rem) rotate(calc(var(--dir) * -10deg));
-    opacity: 1;
-  }
-  to {
-    transform: translate(calc(var(--dir) * 42vw), -3.5rem) rotate(calc(var(--dir) * 96deg)) scale(0.5);
-    opacity: 0;
   }
 }

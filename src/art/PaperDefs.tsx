@@ -28,6 +28,22 @@ export const PaperDefs = () => (
           <feMergeNode in="SourceGraphic" />
         </feMerge>
       </filter>
+      {/* Volume d'un bâtonnet tenu en main : mêmes lumières que sur la table. */}
+      <linearGradient id="held-round" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stopColor="#2a1f17" stopOpacity="0.18" />
+        <stop offset="0.09" stopColor="#fff" stopOpacity="0.34" />
+        <stop offset="0.24" stopColor="#fff" stopOpacity="0.12" />
+        <stop offset="0.46" stopColor="#fff" stopOpacity="0" />
+        <stop offset="0.62" stopColor="#2a1f17" stopOpacity="0.1" />
+        <stop offset="0.86" stopColor="#2a1f17" stopOpacity="0.34" />
+        <stop offset="1" stopColor="#2a1f17" stopOpacity="0.22" />
+      </linearGradient>
+      <radialGradient id="held-shine" cx="0.34" cy="0.3" r="0.8">
+        <stop offset="0" stopColor="#fff" stopOpacity="0.3" />
+        <stop offset="0.3" stopColor="#fff" stopOpacity="0.08" />
+        <stop offset="0.5" stopColor="#fff" stopOpacity="0" />
+        <stop offset="1" stopColor="#2a1f17" stopOpacity="0.3" />
+      </radialGradient>
       <filter id="paper-lift" x="-20%" y="-20%" width="150%" height="150%">
         <feDropShadow dx="1.1" dy="1.6" stdDeviation="0.5" floodColor="#2a1f17" floodOpacity="0.32" />
       </filter>

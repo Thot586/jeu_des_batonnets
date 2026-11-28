@@ -3,29 +3,33 @@ import { Stick, type StickState } from '../Stick/Stick';
 import { cx } from '../../utils/cx';
 import styles from './StickRow.module.css';
 
+/** Côté de la table d'où l'on prend : le début de la rangée (joueur de gauche) ou la fin (joueur de droite). */
+export type TableSide = 'start' | 'end';
+
 export interface PendingPull {
   count: number;
-  stage: 'reach' | 'pull';
-  direction: -1 | 1;
+  /** reach : les bâtonnets choisis quittent la table ; ensuite ils sont partis (en vol, en main, rangés). */
+  stage: 'reach' | 'fly' | 'pull' | 'stow';
+  /** Côté du joueur qui prend. */
+  side: TableSide;
 }
 
 interface StickRowProps {
-  remaining: number;
+  /** Nombre de bâtonnets en début de manche : chacun garde sa place sur la table toute la manche. */
+  total: number;
+  /** Bâtonnets déjà pris de chaque côté (par le joueur de gauche, par celui de droite). */
+  takenStart?: number;
+  takenEnd?: number;
   pending?: PendingPull | null;
-  /** Nombre de bâtonnets mis en évidence en fin de rangée. */
+  /** Côté depuis lequel on vise et on prend (celui du joueur dont c'est le tour). */
+  side?: TableSide;
+  /** Nombre de bâtonnets mis en évidence, comptés depuis ce côté. */
   preview?: number;
   /** Combien on peut en prendre en cliquant ; 0 rend la rangée non interactive. */
   maxPick?: number;
   onPreview?: (count: number) => void;
   onPick?: (count: number) => void;
   size?: 'normal' | 'compact';
-  /** Sens d'envol par défaut (aperçu). */
-  direction?: -1 | 1;
-  /**
-   * Nombre de bâtonnets en début de manche. Sert à répartir les rangées de façon équilibrée
-   * (16 + 15 plutôt que 28 + 3) et à garder cette disposition stable pendant la partie.
-   */
-  layoutCount?: number;
 }
 
 /**
@@ -64,22 +68,31 @@ const useBalancedWidth = (count: number) => {
 };
 
 /**
- * Rangée de bâtonnets. On prend toujours en fin de rangée :
- * survoler ou cliquer un des derniers bâtonnets choisit combien on en tire.
+ * Rangée de bâtonnets. Chaque joueur prend de son côté de la table, comme autour d'une vraie table :
+ * celui de gauche commence par le début de la rangée, celui de droite par la fin.
+ * Un bâtonnet pris laisse sa place vide : les autres ne bougent pas.
+ * Survoler ou cliquer un bâtonnet de son côté choisit combien on en prend (jusqu'à lui).
  */
 export const StickRow = ({
-  remaining,
+  total,
+  takenStart = 0,
+  takenEnd = 0,
   pending = null,
+  side = 'end',
   preview = 0,
   maxPick = 0,
   onPreview,
   onPick,
   size = 'normal',
-  direction = 1,
-  layoutCount,
 }: StickRowProps) => {
   const interactive = maxPick > 0 && !pending;
-  const { ref, maxWidth } = useBalancedWidth(layoutCount ?? remaining);
+  const { ref, maxWidth } = useBalancedWidth(total);
+  const first = takenStart;
+  const last = total - takenEnd - 1;
+  const remaining = Math.max(0, last - first + 1);
+  const actingSide = pending?.side ?? side;
+  /** Rang d'un bâtonnet depuis le côté de celui qui prend (1 = le plus proche de lui). */
+  const rankFrom = (index: number, from: TableSide) => (from === 'start' ? index - first + 1 : last - index + 1);
 
   return (
     <div
@@ -90,25 +103,28 @@ export const StickRow = ({
       aria-label={`${remaining} bâtonnet${remaining > 1 ? 's' : ''}`}
       onMouseLeave={interactive ? () => onPreview?.(0) : undefined}
     >
-      {Array.from({ length: remaining }, (_, index) => {
-        const fromEnd = remaining - index;
-        const pickable = interactive && fromEnd <= maxPick;
+      {Array.from({ length: total }, (_, index) => {
+        const onTable = index >= first && index <= last;
+        const rank = onTable ? rankFrom(index, actingSide) : 0;
+        const pickable = interactive && onTable && rank <= maxPick;
 
-        let state: StickState = 'idle';
-        if (pending && fromEnd <= pending.count) {
-          state = pending.stage === 'reach' ? 'grabbed' : 'flying';
-        } else if (preview > 0 && fromEnd <= preview) {
+        let state: StickState = onTable ? 'idle' : 'gone';
+        if (onTable && pending && rank <= pending.count) {
+          state = pending.stage === 'reach' ? 'grabbed' : 'gone';
+        } else if (onTable && preview > 0 && rank <= preview) {
           state = 'preview';
         }
 
         return (
           <span
             key={index}
+            data-index={index}
+            data-take={onTable ? rank : undefined}
             className={cx(styles.slot, pickable && styles.pickable)}
-            onMouseEnter={interactive ? () => onPreview?.(pickable ? fromEnd : 0) : undefined}
-            onClick={pickable ? () => onPick?.(fromEnd) : undefined}
+            onMouseEnter={interactive ? () => onPreview?.(pickable ? rank : 0) : undefined}
+            onClick={pickable ? () => onPick?.(rank) : undefined}
           >
-            <Stick index={index} state={state} direction={pending?.direction ?? direction} />
+            <Stick index={index} state={state} direction={actingSide === 'start' ? -1 : 1} />
           </span>
         );
       })}

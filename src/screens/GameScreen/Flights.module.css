@@ -1,0 +1,15 @@
+/* Calque des bâtonnets en vol : au-dessus de la table et des personnages, sous la pancarte de fin. */
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.flight {
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}

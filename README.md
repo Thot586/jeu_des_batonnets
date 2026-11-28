@@ -12,7 +12,7 @@ chacun son tour, on tire de 1 à 3 bâtonnets, et celui qui prend le dernier a p
 - Marionnettes de papier articulées : elles tendent le bras, tirent les bâtonnets vers elles, réfléchissent, sautent de joie ou boudent.
 - Son et vibrations : bruitages de papier synthétisés en direct, vibrations sur Android, un bouton pour tout couper.
 - Score cumulé sur plusieurs manches, avec alternance du joueur qui commence. Après 3 victoires d'affilée, le joueur met des lunettes de soleil, jusqu'à sa prochaine défaite.
-- Jouable à la souris (survol puis clic sur les derniers bâtonnets ou sur « Prendre 1, 2, 3 »), au clavier (touches 1 à 4) et au doigt.
+- Jouable à la souris (survol puis clic sur les bâtonnets de son côté de la table, ou sur « Prendre 1, 2, 3 »), au clavier (touches 1 à 4) et au doigt.
 - Responsive mobile first : pensé d'abord pour le téléphone (portrait et paysage), puis la tablette et l'ordinateur, et il s'agrandit en proportion sur les écrans géants (2K, 4K).
 - Accessible : vrais boutons et boutons radio, annonces de tour pour les lecteurs d'écran, focus visible, animations réduites si le système le demande.
 
@@ -95,7 +95,7 @@ Toutes les mesures sont en `rem`, et la taille de base grandit avec l'écran au-
 - Le décor vit en **stop motion, à 12 images par seconde** : marionnettes, bâtonnets, rideau, pancarte de fin, confettis. Chaque mouvement suit une courbe d'accélération échantillonnée image par image, chaque image étant tenue, comme une marionnette déplacée à la main entre deux prises. Ces courbes sont des jetons CSS (`--stop-out-4`, `--stop-back-6`...) écrits avec la fonction `linear()`, dans `src/styles/tokens.css`.
 - L'interface (boutons, onglets, champs) répond **immédiatement**, en douceur et sans rebond : elle se soulève au survol et s'aplatit sous le doigt.
 
-**Moments-clés.** Le rideau se lève à l'arrivée et se ferme puis se rouvre entre deux écrans ; les lettres du titre sont posées une à une ; chaque coup se joue en trois temps (tendre le bras, tirer, ramasser) ; la fin de manche descend au bout de deux ficelles et se balance.
+**Moments-clés.** Le rideau se lève à l'arrivée et se ferme puis se rouvre entre deux écrans ; les lettres du titre sont posées une à une ; chaque coup se joue en quatre temps (tendre le bras, attraper, tenir, ranger) ; la fin de manche descend au bout de deux ficelles et se balance.
 
 **Profondeur.** Le jeu est construit comme un diorama, en trois plans :
 - au fond, devant le mur de kraft, deux rangées de collines découpées et un soleil qui dépasse entre elles (à partir de la tablette) ;
@@ -110,6 +110,15 @@ Chaque plan pose une ombre floue sur celui de derrière. Les découpes ont une v
 - les cartes, la pancarte de fin et les boutons « Prendre » sont en **papier à dessin** à gros grain (scan ambientCG) ;
 - la scène est une vraie table de **planches peintes** en bleu, avec leurs rainures (scan Poly Haven) ;
 - les bâtonnets sont en **vrai bois** (scan d'un placage d'érable), chacun avec son morceau de veinage et sa teinte, et leur tête est une pâte rugueuse et mate.
+
+**Un coup qui se tient.** Comme autour d'une vraie table, chacun se sert de son côté : le joueur de gauche prend les bâtonnets du début de la rangée, celui de droite ceux de la fin. Un bâtonnet pris laisse sa place vide, les autres ne bougent pas. Le coup se lit d'un bout à l'autre :
+
+1. le personnage tend le bras, les bâtonnets choisis se soulèvent de la table ;
+2. ils volent jusqu'à sa main, en arc bas, en gardant leur taille, leur pente et leur ombre ; le compteur baisse dès qu'ils quittent la table ;
+3. il les tient en éventail dans la main, et ils suivent son bras quand il le ramène ;
+4. il les dépose dans sa pile, à la place qui les attend ; sa main est ensuite vide.
+
+En mouvement réduit, il n'y a pas de vol : les bâtonnets passent directement de la table à la main, puis à la pile.
 
 **Des bâtonnets posés sur la table.** Chaque bâtonnet a du volume : arête gauche éclairée, flanc droit dans l'ombre, petite lumière renvoyée par la table au bord, tête bombée avec son reflet. Il pose sur les planches une ombre en deux parties, comme une vraie : une ombre de contact nette, collée à lui, et une ombre portée plus floue vers le bas à droite. Quand on vise des bâtonnets, ils se soulèvent et leur ombre reste sur la table, plus loin et plus pâle : on voit qu'ils la quittent.
 

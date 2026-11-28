@@ -5,6 +5,7 @@ import { getAvatar } from '../../game/avatars';
 import { getPersonality, type Personality } from '../../game/personalities';
 import type { AvatarId } from '../../game/types';
 import { cx } from '../../utils/cx';
+import woodTexture from '../../assets/textures/wood.webp';
 import styles from './Character.module.css';
 
 export type Mood = 'idle' | 'aiming' | 'thinking' | 'reaching' | 'pulling' | 'happy' | 'sad';
@@ -20,8 +21,12 @@ interface CharacterProps {
   mood?: Mood;
   /** Côté vers lequel le personnage regarde (et tend le bras). */
   facing?: 'right' | 'left';
-  /** Nombre de bâtonnets tenus en main. */
-  holding?: number;
+  /**
+   * Bâtonnets tenus en main : combien, leur longueur (en unités du dessin, pour qu'ils aient
+   * à l'écran la taille des bâtonnets de la table) et s'ils sont visibles. Invisibles, ils
+   * restent mesurables : c'est vers eux que volent les bâtonnets pris sur la table.
+   */
+  held?: HeldInfo | null;
   /** Geste ponctuel en cours. */
   gesture?: Gesture | null;
   /** Regarde vers ce côté de l'écran (l'adversaire qui joue). */
@@ -81,7 +86,7 @@ export const Character = ({
   avatar,
   mood = 'idle',
   facing = 'right',
-  holding = 0,
+  held = null,
   gesture = null,
   lookAt = null,
   tense = false,
@@ -201,7 +206,7 @@ export const Character = ({
 
           <g className={styles.arm}>
             <g transform="translate(122 116) rotate(-22)" filter="url(#paper-lift)">
-              {holding > 0 && <HeldSticks count={holding} />}
+              {held && held.count > 0 && <HeldSticks {...held} />}
               <path className={styles.limb} d={pieces.arm} />
               <path className={styles.hand} d={pieces.hand} />
             </g>
@@ -370,13 +375,57 @@ const Accessory = ({ avatar, seed, hideGlasses = false }: { avatar: AvatarId; se
 };
 
 /** Bâtonnets de carton tenus dans la main pendant le tirage. */
-const HeldSticks = ({ count }: { count: number }) => (
-  <g>
-    {Array.from({ length: count }, (_, i) => (
-      <g key={i} transform={`translate(${-2 + i * 3} ${40 - i * 2}) rotate(${-100 + i * 12})`}>
-        <path className={styles.heldWood} d="M-2.6 0 L2.4 -0.4 L2.9 52 L-2.2 52.4 Z" />
-        <ellipse className={styles.heldHead} cx="0.2" cy="53" rx="4.6" ry="6.6" />
-      </g>
-    ))}
-  </g>
-);
+export interface HeldInfo {
+  count: number;
+  /** Longueur d'un bâtonnet, en unités du dessin (le personnage mesure 160 de large). */
+  length: number;
+  /** Largeur d'un bâtonnet, en unités du dessin. */
+  width: number;
+  /** Taille d'une tuile de bois, en unités du dessin (même grain que sur la table). */
+  woodTile: number;
+  visible: boolean;
+}
+
+/** Où le poing serre le bâtonnet, depuis la tête : aux deux tiers, comme une torche. */
+export const HELD_GRIP = 0.66;
+
+/**
+ * Les bâtonnets dans le poing, dessinés à la taille de ceux de la table.
+ * Chacun est dessiné dans le même repère qu'un bâtonnet de la table (x en travers, y de la tête
+ * vers le bas) : trois points de repère invisibles permettent de faire coïncider exactement
+ * un bâtonnet qui arrive en volant avec celui qui apparaît dans la main (data-held, data-marker).
+ * Ils passent sous la main : le poing se referme dessus.
+ */
+const HeldSticks = ({ count, length, width, woodTile, visible }: HeldInfo) => {
+  const head = { cy: width * 0.475, rx: width * 0.85, ry: width * 1.025 };
+  const wood = useId();
+  return (
+    <g className={cx(!visible && styles.heldHidden)}>
+      <defs>
+        <pattern id={wood} patternUnits="userSpaceOnUse" width={woodTile} height={woodTile}>
+          <image href={woodTexture} width={woodTile} height={woodTile} />
+        </pattern>
+      </defs>
+      {Array.from({ length: count }, (_, i) => {
+        // Les bâtonnets s'ouvrent un peu en éventail dans le poing.
+        const fan = (i - (count - 1) / 2) * 9;
+        return (
+          <g
+            key={i}
+            data-held={i}
+            data-length={length}
+            transform={`translate(0 40) rotate(${90 + fan}) translate(${(i - (count - 1) / 2) * width * 0.4} ${-length * HELD_GRIP})`}
+          >
+            <rect fill={`url(#${wood})`} x={-width / 2} y={0} width={width} height={length} rx={width * 0.25} />
+            <rect className={styles.heldRound} x={-width / 2} y={0} width={width} height={length} rx={width * 0.25} />
+            <ellipse className={styles.heldHead} cx={0} cy={head.cy} rx={head.rx} ry={head.ry} />
+            <ellipse className={styles.heldShine} cx={0} cy={head.cy} rx={head.rx} ry={head.ry} />
+            <circle data-marker="0" cx={0} cy={0} r={0.01} fill="none" />
+            <circle data-marker="1" cx={10} cy={0} r={0.01} fill="none" />
+            <circle data-marker="2" cx={0} cy={10} r={0.01} fill="none" />
+          </g>
+        );
+      })}
+    </g>
+  );
+};

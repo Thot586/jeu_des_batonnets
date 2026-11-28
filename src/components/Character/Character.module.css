@@ -185,12 +185,21 @@
   fill: #f4df98;
 }
 
-.heldWood {
-  fill: var(--c-card);
+/* Bâtonnets en main : même bois, même volume, même tête que ceux de la table. */
+.heldHidden {
+  visibility: hidden;
+}
+
+.heldRound {
+  fill: url(#held-round);
 }
 
 .heldHead {
   fill: var(--c-tomato);
+}
+
+.heldShine {
+  fill: url(#held-shine);
 }
 
 /* Bras : pivote sur son attache, image par image */

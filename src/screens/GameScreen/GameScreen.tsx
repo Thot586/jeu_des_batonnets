@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import type { Gesture, Mood } from '../../components/Character/Character';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import type { Gesture, HeldInfo, Mood } from '../../components/Character/Character';
 import { Button } from '../../components/Button/Button';
 import { SoundToggle } from '../../components/SoundToggle/SoundToggle';
 import { useFeedback } from '../../feedback/FeedbackContext';
 import { useIdleChoreography } from '../../hooks/useIdleChoreography';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { MovePicker } from '../../components/MovePicker/MovePicker';
 import { ResultDialog } from '../../components/ResultDialog/ResultDialog';
 import { Seat } from '../../components/Seat/Seat';
@@ -11,6 +12,7 @@ import { StickRow } from '../../components/StickRow/StickRow';
 import { formatChoices, maxPickable, plural } from '../../game/rules';
 import type { MatchConfig, PlayerId, Scores } from '../../game/types';
 import { cx } from '../../utils/cx';
+import { Flights } from './Flights';
 import { useRound, type PendingMove } from './useRound';
 import styles from './GameScreen.module.css';
 
@@ -70,9 +72,9 @@ export const GameScreen = ({
     [canHumanPlay, sound, buzz, playMove, game.current],
   );
 
-  // Bruitages du décor : les bandes glissent, à la manière du personnage qui tire, de son côté.
+  // Bruitages du décor : les bâtonnets glissent hors de la table, à la manière de celui qui les prend.
   useEffect(() => {
-    if (pending?.stage !== 'pull') return;
+    if (pending?.stage !== 'fly') return;
     sound('slide', { count: pending.count, voice: players[pending.player].avatar, pan: panFor(pending.player) });
   }, [pending?.stage, pending?.count, pending?.player, players, sound]);
 
@@ -162,9 +164,39 @@ export const GameScreen = ({
   // Fin de partie serrée : il reste au plus de quoi faire un dernier coup décisif.
   const tense = winner === null && game.remaining > 0 && game.remaining <= settings.maxTake + 1;
 
+  // Taille des bâtonnets tenus : mesurée au moment où le personnage tend le bras, pour qu'en main
+  // ils aient à l'écran la taille de ceux de la table (dans la limite de ce qu'il peut porter).
+  const arenaRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = usePrefersReducedMotion();
+  const [heldSize, setHeldSize] = useState<{ length: number; width: number; woodTile: number } | null>(null);
+  useLayoutEffect(() => {
+    if (pending?.stage !== 'reach') return;
+    const root = arenaRef.current;
+    const stick = root?.querySelector('[data-take="1"]')?.firstElementChild as HTMLElement | null | undefined;
+    const svg = root?.querySelector(`[data-seat="${pending.player}"] svg`);
+    if (!stick || !svg) return;
+    const unitPx = svg.getBoundingClientRect().width / 160;
+    if (unitPx <= 0) return;
+    const length = Math.min(stick.offsetHeight / unitPx, 118);
+    const unitsPerPx = length / stick.offsetHeight;
+    const rootFont = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    setHeldSize({ length, width: stick.offsetWidth * unitsPerPx, woodTile: 24 * rootFont * unitsPerPx });
+  }, [pending?.stage, pending?.player]);
+
+  const heldFor = (id: PlayerId): HeldInfo | null => {
+    if (!pending || pending.player !== id || !heldSize) return null;
+    // Dans la main seulement une fois arrivés (vol terminé), et jusqu'à ce qu'ils partent vers la pile.
+    // Avant et après, ils restent dessinés mais invisibles : c'est d'eux que partent et vers eux que vont les vols.
+    return { count: pending.count, ...heldSize, visible: pending.stage === 'pull' };
+  };
+
+  // Sur la table, on compte ce qui y est vraiment : dès qu'ils s'envolent, les bâtonnets n'y sont plus.
+  const onTable = game.remaining - (pending && pending.stage !== 'reach' ? pending.count : 0);
+
   const moodFor = (id: PlayerId): Mood => {
     if (winner !== null) return id === winner ? 'happy' : 'sad';
-    if (pending?.player === id) return pending.stage === 'reach' ? 'reaching' : 'pulling';
+    // Bras tendu tant que les bâtonnets n'ont pas rejoint la main, puis ramené vers soi.
+    if (pending?.player === id) return pending.stage === 'reach' || pending.stage === 'fly' ? 'reaching' : 'pulling';
     if (canHumanPlay && game.current === id && preview > 0) return 'aiming';
     if (isAiThinking && game.current === id) return 'thinking';
     return 'idle';
@@ -204,7 +236,14 @@ export const GameScreen = ({
         </div>
       </header>
 
-      <div className={styles.arena}>
+      <Flights
+        pending={pending}
+        scope={arenaRef}
+        collected={game.taken}
+        reducedMotion={reducedMotion}
+      />
+
+      <div ref={arenaRef} className={styles.arena}>
         {PLAYER_IDS.map((id) => (
           <Seat
             key={id}
@@ -217,7 +256,9 @@ export const GameScreen = ({
             wins={scores[id]}
             streak={streaks[id]}
             sticker={winner === id}
-            holding={pending?.player === id && pending.stage === 'pull' ? pending.count : 0}
+            seatId={id}
+            held={heldFor(id)}
+            incoming={pending?.player === id && pending.stage === 'stow' ? pending.count : 0}
             gesture={gestureFor(id)}
             lookAt={lookAtFor(id)}
             tense={tense}
@@ -228,24 +269,26 @@ export const GameScreen = ({
           <div className={cx(styles.table, intro && styles.intro)}>
             <span className={styles.festoon} aria-hidden="true" />
             <p className={styles.count}>
-              <strong key={game.remaining} className={styles.number}>
-                {game.remaining}
+              <strong key={onTable} className={styles.number}>
+                {onTable}
               </strong>
-              {game.remaining > 1 ? 'bâtonnets restants' : 'bâtonnet restant'}
+              {onTable > 1 ? 'bâtonnets restants' : 'bâtonnet restant'}
             </p>
-            <StickRow
-              remaining={game.remaining}
-              layoutCount={settings.totalSticks}
+            {game.remaining > 0 && <StickRow
+              total={settings.totalSticks}
+              takenStart={game.taken[0]}
+              takenEnd={game.taken[1]}
+              side={game.current === 0 ? 'start' : 'end'}
               pending={
                 pending
-                  ? { count: pending.count, stage: pending.stage, direction: pending.player === 0 ? -1 : 1 }
+                  ? { count: pending.count, stage: pending.stage, side: pending.player === 0 ? 'start' : 'end' }
                   : null
               }
               preview={preview}
               maxPick={available}
               onPreview={setPreview}
               onPick={play}
-            />
+            />}
             {game.remaining === 0 && (
               <div className={styles.emptyNote}>
                 <p className={styles.emptyTitle}>La table est vide.</p>
@@ -271,7 +314,7 @@ export const GameScreen = ({
                   onPreview={setPreview}
                 />
                 <p className={styles.hint}>
-                  Touches {formatChoices(Math.min(settings.maxTake, Math.max(game.remaining, 1)))} du clavier, ou clic sur les derniers bâtonnets.
+                  Touches {formatChoices(Math.min(settings.maxTake, Math.max(game.remaining, 1)))} du clavier, ou clic sur les bâtonnets de ton côté.
                 </p>
               </>
             ) : null}

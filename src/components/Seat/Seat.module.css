@@ -120,14 +120,27 @@
   justify-content: flex-end;
 }
 
+/* Les bâtonnets de la pile : les mêmes que sur la table (bois, tête rouge), en petit. */
 .mini {
   width: 0.25rem;
   height: 0.95rem;
   border-radius: 0.2rem 0.2rem 0.08rem 0.08rem;
-  background: linear-gradient(to bottom, var(--c-tomato) 0 0.3rem, var(--c-card) 0.3rem);
+  background:
+    radial-gradient(circle at 38% 12%, rgb(255 255 255 / 0.4) 0 0.05rem, transparent 0.1rem),
+    linear-gradient(to bottom, var(--c-tomato) 0 0.3rem, transparent 0.3rem),
+    linear-gradient(90deg, rgb(255 255 255 / 0.3), transparent 45%, rgb(var(--c-shadow) / 0.28)),
+    var(--tex-wood),
+    var(--c-card);
+  background-size: auto, auto, auto, 6rem 6rem, auto;
   box-shadow: 0.05rem 0.07rem 0 rgb(var(--c-shadow) / 0.35);
   rotate: calc((var(--n, 0) - 1) * 3deg);
   animation: land calc(var(--frame) * 4) var(--stop-back-4) backwards;
+}
+
+/* Place réservée pour un bâtonnet en route : il y atterrit, puis la place s'affiche. */
+.reserved {
+  visibility: hidden;
+  animation: none;
 }
 
 .more,

@@ -135,7 +135,7 @@ export const SetupScreen = ({ initial, onStart }: SetupScreenProps) => {
               </Fragment>
             ))}
         </p>
-        <StickRow remaining={settings.totalSticks} size="compact" />
+        <StickRow total={settings.totalSticks} size="compact" />
       </header>
 
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
